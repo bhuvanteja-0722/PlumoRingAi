@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111411">
+  <script>
+    if(location.hash){history.replaceState(null,'',location.pathname+location.search)}
+  </script>
   <meta name="description" content="PlumoRing AI — an interactive exploration of a sensing ring and its upcoming health-model interface.">
   <script>try{const t=localStorage.getItem('plumoring-finish');if(['gold','black','doomsday'].includes(t))document.documentElement.dataset.theme=t;const m=localStorage.getItem('plumoring-motion');if(['system','full','reduced'].includes(m))document.documentElement.dataset.motion=m}catch{}</script>
   <title>PlumoRing AI — Health, within reach</title>
