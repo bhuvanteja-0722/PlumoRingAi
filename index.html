@@ -178,7 +178,23 @@
     .anatomy-live b{font-weight:400}
     .anatomy-intro{margin:0 0 12px;color:var(--dashboard-muted);font-size:9px;line-height:1.6}
     .organ-viewport{position:relative;height:clamp(345px,37vw,480px);min-height:345px;max-height:480px;overflow:hidden;isolation:isolate;border:1px solid #ffffff12;border-radius:7px;background:radial-gradient(ellipse at 50% 48%,color-mix(in srgb,#bd7884 17%,transparent),transparent 48%),radial-gradient(ellipse at 50% 95%,color-mix(in srgb,var(--accent) 8%,transparent),transparent 48%),#111714;touch-action:none}
-    #organ-canvas{position:absolute;z-index:1;inset:0;width:100%;height:100%;display:block;touch-action:none}
+    #organ-canvas{position:absolute;z-index:2;inset:0;width:100%;height:100%;display:block;touch-action:none}
+    .organ-fallback{position:absolute;z-index:1;inset:5% 9% 7%;width:82%;height:88%;overflow:visible;pointer-events:none;filter:drop-shadow(0 14px 32px #05080777)}
+    .organ-fallback .lung-shell{stroke:#efb2aa;stroke-opacity:.34;stroke-width:2}
+    .organ-fallback .lung-lobe{fill:none;stroke:#f6c5b9;stroke-opacity:.26;stroke-width:2}
+    .organ-fallback .bronchus{fill:none;stroke:#d9a69b;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;opacity:.84}
+    .organ-fallback .bronchus-detail{fill:none;stroke:#f0c1b3;stroke-width:2;stroke-linecap:round;opacity:.55}
+    .organ-fallback .vessel{fill:none;stroke:#8f5260;stroke-width:2;stroke-linecap:round;opacity:.56}
+    .organ-fallback .fallback-lungs,.organ-fallback .fallback-heart{transition:opacity .55s ease}
+    .organ-viewport.has-lungs .fallback-lungs,.organ-viewport.has-heart .fallback-heart{opacity:0}
+    .organ-fallback .input-response{opacity:var(--input-response,0);mix-blend-mode:screen}
+    .organ-fallback .infection-response{opacity:var(--infection-response,0);mix-blend-mode:color-dodge}
+    .organ-fallback .airway-response{opacity:var(--airway-response,0);mix-blend-mode:screen}
+    .organ-fallback .fallback-lungs{transform-box:fill-box;transform-origin:center;animation:preview-breathe var(--breath-cycle,4s) ease-in-out infinite}
+    .organ-fallback .fallback-heart{transform-box:fill-box;transform-origin:center;animation:preview-pulse var(--heart-cycle,.83s) ease-in-out infinite}
+    .organ-viewport.motion-paused .organ-fallback .fallback-lungs,.organ-viewport.motion-paused .organ-fallback .fallback-heart{animation-play-state:paused}
+    @keyframes preview-breathe{0%,100%{transform:scale(1)}48%{transform:scale(1.035,1.018)}}
+    @keyframes preview-pulse{0%,100%{transform:scale(1)}12%{transform:scale(1.045)}29%{transform:scale(1.018)}}
     .organ-viewport:before{content:"";position:absolute;z-index:0;inset:0;background:linear-gradient(90deg,transparent 49.9%,#ffffff07 50%,transparent 50.1%),linear-gradient(0deg,transparent 49.9%,#ffffff06 50%,transparent 50.1%);background-size:64px 64px;mask-image:radial-gradient(ellipse at center,#000 0%,transparent 74%);pointer-events:none}
     .organ-orbit{width:min(74%,340px);z-index:0;opacity:.8}.organ-orbit-b{width:min(58%,270px)}
     .organ-hud{font-size:7px;gap:6px;letter-spacing:.12em}.organ-hud-top{top:13px;left:13px}.organ-hud-right{top:13px;right:13px;font-size:7px}
@@ -308,6 +324,55 @@
             </div>
             <p class="anatomy-intro">Heart and breath motion follow their input channels. All eight displayed channels shape a restrained preview; only a returned model class adds an infection or airway pattern.</p>
             <div class="organ-viewport" id="organ-viewport" aria-label="Interactive 3D heart and lungs. Drag to orbit and scroll to zoom.">
+              <svg class="organ-fallback" id="organ-fallback" viewBox="0 0 720 600" role="img" aria-label="Illustrated preview of both lungs, branching airways, and heart" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <linearGradient id="lungSurface" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#e6a49d"/><stop offset=".42" stop-color="#a85e69"/><stop offset="1" stop-color="#59333e"/></linearGradient>
+                  <linearGradient id="lungLight" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#ffd0bd" stop-opacity=".66"/><stop offset="1" stop-color="#df8991" stop-opacity="0"/></linearGradient>
+                  <linearGradient id="heartSurface" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#ff9d8c"/><stop offset=".5" stop-color="#c84850"/><stop offset="1" stop-color="#682b3c"/></linearGradient>
+                  <linearGradient id="arteryRed" x1="0" x2="1"><stop stop-color="#e36264"/><stop offset="1" stop-color="#8f3546"/></linearGradient>
+                  <linearGradient id="arteryBlue" x1="0" x2="1"><stop stop-color="#91c4d1"/><stop offset="1" stop-color="#426d84"/></linearGradient>
+                  <radialGradient id="organGlow"><stop stop-color="#f1a4a0" stop-opacity=".25"/><stop offset="1" stop-color="#f1a4a0" stop-opacity="0"/></radialGradient>
+                  <pattern id="tissueGrain" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r=".8" fill="#ffe1d5" opacity=".18"/><circle cx="13" cy="12" r=".65" fill="#3b202b" opacity=".24"/></pattern>
+                  <filter id="softOrganShadow" x="-30%" y="-20%" width="160%" height="160%"><feGaussianBlur stdDeviation="12"/></filter>
+                </defs>
+                <ellipse cx="360" cy="330" rx="250" ry="228" fill="url(#organGlow)"/>
+                <ellipse cx="360" cy="533" rx="180" ry="19" fill="#050807" opacity=".42" filter="url(#softOrganShadow)"/>
+                <g class="fallback-lungs">
+                  <g class="lung-right">
+                    <path class="lung-shell" fill="url(#lungSurface)" d="M328 164 C291 142 248 152 219 181 C188 210 175 259 169 310 C162 370 168 433 196 469 C219 498 269 490 302 469 C326 454 338 427 340 394 L346 228 C346 196 341 176 328 164Z"/>
+                    <path fill="url(#lungLight)" opacity=".62" d="M320 172 C284 159 246 175 221 207 C198 237 188 282 185 329 C182 375 188 421 208 452 C229 478 265 471 291 453 C315 435 323 403 324 365 L330 231 C332 204 329 183 320 172Z"/>
+                    <path fill="url(#tissueGrain)" d="M328 164 C291 142 248 152 219 181 C188 210 175 259 169 310 C162 370 168 433 196 469 C219 498 269 490 302 469 C326 454 338 427 340 394 L346 228 C346 196 341 176 328 164Z"/>
+                    <path class="lung-lobe" d="M185 326 C230 341 282 344 337 329 M189 384 C232 394 284 396 336 383"/>
+                    <path class="vessel" d="M296 224 C272 245 259 268 247 296 M291 246 C306 258 315 274 322 294 M252 293 C231 313 220 340 214 365 M255 295 C278 311 295 335 306 361 M219 365 C203 386 199 409 201 426 M304 363 C316 383 319 402 315 421"/>
+                  </g>
+                  <g class="lung-left">
+                    <path class="lung-shell" fill="url(#lungSurface)" d="M392 164 C428 142 471 152 501 181 C531 210 545 259 551 310 C558 370 552 433 524 469 C501 498 453 490 419 469 C394 454 382 427 380 394 L374 228 C374 196 379 176 392 164Z"/>
+                    <path fill="url(#lungLight)" opacity=".55" d="M400 172 C436 159 474 175 499 207 C522 237 532 282 535 329 C538 375 532 421 512 452 C491 478 455 471 429 453 C405 435 397 403 396 365 L390 231 C388 204 391 183 400 172Z"/>
+                    <path fill="url(#tissueGrain)" d="M392 164 C428 142 471 152 501 181 C531 210 545 259 551 310 C558 370 552 433 524 469 C501 498 453 490 419 469 C394 454 382 427 380 394 L374 228 C374 196 379 176 392 164Z"/>
+                    <path class="lung-lobe" d="M383 330 C432 343 487 341 535 326 M384 385 C437 394 490 390 531 378"/>
+                    <path class="vessel" d="M420 223 C446 245 460 268 472 296 M425 246 C410 259 401 276 395 295 M469 294 C490 313 501 340 507 365 M466 295 C443 311 426 334 415 360 M503 365 C518 386 523 407 520 425 M417 360 C404 380 400 400 405 420"/>
+                  </g>
+                  <g class="bronchi">
+                    <path class="bronchus" d="M360 83 L360 237 C360 252 349 263 335 275 L284 318 M360 238 C360 252 372 263 386 276 L437 318"/>
+                    <path class="bronchus-detail" d="M360 85 L360 235 C360 249 349 260 334 273 L286 316 M361 239 C362 252 374 265 388 277 L435 316"/>
+                    <path class="bronchus" style="stroke-width:5" d="M326 282 L298 260 M326 282 L318 311 M394 284 L423 258 M394 284 L404 315 M301 260 L281 247 M316 310 L307 333 M420 261 L442 248 M404 313 L414 338"/>
+                    <path class="bronchus-detail" style="stroke-width:1.3" d="M326 282 L298 260 M326 282 L318 311 M394 284 L423 258 M394 284 L404 315 M301 260 L281 247 M316 310 L307 333 M420 261 L442 248 M404 313 L414 338"/>
+                    <path fill="none" stroke="#d2c3b5" stroke-opacity=".52" stroke-width="3" d="M354 94h12 M354 108h12 M354 122h12 M354 136h12 M354 150h12 M354 164h12 M354 178h12 M354 192h12"/>
+                  </g>
+                  <g class="input-response" fill="#e4aa52"><path d="M213 257c20-21 42-18 53 0-11 18-33 25-53 0Z M462 363c16-19 36-15 45 1-9 16-29 22-45-1Z M244 424c15-18 33-14 42 1-9 15-27 20-42-1Z"/></g>
+                  <g class="infection-response" fill="#a91f39"><path d="M203 322c21-28 49-26 60-2-8 25-32 37-60 2Z M458 291c19-22 43-18 51 2-10 21-30 28-51-2Z M273 400c16-21 37-19 46 0-7 20-27 28-46 0Z"/></g>
+                  <g class="airway-response" fill="none" stroke="#e5a045" stroke-width="8" stroke-linecap="round"><path d="M302 264 281 247 M316 309 307 333 M423 258 442 248 M404 313 414 338"/></g>
+                </g>
+                <g class="fallback-heart">
+                  <path fill="url(#arteryBlue)" stroke="#bddce0" stroke-opacity=".35" stroke-width="2" d="M337 306 C320 275 323 247 337 232 C352 217 371 222 376 241 C379 213 401 204 417 218 C435 235 426 264 410 288 L387 319Z"/>
+                  <path fill="url(#arteryRed)" stroke="#ffc0a7" stroke-opacity=".4" stroke-width="2" d="M364 299 C344 275 321 286 317 307 C309 340 340 388 374 421 C405 396 438 357 435 326 C433 299 411 286 390 302 C381 289 372 291 364 299Z"/>
+                  <path fill="url(#heartSurface)" stroke="#ffc4ad" stroke-opacity=".54" stroke-width="3" d="M361 309 C340 287 320 300 322 324 C325 354 350 391 376 413 C404 386 429 354 428 329 C427 302 405 293 386 313 C378 302 370 303 361 309Z"/>
+                  <path fill="none" stroke="#672a3a" stroke-opacity=".55" stroke-width="3" d="M376 318 C368 341 370 373 377 408 M377 351 C392 344 404 337 416 324"/>
+                  <path fill="none" stroke="#ffb99f" stroke-opacity=".55" stroke-width="2" d="M344 313 C339 326 347 344 356 352 M403 316 C415 314 420 323 420 333"/>
+                  <path fill="none" stroke="#a22e42" stroke-width="12" stroke-linecap="round" d="M384 306 C394 281 398 263 394 242 M383 291 C375 269 376 252 382 237"/>
+                  <path fill="none" stroke="#f18470" stroke-width="7" stroke-linecap="round" d="M384 302 C392 278 397 259 393 241 M383 289 C378 268 379 251 383 238"/>
+                </g>
+              </svg>
               <canvas id="organ-canvas" aria-label="Three-dimensional heart and lungs with animated heartbeats and breathing"></canvas>
               <div class="organ-orbit organ-orbit-a"></div><div class="organ-orbit organ-orbit-b"></div>
               <div class="organ-hud organ-hud-top"><span class="hud-orb"></span><span>PLUMORING&nbsp; / &nbsp;ANATOMY STUDY</span></div>
@@ -632,59 +697,80 @@
     }
 
     const organLoader=new GLTFLoader();
-    let lungsLoaded=false,heartLoaded=false,organFailed=false;
+    const organViewport=document.querySelector('#organ-viewport');
+    const openedAsFile=location.protocol==='file:';
+    let lungsLoaded=false,heartLoaded=false,lungsFailed=false,heartFailed=false,organModelsRequested=false;
     function updateOrganStatus(){
-      if(organFailed)return;
-      if(lungsLoaded&&heartLoaded)organStatus.textContent='VISIBLE HUMAN ANATOMY · READY';
-      else if(lungsLoaded)organStatus.textContent='LUNG ANATOMY READY · LOADING HEART';
-      else if(heartLoaded)organStatus.textContent='HEART ANATOMY READY · LOADING LUNGS';
+      organViewport.classList.toggle('has-lungs',lungsLoaded);
+      organViewport.classList.toggle('has-heart',heartLoaded);
+      if(lungsLoaded&&heartLoaded)organStatus.textContent='3D HEART + LUNGS · READY';
+      else if(lungsLoaded)organStatus.textContent='LUNGS READY · HEART LOADING';
+      else if(heartLoaded)organStatus.textContent='HEART READY · LUNGS LOADING';
+      else if(lungsFailed||heartFailed)organStatus.textContent='ANATOMY PREVIEW · 3D ASSET UNAVAILABLE';
+      else if(organModelsRequested)organStatus.textContent='LOADING 3D ANATOMY';
     }
 
-    organLoader.load(new URL('./assets/visible-human-lungs.glb',import.meta.url).href,gltf=>{
-      const lungModel=gltf.scene;
-      lungModel.rotation.set(0,0,0);
-      lungModel.traverse(node=>{
-        if(!node.isMesh)return;
-        node.material=lungMaterial;
-        node.castShadow=true;
-        node.receiveShadow=true;
-        node.geometry.computeBoundingBox();
-      });
-      centerAndScaleModel(lungModel,2.55);
-      lungsGroup.add(lungModel);
-      lungsLoaded=true;
+    function organAssetUrl(filename){
+      return openedAsFile
+        ? 'https://raw.githubusercontent.com/bhuvanteja-0722/PlumoRingAi/main/assets/'+filename
+        : new URL('./assets/'+filename,import.meta.url).href;
+    }
+    function loadOrganModels(){
+      if(organModelsRequested)return;
+      organModelsRequested=true;
       updateOrganStatus();
-    },undefined,error=>{
-      organFailed=true;
-      organStatus.textContent='LUNG ANATOMY COULD NOT LOAD';
-      console.error('PlumoRing lung model failed to load',error);
-    });
-
-    organLoader.load(new URL('./assets/anatomical-heart.glb',import.meta.url).href,gltf=>{
-      const heartModel=gltf.scene;
-      heartModel.rotation.set(-.06,.1,-.11);
-      heartModel.traverse(node=>{
-        if(!node.isMesh)return;
-        node.castShadow=true;
-        node.receiveShadow=true;
-        const materials=Array.isArray(node.material)?node.material:[node.material];
-        materials.forEach(material=>{
-          if('roughness' in material)material.roughness=Math.max(.34,material.roughness||0);
-          if('metalness' in material)material.metalness=0;
-          if('side' in material)material.side=THREE.DoubleSide;
-          material.needsUpdate=true;
+      organLoader.load(organAssetUrl('visible-human-lungs.glb'),gltf=>{
+        const lungModel=gltf.scene;
+        lungModel.rotation.set(0,0,0);
+        lungModel.traverse(node=>{
+          if(!node.isMesh)return;
+          node.material=lungMaterial;
+          node.castShadow=true;
+          node.receiveShadow=true;
+          node.geometry.computeBoundingBox();
         });
+        centerAndScaleModel(lungModel,2.55);
+        lungsGroup.add(lungModel);
+        lungsLoaded=true;
+        updateOrganStatus();
+      },undefined,error=>{
+        lungsFailed=true;
+        updateOrganStatus();
+        console.error('PlumoRing lung model failed to load; keeping the anatomy preview visible.',error);
       });
-      centerAndScaleModel(heartModel,1.17);
-      heartModel.scale.x*=1.14;
-      heartGroup.add(heartModel);
-      heartLoaded=true;
-      updateOrganStatus();
-    },undefined,error=>{
-      organFailed=true;
-      organStatus.textContent='HEART ANATOMY COULD NOT LOAD';
-      console.error('PlumoRing heart model failed to load',error);
-    });
+
+      organLoader.load(organAssetUrl('anatomical-heart.glb'),gltf=>{
+        const heartModel=gltf.scene;
+        heartModel.rotation.set(-.06,.1,-.11);
+        heartModel.traverse(node=>{
+          if(!node.isMesh)return;
+          node.castShadow=true;
+          node.receiveShadow=true;
+          const materials=Array.isArray(node.material)?node.material:[node.material];
+          materials.forEach(material=>{
+            if('roughness' in material)material.roughness=Math.max(.34,material.roughness||0);
+            if('metalness' in material)material.metalness=0;
+            if('side' in material)material.side=THREE.DoubleSide;
+            material.needsUpdate=true;
+          });
+        });
+        centerAndScaleModel(heartModel,1.17);
+        heartModel.scale.x*=1.14;
+        heartGroup.add(heartModel);
+        heartLoaded=true;
+        updateOrganStatus();
+      },undefined,error=>{
+        heartFailed=true;
+        updateOrganStatus();
+        console.error('PlumoRing heart model failed to load; keeping the anatomy preview visible.',error);
+      });
+    }
+    if('IntersectionObserver' in window){
+      const anatomyLoaderObserver=new IntersectionObserver(entries=>{
+        if(entries.some(entry=>entry.isIntersecting)){loadOrganModels();anatomyLoaderObserver.disconnect()}
+      },{rootMargin:'260px 0px'});
+      anatomyLoaderObserver.observe(organViewport);
+    }else loadOrganModels();
 
     const heartGlow=new THREE.PointLight(0xf28b92,.16,1.65,1.8);
     heartGlow.position.set(0,.02,.68);
@@ -699,6 +785,7 @@
     function setTissueResponse(value,source='input'){
       const amount=THREE.MathUtils.clamp(Number(value)||0,0,1);
       responseUniform.value=amount;
+      organViewport.style.setProperty('--input-response',amount.toFixed(3));
       tissueValue.textContent=source==='model'?(infectionUniform.value?'LUNG TEXTURE · INFECTION CLASS':airwayUniform.value?'LUNG TEXTURE · AIRWAY CLASS':'LUNG TEXTURE · MODEL CLASS'):'LUNG TEXTURE · LIVE INPUT PREVIEW';
     }
     const modelResultState=document.querySelector('#model-result-state');
@@ -743,6 +830,8 @@
       const airway=category==='airway'||/asthma|bronch|wheez/.test(normalized);
       infectionUniform.value=infection?1:0;
       airwayUniform.value=airway?1:0;
+      organViewport.style.setProperty('--infection-response',infection?'0.82':'0');
+      organViewport.style.setProperty('--airway-response',airway?'0.72':'0');
       setTissueResponse((infection||airway)?0.72:0,'model');
       document.querySelector('#model-result-label').textContent=label;
       document.querySelector('#model-result-description').textContent='A fixed visual pattern is mapped from this returned model class. It does not estimate disease severity.';
@@ -757,6 +846,8 @@
     function clearModelOutput(){
       infectionUniform.value=0;
       airwayUniform.value=0;
+      organViewport.style.setProperty('--infection-response','0');
+      organViewport.style.setProperty('--airway-response','0');
       previewFromInputs();
       modelResultState.hidden=true;
       modelEmptyState.hidden=false;
@@ -770,19 +861,23 @@
     function setHeartRate(value){
       heartBpm=THREE.MathUtils.clamp(Number(value)||72,45,150);
       heartReadout.innerHTML=heartBpm+' <small>BPM</small>';
+      organViewport.style.setProperty('--heart-cycle',(60/heartBpm).toFixed(3)+'s');
     }
     function setBreathRate(value){
       breathsPerMinute=THREE.MathUtils.clamp(Number(value)||15,8,36);
       breathReadout.innerHTML=breathsPerMinute+' <small>/ MIN</small>';
+      organViewport.style.setProperty('--breath-cycle',(60/breathsPerMinute).toFixed(3)+'s');
     }
     document.querySelector('.telemetry-control[data-key="hr"] input').addEventListener('input',e=>setHeartRate(e.currentTarget.value));
     document.querySelector('.telemetry-control[data-key="resp"] input').addEventListener('input',e=>setBreathRate(e.currentTarget.value));
     previewFromInputs();
 
     motionButton.setAttribute('aria-pressed',String(organMotion));
+    organViewport.classList.toggle('motion-paused',!organMotion);
     if(!organMotion)motionButton.innerHTML='▶&nbsp; RESUME MOTION';
     motionButton.addEventListener('click',()=>{
       organMotion=!organMotion;
+      organViewport.classList.toggle('motion-paused',!organMotion);
       motionButton.setAttribute('aria-pressed',String(organMotion));
       motionButton.innerHTML=organMotion?'Ⅱ&nbsp; PAUSE MOTION':'▶&nbsp; RESUME MOTION';
     });
