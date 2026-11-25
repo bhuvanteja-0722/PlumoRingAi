@@ -24,7 +24,7 @@ The page borrows interaction patterns and layout ideas from the supplied 3D guid
 
 - [GetLayers templates / Artefakt](https://www.getlayers.ai/templates?layer=artefakt) — visual direction for immersive presentation and editorial pacing.
 - [Motion Primitives](https://motion-primitives.com/docs/in-view) — in-view reveals and restrained staggered entrances, implemented with browser-native observation for this static page.
-- [Watermelon UI](https://ui.watermelon.sh/) — realistic product blocks and dashboard composition.
+- [Watermelon UI Landing Page 01](https://ui.watermelon.sh/template/landing-01) — its dark product-page rhythm, animated entrances, dot-grid atmosphere, and bento feature layout were adapted around the ring and telemetry instead of adding an unrelated generic template demo.
 - [Kokonut UI](https://kokonutui.com/) — compact status, metric, and AI-workspace patterns.
 - [Bklit UI](https://ui.bklit.com/) — telemetry chart and data-visualization references, drawn here as custom SVG.
 - [Anime.js](https://animejs.com/documentation/getting-started/installation) — progressive hero entrance motion via its documented CDN ESM import.
