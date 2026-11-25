@@ -82,21 +82,149 @@
     @media(prefers-reduced-motion:reduce){.empty-orbit,.empty-orbit span{animation:none}}
   </style>
   <link rel="stylesheet" href="responsive.css">
+  <style>
+    /* Spatial interface: a shared atmospheric field with restrained glass controls. */
+    body{background:radial-gradient(ellipse at 74% 12%,color-mix(in srgb,var(--stage-glow) 12%,transparent),transparent 36%),radial-gradient(ellipse at 22% 53%,#557c9822,transparent 38%),var(--paper)}
+    body:before{opacity:.18;background-size:30px 30px}
+    .topbar{top:12px;height:58px;margin:0 0 4px;padding:0 22px;border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));border-radius:999px;background:color-mix(in srgb,var(--surface) 76%,transparent);box-shadow:0 16px 44px #0003;backdrop-filter:blur(28px) saturate(140%)}
+    .hero{min-height:calc(100svh - 82px);padding-top:24px}
+    .hero-copy{top:clamp(145px,19vh,210px)}
+    .hero h1{font-size:clamp(58px,7vw,102px);line-height:.91}
+    .hero .intro{max-width:360px}
+    .stage:before{background:radial-gradient(ellipse at 55% 50%,color-mix(in srgb,var(--stage-glow) 13%,transparent),transparent 48%),radial-gradient(ellipse at 50% 93%,color-mix(in srgb,#6aabc0 9%,transparent),transparent 43%);filter:blur(5px)}
+    .finish-switch,.model-controls{border-color:#ffffff24;background:color-mix(in srgb,var(--surface-raised) 69%,transparent);backdrop-filter:blur(24px) saturate(140%)}
+    .cardio-spatial{position:relative;padding:70px 0 78px;scroll-margin-top:92px}
+    .spatial-heading{display:flex;justify-content:space-between;align-items:end;gap:24px;margin:0 0 25px;padding:0 3px}
+    .spatial-heading .section-kicker{margin:0 0 16px}
+    .spatial-heading h2{margin:0;color:var(--ink);font-size:clamp(38px,5.5vw,72px);font-weight:500;line-height:.92;letter-spacing:-.078em}
+    .spatial-heading h2 span{color:var(--accent)}
+    .spatial-status{display:flex;align-items:center;gap:9px;margin-bottom:7px;padding:11px 14px;border:1px solid #ffffff1c;border-radius:999px;background:#ffffff08;color:var(--muted);font:8px var(--mono);letter-spacing:.12em;backdrop-filter:blur(18px)}
+    .spatial-status i,.hud-orb{width:7px;height:7px;border-radius:50%;background:#9ad6bb;box-shadow:0 0 14px #89e3bb99}
+    .spatial-shell{display:grid;grid-template-columns:minmax(0,1fr) 330px;min-height:610px;overflow:hidden;border:1px solid color-mix(in srgb,var(--accent) 25%,#ffffff14);border-radius:30px;background:radial-gradient(ellipse at 43% 48%,color-mix(in srgb,var(--stage-glow) 13%,transparent),transparent 45%),linear-gradient(135deg,#ffffff0b,#ffffff02 45%,#ffffff08);box-shadow:0 35px 100px #0004,inset 0 1px #ffffff12;backdrop-filter:blur(24px) saturate(130%)}
+    .organ-viewport{position:relative;min-width:0;min-height:610px;overflow:hidden;touch-action:none;background:radial-gradient(ellipse at 51% 46%,color-mix(in srgb,#bb7483 10%,transparent),transparent 38%)}
+    .organ-viewport:before{content:"";position:absolute;z-index:0;inset:0;background:linear-gradient(90deg,transparent 49.9%,#ffffff08 50%,transparent 50.1%),linear-gradient(0deg,transparent 49.9%,#ffffff07 50%,transparent 50.1%);background-size:88px 88px;mask-image:radial-gradient(ellipse at center,#000 0%,transparent 73%);pointer-events:none}
+    #organ-canvas{position:absolute;z-index:1;inset:0;width:100%;height:100%;display:block;touch-action:none}
+    .organ-orbit{position:absolute;z-index:0;left:50%;top:49%;width:min(72%,600px);aspect-ratio:1.2/1;border:1px solid #ffffff0c;border-radius:50%;transform:translate(-50%,-50%) rotate(-22deg);pointer-events:none}
+    .organ-orbit:before,.organ-orbit:after{content:"";position:absolute;inset:12%;border:1px solid #ffffff0b;border-radius:50%;transform:rotate(54deg)}
+    .organ-orbit:after{inset:-8% 20%;transform:rotate(-49deg);border-color:color-mix(in srgb,var(--accent) 17%,transparent)}
+    .organ-orbit-b{width:min(57%,470px);transform:translate(-50%,-50%) rotate(61deg);border-color:#9bc9d015}
+    .organ-hud{position:absolute;z-index:3;display:flex;align-items:center;gap:9px;color:#bac2bf;font:8px var(--mono);letter-spacing:.14em;pointer-events:none}
+    .organ-hud-top{top:25px;left:27px}.organ-hud-right{top:26px;right:27px;color:#a8b2ad}.organ-hud-right b{color:var(--accent);font-weight:400}
+    .organ-callout{position:absolute;z-index:3;display:flex;align-items:center;gap:9px;color:#e5e9e3;font:8px var(--mono);letter-spacing:.12em;pointer-events:none}
+    .organ-callout i{width:8px;height:8px;border:1px solid #cde2d7;border-radius:50%;box-shadow:0 0 17px #b0dfd5aa;background:#c4e1d4}
+    .organ-callout span{display:grid;gap:4px}.organ-callout small{color:#929f99;font:7px var(--mono);letter-spacing:.07em}
+    .heart-callout{top:43%;left:9%}.lung-callout{top:31%;right:8%}
+    .heart-callout:after,.lung-callout:before{content:"";position:absolute;top:4px;width:clamp(34px,7vw,90px);height:1px;background:linear-gradient(90deg,#b8d6c988,transparent)}
+    .heart-callout:after{left:calc(100% + 10px)}.lung-callout:before{right:calc(100% + 10px);transform:rotate(4deg);background:linear-gradient(270deg,#b8d6c988,transparent)}
+    .organ-bottom-hud{position:absolute;z-index:3;left:26px;bottom:25px;display:flex;gap:20px;color:#88958f;font:7px var(--mono);letter-spacing:.13em;pointer-events:none}
+    .organ-buttons{position:absolute;z-index:4;right:22px;bottom:17px;display:flex;gap:7px}
+    .spatial-button{min-height:40px;padding:0 13px;border:1px solid #ffffff21;border-radius:999px;background:#19211de0;color:#e2e7df;font:8px var(--mono);letter-spacing:.08em;backdrop-filter:blur(16px);transition:background .2s,border .2s,color .2s}
+    .spatial-button:hover{border-color:color-mix(in srgb,var(--accent) 65%,transparent);background:#ffffff16;color:var(--ink)}
+    .spatial-console{position:relative;z-index:2;align-self:stretch;padding:31px 25px;border-left:1px solid #ffffff12;background:linear-gradient(160deg,#ffffff0d,#ffffff04 52%,#ffffff09);backdrop-filter:blur(28px) saturate(140%)}
+    .console-kicker{display:flex;justify-content:space-between;color:var(--accent);font:8px var(--mono);letter-spacing:.12em}.console-kicker span{color:#76827c}
+    .spatial-console h3{margin:25px 0 12px;color:var(--ink);font-size:clamp(27px,3vw,38px);font-weight:500;line-height:.99;letter-spacing:-.07em}.spatial-console h3 em{color:var(--accent);font-style:normal}
+    .console-copy{margin:0;color:var(--muted);font-size:11px;line-height:1.75}
+    .motion-readout{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:24px 0 26px}
+    .motion-readout div{padding:14px 12px;border:1px solid #ffffff14;border-radius:15px;background:#ffffff08;box-shadow:inset 0 1px #ffffff08}
+    .motion-readout span,.spatial-range-label{color:#8d9a93;font:7px var(--mono);letter-spacing:.11em}
+    .motion-readout b{display:block;margin-top:9px;color:var(--ink);font-size:20px;font-weight:600;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+    .motion-readout small{color:var(--muted);font:7px var(--mono);letter-spacing:.08em}
+    .spatial-range-label{display:flex;justify-content:space-between;margin:19px 0 9px;color:#aab4ae}
+    .spatial-range-label output{color:var(--ink);font-size:8px}
+    .spatial-range{display:block;width:100%;height:4px;margin:0;accent-color:var(--accent);cursor:ew-resize}
+    .console-note{display:flex;align-items:flex-start;gap:9px;margin-top:25px;padding-top:15px;border-top:1px solid #ffffff13;color:#8f9c95;font:8px/1.65 var(--mono)}
+    .console-note i{flex:none;width:6px;height:6px;margin-top:3px;border-radius:50%;background:#d4bb82;box-shadow:0 0 12px #d4bb8280}
+    .tissue-response{margin-top:23px;padding:15px 14px 14px;border:1px solid #ffffff16;border-radius:15px;background:linear-gradient(140deg,#ffffff0b,#ffffff04)}
+    .tissue-response-head{display:flex;justify-content:space-between;gap:12px;color:var(--accent);font:7px var(--mono);letter-spacing:.1em}
+    .tissue-response-head b{color:#9eaaa2;font-weight:400;text-align:right}
+    .tissue-response p{margin:10px 0 12px;color:#9aa59f;font-size:9px;line-height:1.6}
+    .anatomy-credit{display:block;margin-top:13px;color:#78847d;font:7px/1.6 var(--mono);letter-spacing:.03em}
+    .anatomy-credit a{color:#aabbb0;text-decoration-color:#778d80;text-underline-offset:2px}
+    .lung-callout{right:8%}
+    .left-lung-callout{top:29%;left:9%}
+    .right-lung-callout{top:29%;right:8%}
+    .left-lung-callout:after,.right-lung-callout:before{content:"";position:absolute;top:4px;width:clamp(34px,7vw,90px);height:1px;background:linear-gradient(90deg,#b8d6c988,transparent)}
+    .left-lung-callout:after{left:calc(100% + 10px)}
+    .right-lung-callout:before{right:calc(100% + 10px);transform:rotate(4deg);background:linear-gradient(270deg,#b8d6c988,transparent)}
+    .explorer{padding:42px clamp(20px,4vw,48px);border:1px solid #ffffff16;border-radius:28px;background:linear-gradient(135deg,#ffffff09,#ffffff03 55%,#ffffff08);box-shadow:0 22px 70px #0002;backdrop-filter:blur(20px)}
+    .detail{border-color:#ffffff18;border-radius:20px;background:#ffffff08;backdrop-filter:blur(20px)}
+    .signal-story{margin:28px 0;padding:48px clamp(20px,4vw,46px);border:1px solid #ffffff16;border-radius:28px;background:linear-gradient(135deg,#ffffff08,#ffffff02 58%,#ffffff07);backdrop-filter:blur(18px)}
+    .signal-card{border-color:#ffffff18;border-radius:20px;background:linear-gradient(145deg,#ffffff0c,#ffffff04);backdrop-filter:blur(18px)}
+    main.page .intelligence{margin:28px 0;padding:50px clamp(20px,4vw,54px);border:1px solid #ffffff18;border-radius:30px;background:linear-gradient(135deg,#ffffff0b,#ffffff03 58%,#ffffff09);box-shadow:0 28px 80px #0003;backdrop-filter:blur(24px)}
+    .dashboard-shell{border:1px solid #ffffff16;border-radius:22px;background:color-mix(in srgb,var(--dashboard) 80%,transparent);box-shadow:0 18px 60px #0003;backdrop-filter:blur(22px)}
+    .closing-note{margin-top:28px;padding:38px 40px;border:1px solid #ffffff16;border-radius:26px;background:linear-gradient(135deg,#ffffff09,#ffffff02);backdrop-filter:blur(18px)}
+    .caveat{border-top:1px solid #ffffff12}
+    @media(max-width:1050px){.hero{min-height:0;padding:48px 0 18px}.hero-copy{position:relative;top:auto;left:auto;width:min(620px,100%);margin:0 auto 12px}.hero-right{min-height:0;padding-top:58px}.hero-right-head{top:0}.stage{height:70vh;min-height:540px}.stage-title{left:25px;top:23px}.stage-chip{top:24px;right:22px}.studio-note{left:25px;top:56px;bottom:auto}.model-controls{left:50%;bottom:18px}#stage{transform:none}.spatial-shell{grid-template-columns:minmax(0,1fr) 285px}.spatial-console{padding:26px 20px}.organ-viewport{min-height:550px}.heart-callout{left:5%}.lung-callout,.right-lung-callout{right:4%}.left-lung-callout{left:5%}}
+    @media(max-width:760px){.topbar{top:7px;height:52px;margin:0 0 2px;padding:0 13px;border-radius:18px;gap:8px}.wordmark{flex:none}.main-nav{flex:1;min-width:0;justify-content:flex-end;gap:9px}.main-nav a{font-size:7px}.hero{display:block;min-height:0;padding:32px 0 12px}.hero-copy{position:relative;top:auto;left:auto;width:100%;margin:0 auto 10px}.hero h1{font-size:clamp(55px,14vw,78px)}.hero-right{min-height:0;padding-top:54px}.hero-right-head{top:0}.stage{height:63vh;min-height:470px;max-height:650px}.stage-title{left:14px;top:15px}.stage-chip{top:16px;right:13px}.studio-note{left:14px;top:49px;bottom:auto}.model-controls{left:50%;bottom:11px}.cardio-spatial{padding:48px 0 52px}.spatial-heading{align-items:flex-start;flex-direction:column;gap:13px;margin-bottom:18px}.spatial-heading .section-kicker{margin-bottom:12px}.spatial-heading h2{font-size:43px}.spatial-status{margin:0;padding:8px 11px;font-size:7px}.spatial-shell{grid-template-columns:1fr;border-radius:24px}.organ-viewport{height:58vh;max-height:610px;min-height:440px}.organ-hud-top{top:18px;left:16px;font-size:7px}.organ-hud-right{top:19px;right:15px;font-size:7px}.organ-callout{font-size:6px}.heart-callout{top:49%;left:4%}.lung-callout{display:none}.left-lung-callout{top:32%;left:4%}.right-lung-callout{top:32%;right:4%}.left-lung-callout:after,.right-lung-callout:before,.organ-callout:after,.organ-callout:before{width:17px}.organ-bottom-hud{left:15px;bottom:17px;gap:11px;font-size:6px}.organ-buttons{right:12px;bottom:10px;gap:5px}.spatial-button{min-height:38px;padding:0 10px;font-size:7px}.spatial-console{padding:25px 19px;border-left:0;border-top:1px solid #ffffff16}.spatial-console h3{margin:17px 0 10px;font-size:31px}.motion-readout{margin:17px 0 20px}.tissue-response{margin-top:19px}.explorer{padding:27px 17px;border-radius:22px}.signal-story{margin:22px 0;padding:33px 17px;border-radius:22px}main.page .intelligence{margin:22px 0;padding:33px 17px;border-radius:24px}.closing-note{margin-top:22px;padding:29px 20px;border-radius:22px}.main-nav{overflow:auto;white-space:nowrap;scrollbar-width:none}.main-nav::-webkit-scrollbar{display:none}}
+    @media(max-width:390px){.spatial-heading h2{font-size:38px}.organ-viewport{min-height:410px}.organ-callout span{font-size:6px}.spatial-console{padding:22px 15px}.motion-readout div{padding:12px 10px}.tissue-response-head{font-size:6px}}
+    @media(prefers-reduced-motion:reduce){.spatial-button,.spatial-range{scroll-behavior:auto}}
+  </style>
+
+  <style>
+    /* The anatomy is a first-class panel in the analysis workspace. */
+    .dashboard-main{grid-template-columns:minmax(0,1.04fr) minmax(390px,1.12fr) minmax(0,.84fr);grid-template-areas:"telemetry anatomy inference";align-items:stretch}
+    .telemetry-panel{grid-area:telemetry;min-width:0}
+    .analysis-anatomy{grid-area:anatomy;min-width:0;padding:23px 18px 18px;border-inline:1px solid var(--dashboard-line);scroll-margin-top:86px;background:radial-gradient(ellipse at 50% 31%,color-mix(in srgb,var(--accent) 9%,transparent),transparent 46%)}
+    .anatomy-panel-head{align-items:flex-start;margin-bottom:7px}
+    .anatomy-panel-head h3{font-size:17px}
+    .anatomy-live{display:flex;align-items:center;gap:7px;max-width:47%;color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.08em;text-align:right}
+    .anatomy-live i{width:6px;height:6px;flex:none;border-radius:50%;background:#92cfac;box-shadow:0 0 10px #92cfac75}
+    .anatomy-live b{font-weight:400}
+    .anatomy-intro{margin:0 0 12px;color:var(--dashboard-muted);font-size:9px;line-height:1.6}
+    .organ-viewport{position:relative;height:clamp(345px,37vw,480px);min-height:345px;max-height:480px;overflow:hidden;isolation:isolate;border:1px solid #ffffff12;border-radius:7px;background:radial-gradient(ellipse at 50% 48%,color-mix(in srgb,#bd7884 17%,transparent),transparent 48%),radial-gradient(ellipse at 50% 95%,color-mix(in srgb,var(--accent) 8%,transparent),transparent 48%),#111714;touch-action:none}
+    #organ-canvas{position:absolute;z-index:1;inset:0;width:100%;height:100%;display:block;touch-action:none}
+    .organ-viewport:before{content:"";position:absolute;z-index:0;inset:0;background:linear-gradient(90deg,transparent 49.9%,#ffffff07 50%,transparent 50.1%),linear-gradient(0deg,transparent 49.9%,#ffffff06 50%,transparent 50.1%);background-size:64px 64px;mask-image:radial-gradient(ellipse at center,#000 0%,transparent 74%);pointer-events:none}
+    .organ-orbit{width:min(74%,340px);z-index:0;opacity:.8}.organ-orbit-b{width:min(58%,270px)}
+    .organ-hud{font-size:7px;gap:6px;letter-spacing:.12em}.organ-hud-top{top:13px;left:13px}.organ-hud-right{top:13px;right:13px;font-size:7px}
+    .organ-callout{font-size:7px;gap:6px;letter-spacing:.08em}.organ-callout i{width:6px;height:6px}.organ-callout small{font-size:6px}
+    .heart-callout{top:56%;left:4%}.left-lung-callout{top:28%;left:4%}.right-lung-callout{top:28%;right:4%}
+    .heart-callout:after,.left-lung-callout:after,.right-lung-callout:before{width:clamp(16px,3vw,40px)}
+    .organ-bottom-hud{left:13px;bottom:12px;gap:12px;font-size:6px}
+    .anatomy-console{padding:14px 1px 0}
+    .motion-readout{gap:7px;margin:0 0 14px}
+    .motion-readout div{padding:10px 9px;border-radius:7px;background:#ffffff06}
+    .motion-readout span,.spatial-range-label{font-size:7px}
+    .motion-readout b{margin-top:6px;font-size:18px}
+    .motion-readout small{font-size:7px}
+    .tissue-response{margin-top:14px;padding:11px;border-radius:8px;background:#ffffff06}
+    .tissue-response-head{font-size:7px}.tissue-response p{margin:7px 0 9px;font-size:8px;line-height:1.55}
+    .response-spectrum{height:4px;overflow:hidden;border-radius:3px;background:#ffffff16}
+    .response-spectrum i{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#b7bf74,#d58a76,#b55a65);transition:width .55s ease}
+    .response-source{display:block;margin-top:7px;color:#9eaaa2;font:7px var(--mono);letter-spacing:.08em}
+    .anatomy-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}
+    .anatomy-motion-note{color:var(--dashboard-muted);font:7px/1.5 var(--mono)}
+    .organ-buttons{position:static;display:flex;gap:5px;flex:none}
+    .spatial-button{min-height:34px;padding:0 9px;font-size:7px;border-radius:5px}
+    .anatomy-credit{margin-top:10px;font-size:7px}
+    .inference-panel{grid-area:inference;min-width:0}
+    .model-result-state{width:100%;padding:15px;border:1px solid color-mix(in srgb,var(--danger) 34%,var(--dashboard-line));border-radius:6px;background:radial-gradient(ellipse at 50% 0,color-mix(in srgb,var(--danger) 13%,transparent),transparent 55%),#111714}
+    .model-result-state[hidden]{display:none}
+    .result-eyebrow{color:#d5b27b;font:7px var(--mono);letter-spacing:.1em}
+    .model-result-state h4{margin:10px 0 7px;color:var(--dashboard-text);font-size:19px;line-height:1.15;letter-spacing:-.04em;overflow-wrap:anywhere}
+    .model-result-state p{margin:0;color:var(--dashboard-muted);font-size:9px;line-height:1.65}
+    .result-pattern{display:flex;justify-content:space-between;gap:12px;margin-top:14px;padding-top:11px;border-top:1px solid var(--dashboard-line);color:#b3a18c;font:7px var(--mono);letter-spacing:.08em}
+    .result-pattern b{color:var(--dashboard-text);font-weight:400;text-align:right}
+    .model-result-state .result-caveat{margin-top:13px;padding:9px 10px;border:1px solid #a58c5838;border-radius:4px;background:#a58c580d;font-size:7px}
+    @media(max-width:1180px){.dashboard-main{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);grid-template-areas:"telemetry inference" "anatomy anatomy"}.analysis-anatomy{border-inline:0;border-top:1px solid var(--dashboard-line);padding:22px}.organ-viewport{height:clamp(400px,52vw,560px);max-height:560px}.anatomy-console{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.motion-readout,.anatomy-actions,.anatomy-credit{grid-column:1/-1}.tissue-response{align-self:end}}
+    @media(max-width:760px){.dashboard-main{grid-template-columns:minmax(0,1fr);grid-template-areas:"telemetry" "anatomy" "inference"}.analysis-anatomy{padding:19px 13px;border-inline:0;border-top:1px solid var(--dashboard-line)}.organ-viewport{height:clamp(370px,112vw,520px);min-height:370px;max-height:520px}.organ-hud-top{top:13px;left:12px}.organ-hud-right{top:13px;right:12px}.organ-callout{font-size:6px}.heart-callout{top:57%;left:3%}.left-lung-callout{top:28%;left:3%}.right-lung-callout{top:28%;right:3%}.heart-callout:after,.left-lung-callout:after,.right-lung-callout:before{width:20px}.anatomy-console{display:block;padding-top:13px}.motion-readout{margin-bottom:15px}.tissue-response{margin-top:15px}.anatomy-actions{align-items:flex-start;flex-direction:column}.organ-buttons{align-self:stretch}.organ-buttons .spatial-button{flex:1}.anatomy-live{max-width:50%;font-size:5px}.anatomy-intro{font-size:8px}}
+    @media(max-width:390px){.organ-viewport{height:390px;min-height:390px}.organ-callout{font-size:6px}.organ-callout small{font-size:5px}.organ-bottom-hud{font-size:5px}.anatomy-panel-head h3{font-size:15px}.anatomy-live{font-size:5px}}
+    @media(prefers-reduced-motion:reduce){.organ-viewport,.spatial-range{scroll-behavior:auto}}
+  </style>
 </head>
 <body>
   <main class="page">
     <header class="topbar">
       <a class="wordmark" href="#top" aria-label="PlumoRing AI home"><span class="mark">p</span> PLUMORING <em>AI</em></a>
-      <nav class="main-nav" aria-label="Main navigation"><a href="#ring">The ring</a><a href="#architecture">Architecture</a><a href="#intelligence">Intelligence</a></nav>
-      <div class="top-meta"><span class="live"></span> Wearable health systems&nbsp; / &nbsp;Concept 01</div>
+      <nav class="main-nav" aria-label="Main navigation"><a href="#ring">The ring</a><a href="#body">Body in motion</a><a href="#architecture">Architecture</a><a href="#intelligence">Intelligence</a></nav>
+      <div class="top-meta"><span class="live"></span> Spatial health systems&nbsp; / &nbsp;Concept 01</div>
     </header>
     <span id="top"></span>
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">A NEW KIND OF HEALTH COMPANION&nbsp; / &nbsp;01</p>
-        <h1>Health, held<br><span>closer.</span></h1>
-        <p class="intro">A familiar ring, reimagined as a window into the body. Explore the proposed sensor assembly, then step into the companion intelligence experience being prepared for PlumoRing AI.</p>
-        <div class="hero-actions"><a href="#ring" class="text-link">Explore the ring <span>↘</span></a><a href="#intelligence" class="text-link secondary-link">See the interface <span>↘</span></a></div>
+        <p class="eyebrow">SPATIAL PHYSIOLOGY&nbsp; / &nbsp;01</p>
+        <h1>Signals,<br><span>in motion.</span></h1>
+        <p class="intro">Explore the ring’s proposed sensor system, then follow its readings into a shared 3D heart-and-lung analysis view.</p>
+        <div class="hero-actions"><a href="#ring" class="text-link">Explore the ring <span>↘</span></a><a href="#body" class="text-link secondary-link">Enter body view <span>↘</span></a></div>
         <div class="factline"><div class="fact"><b>04</b><span>Ring sensor systems</span></div><div class="fact"><b>08</b><span>Model input channels</span></div><div class="fact"><b>360°</b><span>Interactive assembly</span></div></div>
       </div>
       <div class="hero-right" id="ring">
@@ -140,7 +268,7 @@
     </section>
     <section class="signal-story" aria-labelledby="signal-title">
       <div class="section-kicker">02&nbsp; / &nbsp;From signal to understanding</div>
-      <div class="signal-head"><h2 id="signal-title">Small signals.<br><span>More context.</span></h2><p>PlumoRing AI is being shaped to bring ring sensor streams and companion inputs together. The interface below is a model-ready preview; its values are illustrative until validated data and the trained model are connected.</p></div>
+      <div class="signal-head"><h2 id="signal-title">Small signals.<br><span>More context.</span></h2><p>All eight input channels feed one analysis workspace. Heart rate and respiration directly drive the anatomy motion; model output from the same input window can add a visual lung response.</p></div>
       <div class="signal-grid">
         <article class="signal-card"><span class="signal-icon ppg-icon">◉</span><span class="signal-tag">01 / OPTICAL PPG</span><h3>Light in.<br>Pulse data out.</h3><p>Red and infrared emitters with a photodiode observe changes in returning light at the finger.</p><span class="signal-foot">HEART RATE · SpO₂ ESTIMATE · RESPIRATION ESTIMATE</span></article>
         <article class="signal-card"><span class="signal-icon motion-icon">⌁</span><span class="signal-tag">02 / MOVEMENT</span><h3>Motion with<br>body context.</h3><p>A 3-axis accelerometer tracks movement and helps identify motion that can affect signal quality.</p><span class="signal-foot">ACCELERATION · ORIENTATION · MOTION ARTIFACT</span></article>
@@ -149,8 +277,8 @@
     </section>
     <section class="intelligence" id="intelligence" aria-labelledby="intelligence-title">
       <div class="intelligence-intro">
-        <div><div class="section-kicker">03&nbsp; / &nbsp;PlumoRing intelligence</div><h2 id="intelligence-title">The model interface,<br><span>ready for its model.</span></h2></div>
-        <p>Designed around the same telemetry controls and analysis panel your teammate is building. During the software-only phase, model channels can be fed by public datasets. These sliders are illustrative UI values; they never generate a disease assessment.</p>
+        <div><div class="section-kicker">03&nbsp; / &nbsp;PlumoRing analysis</div><h2 id="intelligence-title">Signals into context,<br><span>made explorable.</span></h2></div>
+        <p>All eight displayed channels shape a subtle, non-diagnostic lung preview; heart rate and respiration also drive the anatomy motion. A returned model class can add its own visual pattern when the evaluated model is connected.</p>
       </div>
       <div class="dashboard-shell">
         <div class="dashboard-topline"><div class="dash-brand"><span class="dash-mark">✳</span><span>PLUMORING <b>AI</b><small>COMPANION SYSTEM / MODEL WORKSPACE</small></span></div><div class="model-state"><i></i><span>MODEL NOT CONNECTED</span></div></div>
@@ -171,19 +299,60 @@
             <div class="sensor-origin"><span><i class="origin-dot ring-dot"></i>Ring channels · click to locate</span><span><i class="origin-dot context-dot"></i>Optional companion inputs</span><button type="button" class="reset-inputs" id="reset-inputs">Reset demo values</button></div>
             <div class="wave-card"><div class="wave-heading"><span>OPTICAL PULSE TRACE <i>ILLUSTRATIVE</i></span><span id="pulse-rate-label">72 bpm</span></div><svg class="pulse-chart" viewBox="0 0 800 100" preserveAspectRatio="none" role="img" aria-label="Illustrative pulse waveform"><defs><linearGradient id="pulseFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" class="wave-stop"/><stop offset="100%" class="wave-stop-end"/></linearGradient></defs><path class="wave-area" d="M0 58 L25 58 L33 55 L42 60 L52 58 L68 58 L78 52 L84 62 L95 58 L112 58 L124 54 L131 58 L144 58 L153 58 L161 50 L169 67 L180 26 L188 76 L198 54 L208 59 L226 58 L242 58 L253 55 L261 61 L275 58 L291 58 L303 50 L310 62 L321 58 L339 58 L351 53 L359 59 L374 58 L383 49 L391 68 L402 23 L410 77 L420 54 L430 58 L449 58 L465 58 L478 52 L487 61 L501 58 L519 58 L531 50 L538 62 L549 58 L568 58 L581 54 L590 59 L604 58 L613 48 L621 67 L632 24 L640 76 L650 55 L660 58 L681 58 L696 58 L708 52 L717 61 L731 58 L748 58 L761 51 L769 62 L780 58 L800 58 L800 100 L0 100 Z"/><path class="wave-line" d="M0 58 L25 58 L33 55 L42 60 L52 58 L68 58 L78 52 L84 62 L95 58 L112 58 L124 54 L131 58 L144 58 L153 58 L161 50 L169 67 L180 26 L188 76 L198 54 L208 59 L226 58 L242 58 L253 55 L261 61 L275 58 L291 58 L303 50 L310 62 L321 58 L339 58 L351 53 L359 59 L374 58 L383 49 L391 68 L402 23 L410 77 L420 54 L430 58 L449 58 L465 58 L478 52 L487 61 L501 58 L519 58 L531 50 L538 62 L549 58 L568 58 L581 54 L590 59 L604 58 L613 48 L621 67 L632 24 L640 76 L650 55 L660 58 L681 58 L696 58 L708 52 L717 61 L731 58 L748 58 L761 51 L769 62 L780 58 L800 58"/></svg><div class="chart-axis"><span>− 30 SEC</span><span>NOW</span></div></div>
           </section>
+          <section class="analysis-anatomy" id="body" aria-labelledby="body-title">
+            <div class="dash-panel-head anatomy-panel-head">
+              <div><span class="dash-overline">CARDIOPULMONARY MOTION</span><h3 id="body-title">Heart &amp; lungs</h3></div>
+              <span class="anatomy-live"><i></i><b id="organ-load-status">LOADING ANATOMY</b></span>
+            </div>
+            <p class="anatomy-intro">Heart and breath motion follow their input channels. All eight displayed channels shape a restrained preview; only a returned model class adds an infection or airway pattern.</p>
+            <div class="organ-viewport" id="organ-viewport" aria-label="Interactive 3D heart and lungs. Drag to orbit and scroll to zoom.">
+              <canvas id="organ-canvas" aria-label="Three-dimensional heart and lungs with animated heartbeats and breathing"></canvas>
+              <div class="organ-orbit organ-orbit-a"></div><div class="organ-orbit organ-orbit-b"></div>
+              <div class="organ-hud organ-hud-top"><span class="hud-orb"></span><span>PLUMORING&nbsp; / &nbsp;ANATOMY STUDY</span></div>
+              <div class="organ-hud organ-hud-right">01&nbsp; HEART <b>·</b> 02&nbsp; LUNGS</div>
+              <div class="organ-callout heart-callout"><i></i><span>HEART<small>NIH 3D anatomy</small></span></div>
+              <div class="organ-callout left-lung-callout"><i></i><span>LEFT LUNG<small>Visible Human mesh</small></span></div>
+              <div class="organ-callout right-lung-callout"><i></i><span>RIGHT LUNG<small>Visible Human mesh</small></span></div>
+              <div class="organ-bottom-hud"><span>DRAG TO ORBIT</span><span>SCROLL TO ZOOM</span></div>
+            </div>
+            <div class="anatomy-console">
+              <div class="motion-readout">
+                <div><span>HEART PULSE</span><b id="heart-rate-value">72 <small>BPM</small></b></div>
+                <div><span>BREATH CYCLE</span><b id="breath-rate-value">15 <small>/ MIN</small></b></div>
+              </div>
+              <div class="tissue-response">
+                <div class="tissue-response-head"><span>LUNG VISUAL</span><b id="tissue-response-state">INPUT LINK READY</b></div>
+                <p>Live channels shape a visual-only preview. A disease pattern appears only after a model result; color does not indicate severity.</p>
+                <div class="response-spectrum" aria-hidden="true"><i id="visual-response-meter"></i></div>
+                <span class="response-source" id="tissue-response-value">DEMO INPUT PREVIEW · NOT A PREDICTION</span>
+              </div>
+              <div class="anatomy-actions">
+                <span class="anatomy-motion-note">LIVE INPUT LINK&nbsp; · &nbsp;8 CHANNELS</span>
+                <div class="organ-buttons"><button class="spatial-button" id="organ-motion" type="button" aria-pressed="true">Ⅱ&nbsp; PAUSE MOTION</button><button class="spatial-button" id="organ-reset" type="button">RESET VIEW</button></div>
+              </div>
+              <small class="anatomy-credit">Heart: Sourav Pan · lungs: kbrowne · <a href="https://3d.nih.gov/entries/3DPX-022787" target="_blank" rel="noreferrer">NIH 3D heart</a> · <a href="https://3d.nih.gov/entries/3DPX-013408" target="_blank" rel="noreferrer">Visible Human lungs</a> · CC BY 4.0 · materials adapted</small>
+            </div>
+          </section>
           <aside class="inference-panel" aria-labelledby="inference-heading">
-            <div class="dash-panel-head"><div><span class="dash-overline">MODEL OUTPUT</span><h3 id="inference-heading">Diagnostic hypothesis</h3></div><span class="latency-pill">— ms</span></div>
-            <div class="model-empty-state"><div class="empty-orbit"><span></span><i></i><b>AI</b></div><span class="empty-eyebrow">WAITING FOR VALIDATED MODEL FILES</span><h4>No assessment generated</h4><p>This panel is ready to display the response from your teammate’s tested model.</p>
+            <div class="dash-panel-head"><div><span class="dash-overline">MODEL OUTPUT</span><h3 id="inference-heading">Screening result</h3></div><span class="latency-pill">— ms</span></div>
+            <div class="model-empty-state"><div class="empty-orbit"><span></span><i></i><b>AI</b></div><span class="empty-eyebrow">WAITING FOR VALIDATED MODEL FILES</span><h4>No screening result yet</h4><p>This panel is ready for outputs from an evaluated model package.</p>
               <div class="pending-result"><div><span>SCREENING OUTPUT</span><b>Awaiting model response</b></div><span class="pending-pill">PENDING</span></div>
               <div class="pending-alert"><span>SPOT-CHECK NOTICE</span><p>Single snapshots can be noisy. Model-specific guidance and validation details will appear here after integration.</p></div>
               <div class="pending-breakdown"><span>INPUT FLAG BREAKDOWN</span><b>Channel mapping pending</b></div>
             </div>
-            <div class="model-footnote"><span class="lock-icon">⌁</span><span>Demo telemetry only. No diagnosis is generated by this preview.</span></div>
+            <div class="model-result-state" id="model-result-state" hidden aria-live="polite">
+              <span class="result-eyebrow">SCREENING OUTPUT&nbsp; / &nbsp;MODEL LABEL</span>
+              <h4 id="model-result-label"></h4>
+              <p id="model-result-description">An illustrative anatomy cue is mapped from this returned class.</p>
+              <div class="result-pattern"><span>LUNG VISUAL</span><b id="model-result-pattern">Awaiting output</b></div>
+              <p class="result-caveat">Class-linked visual only. It is not a medical image or diagnosis. This model output contains no validated disease-severity score.</p>
+            </div>
+            <div class="model-footnote"><span class="lock-icon">⌁</span><span id="model-footnote-copy">Demo telemetry only. No diagnosis is generated by this preview.</span></div>
           </aside>
         </div>
         <div class="dashboard-footer"><span>MODEL INTEGRATION SLOT&nbsp; / &nbsp;INPUT SCHEMA + WEIGHTS + VALIDATION</span><span>PLUMORING AI&nbsp; · &nbsp;CONCEPT WORKSPACE</span></div>
       </div>
-      <div class="intelligence-note"><span>BUILT FOR COLLABORATION</span><p>When your friend shares the trained and tested files, this panel can be connected to the real model and its verified input and output format.</p></div>
+      <div class="intelligence-note"><span>MODEL INTEGRATION SLOT&nbsp; / &nbsp;INPUT SCHEMA + WEIGHTS + VALIDATION</span><p>Connect an evaluated model package and its input/output schema to activate inference and result visualizations.</p></div>
     </section>
     <section class="closing-note"><div><span class="section-kicker">DESIGNED AROUND THE HUMAN SIGNAL</span><h2>Wearable by nature.<br><em>Intelligent by design.</em></h2></div><a class="back-to-top" href="#top">Back to the top <span>↑</span></a></section>
     <footer class="caveat"><span><strong>PlumoRing AI concept experience</strong> · representative ring architecture</span><span>Illustrative demo data · model and medical validation pending</span><nav class="site-links" aria-label="Project information"><a href="privacy.html">Privacy</a><a href="settings.html">Settings</a></nav></footer>
@@ -192,6 +361,7 @@
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
     const parts=[
       {id:'shell',name:'Outer shell',type:'Titanium · finish study',label:'01',color:'#c3a563',role:'A seamless jewelry-like outer housing shown in polished gold, dark ceramic-inspired or silver-and-enamel finish. This study opens the assembly only for explanation.',data:'No biological readings'},
@@ -347,10 +517,10 @@
     const demoFormat={hr:v=>String(Math.round(v)),spo2:v=>String(Math.round(v)),resp:v=>String(Math.round(v)),wheeze:v=>Number(v).toFixed(1),temp:v=>(v>=0?'+':'')+Number(v).toFixed(1),accel:v=>Number(v).toFixed(2),eda:v=>Number(v).toFixed(2),pm:v=>String(Math.round(v))};
     const telemetryInputs=[...document.querySelectorAll('.telemetry-control input')];
     function updateTelemetry(input){const card=input.closest('.telemetry-control'),key=card.dataset.key,value=Number(input.value),output=card.querySelector('output'),min=Number(input.min),max=Number(input.max),fill=(value-min)/(max-min)*100;output.innerHTML=demoFormat[key](value)+' <small>'+demoUnits[key]+'</small>';input.style.setProperty('--fill',fill+'%');if(key==='hr')document.querySelector('#pulse-rate-label').textContent=Math.round(value)+' bpm'}
-    telemetryInputs.forEach(input=>{updateTelemetry(input);input.addEventListener('input',()=>{document.querySelectorAll('.preset').forEach(button=>button.classList.remove('active'));updateTelemetry(input)})});
+    telemetryInputs.forEach(input=>{updateTelemetry(input);input.addEventListener('input',()=>{document.querySelectorAll('.preset').forEach(button=>button.classList.remove('active'));clearModelOutput();updateTelemetry(input)})});
     document.querySelectorAll('.telemetry-control[data-part-link]').forEach(card=>card.addEventListener('click',event=>{if(event.target.matches('input'))return;selectPart(card.dataset.partLink);document.querySelector('#viewer').scrollIntoView({behavior:prefersReducedMotion?'auto':'smooth',block:'center'})}));
     const demoPresets={rest:demoValues,movement:{hr:108,spo2:97,resp:20,wheeze:.6,temp:.4,accel:.7,eda:.32,pm:18},quality:{hr:72,spo2:97,resp:15,wheeze:.4,temp:.2,accel:1.24,eda:.12,pm:18}};
-    function applyDemo(values){telemetryInputs.forEach(input=>{const key=input.closest('.telemetry-control').dataset.key;input.value=values[key];updateTelemetry(input)})}
+    function applyDemo(values){clearModelOutput();telemetryInputs.forEach(input=>{const key=input.closest('.telemetry-control').dataset.key;input.value=values[key];updateTelemetry(input);if(key==='hr')setHeartRate(values[key]);if(key==='resp')setBreathRate(values[key])});previewFromInputs()}
     document.querySelectorAll('.preset').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.preset').forEach(item=>item.classList.toggle('active',item===button));applyDemo(demoPresets[button.dataset.preset])}));
     document.querySelector('#reset-inputs').addEventListener('click',()=>{document.querySelectorAll('.preset').forEach(item=>item.classList.toggle('active',item.dataset.preset==='rest'));applyDemo(demoValues)});
     const revealTargets=[...document.querySelectorAll('.signal-card,.intelligence-intro,.dashboard-shell,.intelligence-note,.closing-note')];
@@ -359,6 +529,312 @@
     if(!prefersReducedMotion)import('https://esm.sh/animejs').then(({animate:animeAnimate,stagger})=>{animeAnimate(document.querySelectorAll('.hero-copy .eyebrow,.hero-copy h1,.hero-copy .intro,.hero-copy .hero-actions,.hero-copy .factline'),{opacity:[0,1],y:[16,0],delay:stagger(75),duration:720})}).catch(()=>{});
     function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);explode+=(targetExplode-explode)*(1-Math.exp(-5.8*dt));if(Math.abs(targetExplode-explode)<.001){explode=targetExplode;if(playing)playing=false}for(const [id,g] of groups){const raw=THREE.MathUtils.clamp((explode-layerRank[id]*.04)/layerSpan,0,1),layer=raw*raw*(3-2*raw);g.position.y=travel[id]*layer}const pulse=prefersReducedMotion ? .4 : .15+.33*(.5+.5*Math.sin(clock.elapsedTime*2.4));glassRed.emissiveIntensity=pulse;glassIR.emissiveIntensity=.08;if(autoRotate&&!pointerInside&&!selected&&explode<.04)assembly.rotation.y+=dt*.13;controls.update();renderer.render(scene,camera)}
     animate();
+
+    // Real Visible Human lungs and a separately animated anatomical heart.
+    const organCanvas=document.querySelector('#organ-canvas');
+    const organStatus=document.querySelector('#organ-load-status');
+    const organScene=new THREE.Scene();
+    const organCamera=new THREE.PerspectiveCamera(34,1,.1,40);
+    organCamera.position.set(0,-.02,4.75);
+    const organRenderer=new THREE.WebGLRenderer({canvas:organCanvas,antialias:true,alpha:true,powerPreference:'high-performance'});
+    organRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+    organRenderer.outputColorSpace=THREE.SRGBColorSpace;
+    organRenderer.toneMapping=THREE.ACESFilmicToneMapping;
+    organRenderer.toneMappingExposure=.94;
+    organRenderer.setClearColor(0x000000,0);
+    organRenderer.shadowMap.enabled=true;
+    organRenderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+    const organEnvironment=new THREE.PMREMGenerator(organRenderer);
+    organScene.environment=organEnvironment.fromScene(new RoomEnvironment(),.04).texture;
+    organEnvironment.dispose();
+
+    organScene.add(new THREE.HemisphereLight(0xf2e7e2,0x36242a,1.28));
+    const organKey=new THREE.DirectionalLight(0xffe1d7,2.45);
+    organKey.position.set(-2.7,3.4,4.2);
+    organKey.castShadow=true;
+    organScene.add(organKey);
+    const organFill=new THREE.DirectionalLight(0x9bc7d2,1.25);
+    organFill.position.set(3.3,.8,2.7);
+    organScene.add(organFill);
+    const organRim=new THREE.DirectionalLight(0xc97884,1.55);
+    organRim.position.set(-1.4,-2.5,-2.5);
+    organScene.add(organRim);
+
+    const organControls=new OrbitControls(organCamera,organCanvas);
+    organControls.enableDamping=true;
+    organControls.dampingFactor=.065;
+    organControls.enablePan=false;
+    organControls.minDistance=3.05;
+    organControls.maxDistance=7.2;
+    organControls.target.set(0,-.08,0);
+
+    const anatomy=new THREE.Group();
+    organScene.add(anatomy);
+    const lungsGroup=new THREE.Group();
+    anatomy.add(lungsGroup);
+    const heartGroup=new THREE.Group();
+    heartGroup.position.set(0,-.22,.37);
+    anatomy.add(heartGroup);
+
+    const responseUniform={value:0};
+    const infectionUniform={value:0};
+    const airwayUniform={value:0};
+    const inputResponseUniform={value:0};
+    const lungMaterial=new THREE.MeshPhysicalMaterial({
+      color:0xa95661,
+      roughness:.66,
+      metalness:0,
+      clearcoat:.12,
+      clearcoatRoughness:.52,
+      sheen:.18,
+      sheenColor:0xf3aeb0,
+      emissive:0x260b12,
+      emissiveIntensity:.03,
+      side:THREE.DoubleSide
+    });
+    lungMaterial.onBeforeCompile=shader=>{
+      shader.uniforms.uPlumoTissueResponse=responseUniform;
+      shader.uniforms.uPlumoInfection=infectionUniform;
+      shader.uniforms.uPlumoAirway=airwayUniform;
+      shader.uniforms.uPlumoInputResponse=inputResponseUniform;
+      shader.vertexShader=shader.vertexShader
+        .replace('#include <common>','#include <common>\nvarying vec3 vPlumoAnatomyPosition;')
+        .replace('#include <begin_vertex>','#include <begin_vertex>\nvPlumoAnatomyPosition = position;');
+      shader.fragmentShader=shader.fragmentShader
+        .replace('#include <common>','#include <common>\nvarying vec3 vPlumoAnatomyPosition;\nuniform float uPlumoTissueResponse;\nuniform float uPlumoInfection;\nuniform float uPlumoAirway;\nuniform float uPlumoInputResponse;')
+        .replace('#include <color_fragment>',
+          '#include <color_fragment>\n' +
+          'vec3 plumoPoint = vPlumoAnatomyPosition * 0.004;\n' +
+          'float plumoField = sin(plumoPoint.x + sin(plumoPoint.y * 1.31)) * sin(plumoPoint.z * 0.83 + plumoPoint.y);\n' +
+          'float plumoPatch = smoothstep(0.02, 0.68, plumoField);\n' +
+          'float plumoGrain = fract(sin(dot(floor(vPlumoAnatomyPosition * 0.018), vec3(12.9898,78.233,37.719))) * 43758.5453);\n' +
+          'vec3 plumoInfectionTone = vec3(0.48,0.105,0.14) * mix(0.88,1.12,plumoGrain);\n' +
+          'vec3 plumoAirwayTone = vec3(0.48,0.22,0.12);\n' +
+          'float plumoInfectionMask = uPlumoInfection * (0.28 + plumoPatch * 0.68);\n' +
+          'vec3 plumoInputTone = vec3(0.55,0.30,0.26);\n' +
+          'diffuseColor.rgb = mix(diffuseColor.rgb, plumoInputTone, uPlumoInputResponse * 0.24);\n' +
+          'diffuseColor.rgb = mix(diffuseColor.rgb, plumoInfectionTone, uPlumoTissueResponse * plumoInfectionMask);\n' +
+          'diffuseColor.rgb = mix(diffuseColor.rgb, plumoAirwayTone, uPlumoTissueResponse * uPlumoAirway * 0.34);\n' +
+          'diffuseColor.rgb *= 1.0 + (plumoGrain - 0.5) * uPlumoTissueResponse * 0.06;');
+    };
+    lungMaterial.customProgramCacheKey=()=> 'plumoring-lung-response-v3';
+
+    function centerAndScaleModel(root,targetHeight){
+      root.updateMatrixWorld(true);
+      const bounds=new THREE.Box3().setFromObject(root);
+      const size=bounds.getSize(new THREE.Vector3());
+      const center=bounds.getCenter(new THREE.Vector3());
+      const modelScale=targetHeight/Math.max(size.y,.001);
+      root.scale.setScalar(modelScale);
+      root.position.set(-center.x*modelScale,-center.y*modelScale,-center.z*modelScale);
+      root.updateMatrixWorld(true);
+      return {size,center};
+    }
+
+    const organLoader=new GLTFLoader();
+    let lungsLoaded=false,heartLoaded=false,organFailed=false;
+    function updateOrganStatus(){
+      if(organFailed)return;
+      if(lungsLoaded&&heartLoaded)organStatus.textContent='VISIBLE HUMAN ANATOMY · READY';
+      else if(lungsLoaded)organStatus.textContent='LUNG ANATOMY READY · LOADING HEART';
+      else if(heartLoaded)organStatus.textContent='HEART ANATOMY READY · LOADING LUNGS';
+    }
+
+    organLoader.load(new URL('./assets/visible-human-lungs.glb',import.meta.url).href,gltf=>{
+      const lungModel=gltf.scene;
+      lungModel.rotation.set(0,0,0);
+      lungModel.traverse(node=>{
+        if(!node.isMesh)return;
+        node.material=lungMaterial;
+        node.castShadow=true;
+        node.receiveShadow=true;
+        node.geometry.computeBoundingBox();
+      });
+      centerAndScaleModel(lungModel,2.55);
+      lungsGroup.add(lungModel);
+      lungsLoaded=true;
+      updateOrganStatus();
+    },undefined,error=>{
+      organFailed=true;
+      organStatus.textContent='LUNG ANATOMY COULD NOT LOAD';
+      console.error('PlumoRing lung model failed to load',error);
+    });
+
+    organLoader.load(new URL('./assets/anatomical-heart.glb',import.meta.url).href,gltf=>{
+      const heartModel=gltf.scene;
+      heartModel.rotation.set(-.06,.1,-.11);
+      heartModel.traverse(node=>{
+        if(!node.isMesh)return;
+        node.castShadow=true;
+        node.receiveShadow=true;
+        const materials=Array.isArray(node.material)?node.material:[node.material];
+        materials.forEach(material=>{
+          if('roughness' in material)material.roughness=Math.max(.34,material.roughness||0);
+          if('metalness' in material)material.metalness=0;
+          if('side' in material)material.side=THREE.DoubleSide;
+          material.needsUpdate=true;
+        });
+      });
+      centerAndScaleModel(heartModel,1.17);
+      heartModel.scale.x*=1.14;
+      heartGroup.add(heartModel);
+      heartLoaded=true;
+      updateOrganStatus();
+    },undefined,error=>{
+      organFailed=true;
+      organStatus.textContent='HEART ANATOMY COULD NOT LOAD';
+      console.error('PlumoRing heart model failed to load',error);
+    });
+
+    const heartGlow=new THREE.PointLight(0xf28b92,.16,1.65,1.8);
+    heartGlow.position.set(0,.02,.68);
+    heartGroup.add(heartGlow);
+
+    let heartBpm=72,breathsPerMinute=15,organMotion=!prefersReducedMotion;
+    const heartReadout=document.querySelector('#heart-rate-value');
+    const breathReadout=document.querySelector('#breath-rate-value');
+    const tissueValue=document.querySelector('#tissue-response-value');
+    const tissueState=document.querySelector('#tissue-response-state');
+    const motionButton=document.querySelector('#organ-motion');
+
+    function setTissueResponse(value,source='input'){
+      const amount=THREE.MathUtils.clamp(Number(value)||0,0,1);
+      responseUniform.value=amount;
+      tissueValue.textContent=source==='model'?'FIXED CLASS MAPPING':source==='input'?'DEMO INPUT PREVIEW · NOT A PREDICTION':'AWAITING INPUT';
+      tissueState.textContent=source==='model'?'MODEL CLASS · LINKED':source==='input'?'LIVE INPUT PREVIEW':'AWAITING INPUT';
+      document.querySelector('#visual-response-meter').style.width=source==='none'?'0%':Math.round(amount*100)+'%';
+    }
+    const modelResultState=document.querySelector('#model-result-state');
+    const modelEmptyState=document.querySelector('.model-empty-state');
+    let modelConnected=false;
+    const modelInputAliases={hr:['heartRate','hr'],spo2:['oxygenSaturation','spo2'],resp:['respirationRate','resp'],wheeze:['acousticFeature','wheeze'],temp:['skinTemperatureDelta','temperatureDelta','temp'],accel:['acceleration','accel'],eda:['skinConductance','eda'],pm:['ambientParticles','pm25','pm']};
+    function readLiveInputs(){return Object.fromEntries(telemetryInputs.map(input=>[input.closest('.telemetry-control').dataset.key,Number(input.value)]))}
+    function syncModelInputs(inputValues={}){
+      telemetryInputs.forEach(input=>{
+        const key=input.closest('.telemetry-control').dataset.key;
+        const sourceKey=modelInputAliases[key].find(alias=>inputValues[alias]!==undefined&&inputValues[alias]!==null);
+        if(!sourceKey||!Number.isFinite(Number(inputValues[sourceKey])))return;
+        const min=Number(input.min),max=Number(input.max),value=THREE.MathUtils.clamp(Number(inputValues[sourceKey]),min,max);
+        input.value=String(value);
+        updateTelemetry(input);
+      });
+      const values=readLiveInputs();
+      setHeartRate(values.hr);
+      setBreathRate(values.resp);
+      return values;
+    }
+    function previewFromInputs(values=readLiveInputs()){
+      const heartRate=THREE.MathUtils.clamp((values.hr-72)/78,0,1);
+      const spo2=THREE.MathUtils.clamp((100-values.spo2)/15,0,1);
+      const respiration=THREE.MathUtils.clamp((values.resp-15)/21,0,1);
+      const acoustic=THREE.MathUtils.clamp(values.wheeze/10,0,1);
+      const temperature=THREE.MathUtils.clamp((values.temp-.2)/2.3,0,1);
+      const movement=THREE.MathUtils.clamp(values.accel/2,0,1);
+      const conductance=THREE.MathUtils.clamp(values.eda/10,0,1);
+      const ambient=THREE.MathUtils.clamp(values.pm/250,0,1);
+      const inputCue=THREE.MathUtils.clamp(heartRate*.08+spo2*.24+respiration*.18+acoustic*.18+temperature*.14+movement*.07+conductance*.06+ambient*.05,0,1);
+      inputResponseUniform.value=inputCue;
+      setTissueResponse(Math.max(.08,inputCue),'input');
+    }
+    function updateFromModel(result={}){
+      const label=String(result.label||'').trim();
+      if(!label)throw new TypeError('Model output must include a non-empty label.');
+      const inputValues=result.inputValues||result.inputs||{};
+      syncModelInputs(inputValues);
+      const category=String(result.visualPattern||result.category||'').toLowerCase();
+      const normalized=label.toLowerCase();
+      const infection=category==='infection'||/infection|pneumonia/.test(normalized);
+      const airway=category==='airway'||/asthma|bronch|wheez/.test(normalized);
+      infectionUniform.value=infection?1:0;
+      airwayUniform.value=airway?1:0;
+      inputResponseUniform.value=0;
+      setTissueResponse((infection||airway)?0.72:0,'model');
+      document.querySelector('#model-result-label').textContent=label;
+      document.querySelector('#model-result-description').textContent='A fixed visual pattern is mapped from this returned model class. It does not estimate disease severity.';
+      document.querySelector('#model-result-pattern').textContent=infection?'Illustrative infection pattern':airway?'Illustrative airway pattern':'No disease-specific tissue pattern';
+      document.querySelector('#model-footnote-copy').textContent='Model output shown as provided. This visualization is illustrative and is not clinical advice.';
+      modelEmptyState.hidden=true;
+      modelResultState.hidden=false;
+      if(Number.isFinite(Number(result.latencyMs)))document.querySelector('.latency-pill').textContent=Math.round(Number(result.latencyMs))+' ms';
+      modelConnected=true;
+      document.querySelector('.model-state span').textContent='MODEL OUTPUT RECEIVED';
+    }
+    function clearModelOutput(){
+      infectionUniform.value=0;
+      airwayUniform.value=0;
+      inputResponseUniform.value=0;
+      previewFromInputs();
+      modelResultState.hidden=true;
+      modelEmptyState.hidden=false;
+      document.querySelector('#model-footnote-copy').textContent='Demo telemetry only. No diagnosis is generated by this preview.';
+      document.querySelector('.latency-pill').textContent='— ms';
+      document.querySelector('.model-state span').textContent=modelConnected?'MODEL EVALUATION PENDING':'MODEL NOT CONNECTED';
+      updateOrganStatus();
+    }
+    window.PlumoRingVisuals={updateFromModel,clearResponse:clearModelOutput};
+
+    function setHeartRate(value){
+      heartBpm=THREE.MathUtils.clamp(Number(value)||72,45,150);
+      heartReadout.innerHTML=heartBpm+' <small>BPM</small>';
+    }
+    function setBreathRate(value){
+      breathsPerMinute=THREE.MathUtils.clamp(Number(value)||15,8,36);
+      breathReadout.innerHTML=breathsPerMinute+' <small>/ MIN</small>';
+    }
+    document.querySelector('.telemetry-control[data-key="hr"] input').addEventListener('input',e=>setHeartRate(e.currentTarget.value));
+    document.querySelector('.telemetry-control[data-key="resp"] input').addEventListener('input',e=>setBreathRate(e.currentTarget.value));
+    previewFromInputs();
+
+    motionButton.setAttribute('aria-pressed',String(organMotion));
+    if(!organMotion)motionButton.innerHTML='▶&nbsp; RESUME MOTION';
+    motionButton.addEventListener('click',()=>{
+      organMotion=!organMotion;
+      motionButton.setAttribute('aria-pressed',String(organMotion));
+      motionButton.innerHTML=organMotion?'Ⅱ&nbsp; PAUSE MOTION':'▶&nbsp; RESUME MOTION';
+    });
+    document.querySelector('#organ-reset').addEventListener('click',()=>{
+      organCamera.position.set(0,-.02,4.75);
+      organControls.target.set(0,-.08,0);
+      organControls.update();
+    });
+
+    const organResize=new ResizeObserver(()=>{
+      const rect=organCanvas.getBoundingClientRect();
+      if(!rect.width||!rect.height)return;
+      organRenderer.setSize(rect.width,rect.height,false);
+      organCamera.aspect=rect.width/rect.height;
+      organCamera.updateProjectionMatrix();
+    });
+    organResize.observe(document.querySelector('#organ-viewport'));
+
+    const organClock=new THREE.Clock();
+    function animateOrgans(){
+      requestAnimationFrame(animateOrgans);
+      const t=organClock.getElapsedTime();
+      if(organMotion){
+        const heartPhase=(t*heartBpm/60)%1;
+        const systole=Math.exp(-Math.pow((heartPhase-.10)/.055,2));
+        const rebound=.42*Math.exp(-Math.pow((heartPhase-.28)/.05,2));
+        const cardiac=systole+rebound;
+        heartGroup.scale.setScalar(1+.027*cardiac);
+        heartGlow.intensity=.11+.2*cardiac;
+        const breathPhase=t*breathsPerMinute/60*Math.PI*2;
+        const inhale=(1-Math.cos(breathPhase))/2;
+        lungsGroup.scale.set(1+.026*inhale,1+.014*inhale,1+.035*inhale);
+        lungsGroup.position.y=-.012*inhale;
+        heartGroup.position.y=-.22-.012*inhale;
+      }else{
+        heartGroup.scale.setScalar(1);
+        heartGroup.position.y=-.22;
+        heartGlow.intensity=.11;
+        lungsGroup.scale.set(1,1,1);
+        lungsGroup.position.y=0;
+      }
+      organControls.update();
+      organRenderer.render(organScene,organCamera);
+    }
+    animateOrgans();
   </script>
 </body>
 </html>

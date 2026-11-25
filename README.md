@@ -2,7 +2,7 @@
 
 An interactive product landing page and ring-architecture concept, with a model workspace based on the telemetry layout your teammate is developing.
 
-Open `index.html` in a modern browser or serve the `outputs` folder locally. The ring viewer uses Three.js and the page uses Anime.js from public CDNs, so the first load needs an internet connection.
+Open `index.html` in a modern browser or serve the repository folder locally. The ring viewer loads its GLB anatomy locally and uses Three.js and Anime.js from public CDNs, so the first load needs an internet connection.
 
 ## What is on the page
 
@@ -10,7 +10,8 @@ Open `index.html` in a modern browser or serve the `outputs` folder locally. The
 - Ring interaction: drag to orbit, use the wheel while over the ring to open or close the assembly, Shift + wheel or the zoom controls to zoom, and select any part for its role. The explode slider, play button, and E shortcut also control the assembly.
 - A twelve-part representative architecture, including red/infrared optical PPG, a 3-axis accelerometer, NTC temperature, EDA electrodes, flex circuit, optical seal, liner, battery, charging contacts, and optional charging coil.
 - An input-stream dashboard with eight adjustable demo channels that match the companion-system reference: heart rate, oxygen saturation, respiration rate, an acoustic feature, skin-temperature delta, IMU motion, skin conductance, and ambient particles. Presets and reset controls only change illustrative values.
-- A model-output workspace that stays in a waiting state. It does not produce disease predictions from demo data. It is ready to be connected when the trained model, input schema, and validation materials are available.
+- A paired 3D heart-and-lung view inside that same analysis workspace. Heart rate drives the heartbeat animation, respiration drives the breathing cycle, and all eight displayed channels shape a restrained lung preview. The preview is labeled as illustrative and never invents a disease class.
+- A model-output workspace that stays in a waiting state. It does not produce disease predictions from demo data. When the evaluated model is connected, its returned class can drive a fixed infection or airway visual pattern and its input values can be reflected in the same controls and anatomy.
 
 The four ring sensor systems are PPG, motion, skin temperature, and EDA. Acoustic and ambient-particle data are shown as optional companion inputs, not ring hardware. Model channels are representative UI fields; the final schema must come from the model owner.
 
@@ -27,6 +28,31 @@ The frontend does not request or submit personal or health data through its curr
 ## Accuracy boundary
 
 This is a concept viewer, not production CAD. Ring dimensions, materials, battery, charging method, sensor selection, and sensor placement are not confirmed. The optical, thermistor, accelerometer, and EDA geometry use common public examples as proportion references only. The pulse trace and telemetry values are illustrative and do not represent a person or a clinical result.
+
+## Model handoff
+
+The analysis area exposes `window.PlumoRingVisuals.updateFromModel(result)` for the future model integration. The callback accepts the returned class label, the matching window's input values, and optional inference latency. Example:
+
+```js
+window.PlumoRingVisuals.updateFromModel({
+  label: "Possible Chest Infection",
+  inputValues: {
+    heartRate: 98,
+    oxygenSaturation: 93,
+    respirationRate: 24,
+    acousticFeature: 4.2,
+    skinTemperatureDelta: 0.8,
+    acceleration: 0.15,
+    skinConductance: 0.35,
+    ambientParticles: 18
+  },
+  latencyMs: 222
+});
+```
+
+Recognized input aliases are `heartRate`/`hr`, `oxygenSaturation`/`spo2`, `respirationRate`/`resp`, `acousticFeature`/`wheeze`, `skinTemperatureDelta`/`temperatureDelta`/`temp`, `acceleration`/`accel`, `skinConductance`/`eda`, and `ambientParticles`/`pm25`/`pm`. The class label is shown as returned. Labels containing infection or pneumonia receive a restrained illustrative infection pattern; asthma, bronchitis, or wheezing labels receive an airway pattern. Other labels do not get a disease-specific pattern. These fixed class cues are not a severity scale, and classifier confidence must not be presented as severity. The model package, 16 × 8 window construction, class mapping, and clinical validation still need to be supplied by the model owner. `window.PlumoRingVisuals.clearResponse()` clears the class cue and returns to the live input preview.
+
+The anatomy assets are adapted from NIH 3D entries [3DPX-022787](https://3d.nih.gov/entries/3DPX-022787) by Sourav Pan and [3DPX-013408](https://3d.nih.gov/entries/3DPX-013408) by kbrowne. Both source models are credited in the page and released under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## Design references
 
