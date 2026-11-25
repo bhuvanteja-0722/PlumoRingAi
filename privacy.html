@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111411">
+  <meta name="description" content="Privacy information for the PlumoRing AI concept frontend.">
+  <title>Privacy — PlumoRing AI</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="pages.css">
+  <script>try{const t=localStorage.getItem('plumoring-finish');if(['gold','black','doomsday'].includes(t))document.documentElement.dataset.theme=t;const m=localStorage.getItem('plumoring-motion');if(['system','full','reduced'].includes(m))document.documentElement.dataset.motion=m}catch{}</script>
+</head>
+<body>
+  <main class="utility-page">
+    <header class="utility-header">
+      <a class="utility-brand" href="index.html"><span class="utility-mark">p</span> PLUMORING <em>AI</em></a>
+      <nav class="utility-nav" aria-label="Main navigation"><a href="index.html">Ring studio</a><a href="privacy.html" aria-current="page">Privacy</a><a href="settings.html">Settings</a></nav>
+    </header>
+    <section class="utility-content policy-content" aria-labelledby="privacy-title">
+      <p class="eyebrow">PLUMORING AI · PRIVACY</p>
+      <h1 id="privacy-title">Your data stays<br><em>your own.</em></h1>
+      <p class="policy-intro">This is a static concept frontend. The ring sensors and companion dashboard are illustrative; the page does not connect to a real ring or run a health model.</p>
+      <div class="policy-list">
+        <section class="policy-card"><h2>What this demo saves</h2><p>Your selected ring finish and motion preference are saved in this browser’s local storage so the look and motion settings remain selected when you return. They stay in this browser and are not sent to a PlumoRing service by this page. Use <a href="settings.html">Settings</a> to change or reset them.</p></section>
+        <section class="policy-card"><h2>Sensor values and health information</h2><p>Dashboard values, presets, and ring-part selections are sample interface data. This frontend does not ask for your name, account, or health records, and it does not submit those demo values to a model or backend.</p></section>
+        <section class="policy-card"><h2>Analytics and external services</h2><p>The frontend does not include an analytics tracker or account system. It loads typefaces and 3D / animation code from public providers such as Google Fonts, unpkg, and esm.sh. Those providers and the site host may receive standard request metadata when your browser loads a page or asset; their own privacy terms apply.</p></section>
+        <section class="policy-card"><h2>Limits of this notice</h2><p>This notice describes the current prototype frontend only. If the product later adds accounts, device sync, a trained model, or a backend, the data flows and this notice need to be reviewed and updated before those features are used with personal or health data.</p></section>
+      </div>
+      <p class="policy-note">Concept interface · no clinical output · no production health-data workflow is connected.</p>
+    </section>
+    <footer class="utility-footer"><span>PLUMORING AI · PRIVACY INFORMATION</span><nav aria-label="Project information"><a href="index.html">Ring studio</a><a href="settings.html">Settings</a></nav></footer>
+  </main>
+  <script>const theme=document.documentElement.dataset.theme||'gold';document.body.dataset.theme=theme;document.querySelector('meta[name="theme-color"]').content=theme==='gold'?'#111411':theme==='black'?'#090c0d':'#0d1711';</script>
+</body>
+</html>

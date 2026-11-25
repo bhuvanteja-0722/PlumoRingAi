@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111411">
+  <meta name="description" content="Choose the PlumoRing AI finish and motion settings for this browser.">
+  <title>Settings — PlumoRing AI</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="pages.css">
+  <script>try{const t=localStorage.getItem('plumoring-finish');if(['gold','black','doomsday'].includes(t))document.documentElement.dataset.theme=t;const m=localStorage.getItem('plumoring-motion');if(['system','full','reduced'].includes(m))document.documentElement.dataset.motion=m}catch{}</script>
+</head>
+<body>
+  <main class="utility-page">
+    <header class="utility-header">
+      <a class="utility-brand" href="index.html"><span class="utility-mark">p</span> PLUMORING <em>AI</em></a>
+      <nav class="utility-nav" aria-label="Main navigation"><a href="index.html">Ring studio</a><a href="privacy.html">Privacy</a><a href="settings.html" aria-current="page">Settings</a></nav>
+    </header>
+    <section class="utility-content" aria-labelledby="settings-title">
+      <p class="eyebrow">PLUMORING AI · PREFERENCES</p>
+      <h1 id="settings-title">Make it<br><em>feel like yours.</em></h1>
+      <p class="utility-lede">Choose a ring finish and decide how much motion you want in the experience. These preferences are saved in this browser.</p>
+      <div class="settings-layout">
+        <div class="settings-groups">
+          <section class="setting-card" aria-labelledby="finish-title">
+            <div class="setting-heading"><div><h2 id="finish-title">Ring finish</h2><p>Changing the finish also changes the studio, lighting, and page colors.</p></div><span class="setting-state" id="finish-state">GOLD</span></div>
+            <fieldset class="choice-grid" aria-label="Choose a ring finish">
+              <div class="choice"><input id="finish-gold" type="radio" name="finish" value="gold"><label for="finish-gold"><b>Aurelia</b><span><i style="--swatch:#d1ad67"></i> Gold</span></label></div>
+              <div class="choice"><input id="finish-black" type="radio" name="finish" value="black"><label for="finish-black"><b>Nocturne</b><span><i style="--swatch:#bbc6bf"></i> Onyx</span></label></div>
+              <div class="choice"><input id="finish-doomsday" type="radio" name="finish" value="doomsday"><label for="finish-doomsday"><b>Latverian armor</b><span><i style="--swatch:#9ac29a"></i> Doomsday</span></label></div>
+            </fieldset>
+          </section>
+          <section class="setting-card" aria-labelledby="motion-title">
+            <div class="setting-heading"><div><h2 id="motion-title">Motion</h2><p>Reduced motion keeps the viewer usable while limiting decorative movement.</p></div><span class="setting-state" id="motion-state">SYSTEM</span></div>
+            <fieldset class="choice-grid" aria-label="Choose motion preference">
+              <div class="choice motion-choice"><input id="motion-system" type="radio" name="motion" value="system"><label for="motion-system"><b>Use device setting</b><span>System</span></label></div>
+              <div class="choice motion-choice"><input id="motion-full" type="radio" name="motion" value="full"><label for="motion-full"><b>Allow full motion</b><span>Full</span></label></div>
+              <div class="choice motion-choice"><input id="motion-reduced" type="radio" name="motion" value="reduced"><label for="motion-reduced"><b>Limit movement</b><span>Reduced</span></label></div>
+            </fieldset>
+          </section>
+        </div>
+        <aside class="settings-aside">
+          <h2>Stored on this device</h2>
+          <p>Your finish and motion choice are kept in this browser. They are not sent to a PlumoRing account or service by this concept page.</p>
+          <button class="action-button primary" id="reset-settings" type="button">Reset preferences</button>
+          <p class="save-status" id="save-status" role="status" aria-live="polite">Changes save as you choose them.</p>
+          <p>Telemetry sliders and presets remain sample interface values. They are not health readings.</p>
+        </aside>
+      </div>
+    </section>
+    <footer class="utility-footer"><span>PLUMORING AI · BROWSER PREFERENCES</span><nav aria-label="Project information"><a href="index.html">Ring studio</a><a href="privacy.html">Privacy</a></nav></footer>
+  </main>
+  <script>
+    const finishNames={gold:'GOLD',black:'ONYX',doomsday:'DOOMSDAY'};
+    const validFinish=value=>Object.hasOwn(finishNames,value)?value:'gold';
+    const validMotion=value=>['system','full','reduced'].includes(value)?value:'system';
+    function readPreference(key,fallback){try{return localStorage.getItem(key)||fallback}catch{return fallback}}
+    let currentFinish=validFinish(document.documentElement.dataset.theme||readPreference('plumoring-finish','gold'));
+    let currentMotion=validMotion(document.documentElement.dataset.motion||readPreference('plumoring-motion','system'));
+    function updateThemeColor(){document.querySelector('meta[name="theme-color"]').content=currentFinish==='gold'?'#111411':currentFinish==='black'?'#090c0d':'#0d1711'}
+    function savePreference(key,value){try{localStorage.setItem(key,value);return true}catch{return false}}
+    function announce(message){document.querySelector('#save-status').textContent=message}
+    function chooseFinish(value){currentFinish=validFinish(value);document.body.dataset.theme=currentFinish;document.documentElement.dataset.theme=currentFinish;document.querySelector(`#finish-${currentFinish}`).checked=true;document.querySelector('#finish-state').textContent=finishNames[currentFinish];updateThemeColor();announce(savePreference('plumoring-finish',currentFinish)?'Finish saved in this browser.':'This browser could not save the finish preference.')}
+    function chooseMotion(value){currentMotion=validMotion(value);document.documentElement.dataset.motion=currentMotion;document.querySelector(`#motion-${currentMotion}`).checked=true;document.querySelector('#motion-state').textContent=currentMotion.toUpperCase();announce(savePreference('plumoring-motion',currentMotion)?'Motion preference saved in this browser.':'This browser could not save the motion preference.')}
+    document.querySelectorAll('input[name="finish"]').forEach(input=>input.addEventListener('change',()=>chooseFinish(input.value)));
+    document.querySelectorAll('input[name="motion"]').forEach(input=>input.addEventListener('change',()=>chooseMotion(input.value)));
+    document.querySelector('#reset-settings').addEventListener('click',()=>{chooseFinish('gold');chooseMotion('system');announce('Preferences reset to Gold and device motion.')});
+    chooseFinish(currentFinish);chooseMotion(currentMotion);updateThemeColor();
+  </script>
+</body>
+</html>

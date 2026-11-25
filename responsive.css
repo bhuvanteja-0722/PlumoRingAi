@@ -1,0 +1,135 @@
+/* Responsive refinements for the ring studio and companion dashboard. */
+html { -webkit-text-size-adjust: 100%; }
+body { min-width: 320px; }
+img, canvas, svg { max-width: 100%; }
+.page { overflow: clip; }
+.main-nav a, .site-links a { min-height: 40px; display: inline-flex; align-items: center; }
+.site-links { display: flex; align-items: center; gap: 18px; white-space: nowrap; }
+.site-links a { color: var(--muted); text-decoration: none; transition: color .2s ease; }
+.site-links a:hover { color: var(--accent); }
+.stage, .hero-right, .dashboard-shell, .intelligence { min-width: 0; }
+.stage canvas { max-width: none; }
+.model-controls { max-width: calc(100% - 28px); }
+.part { min-width: 0; }
+.part .part-name, .part .part-type { min-width: 0; overflow-wrap: anywhere; }
+.telemetry-control { min-width: 0; }
+.telemetry-control output { white-space: nowrap; }
+
+@media (min-width: 761px) and (max-width: 1050px) {
+  .page { padding-left: clamp(24px, 4vw, 40px); padding-right: clamp(24px, 4vw, 40px); }
+  .topbar { margin-left: calc(clamp(24px, 4vw, 40px) * -1); margin-right: calc(clamp(24px, 4vw, 40px) * -1); padding-left: clamp(24px, 4vw, 40px); padding-right: clamp(24px, 4vw, 40px); }
+  .main-nav { gap: clamp(13px, 2.1vw, 22px); }
+  .hero { grid-template-columns: minmax(210px, .68fr) minmax(0, 1.32fr); gap: clamp(24px, 3.5vw, 42px); }
+  .hero h1 { font-size: clamp(56px, 7vw, 76px); }
+  .stage { height: min(68svh, 720px); min-height: 500px; }
+  .explorer { grid-template-columns: minmax(0, 1.35fr) minmax(240px, .65fr); gap: clamp(24px, 4vw, 44px); }
+  .part { grid-template-columns: 34px 12px minmax(90px, 1fr) minmax(100px, .7fr) 14px; gap: 8px; }
+  .part .part-type { font-size: 7px; }
+  .signal-card { padding: 20px 17px; }
+  .dashboard-main { grid-template-columns: 1fr; }
+  .telemetry-panel { border-right: 0; border-bottom: 1px solid var(--dashboard-line); }
+  .telemetry-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .inference-panel { padding: 24px; }
+}
+
+@media (max-width: 760px) {
+  .page { padding: 12px 16px 18px; }
+  .topbar { margin: 0 -16px; padding: 0 16px; }
+  .main-nav { gap: clamp(8px, 2.5vw, 15px); }
+  .main-nav a { min-height: 44px; }
+  .hero { gap: 24px; padding-top: clamp(32px, 9vw, 52px); }
+  .hero h1 { font-size: clamp(52px, 13vw, 76px); }
+  .hero-actions { flex-wrap: wrap; row-gap: 14px; }
+  .factline { flex-wrap: wrap; }
+  .hero-right-head { width: 100%; flex-direction: column; align-items: stretch; gap: 9px; margin-bottom: 11px; }
+  .stage-meta { font-size: 8px; line-height: 1.6; }
+  .finish-switch { width: 100%; }
+  .finish-switch button { min-height: 42px; padding-inline: 5px; }
+  .stage { height: min(68svh, 640px); min-height: 450px; max-height: 640px; }
+  .stage-title { top: 18px; left: 16px; width: min(58%, 250px); }
+  .stage-title b { font-size: 9px; line-height: 1.5; }
+  .stage-title span { margin-top: 5px; font-size: 8px; line-height: 1.55; }
+  .stage-chip { top: 18px; right: 15px; width: min(31%, 150px); max-width: 150px; font-size: 8px; line-height: 1.6; text-align: right; }
+  .studio-note { top: auto; left: 14px; right: auto; bottom: 62px; width: fit-content; max-width: calc(100% - 28px); padding: 8px 10px; border: 1px solid #ffffff20; border-radius: 4px; background: #111a15d9; font-size: 8px; line-height: 1.5; }
+  .studio-note span { display: none; }
+  .model-controls { left: 50%; width: max-content; max-width: calc(100% - 18px); overflow-x: auto; scrollbar-width: none; }
+  .model-controls::-webkit-scrollbar { display: none; }
+  .ctrl { height: 42px; min-width: 40px; }
+  .ctrl.icon { min-width: 40px; }
+  .ctrl.primary { min-height: 42px; }
+  .progress { width: clamp(42px, 13vw, 74px); }
+  .under-stage { align-items: flex-start; flex-wrap: wrap; }
+  .under-stage > span:first-child { max-width: 100%; }
+  .under-stage > span:last-child { margin-left: auto; }
+  .explorer { gap: 18px; }
+  .part { grid-template-columns: 27px 10px minmax(0, 1fr) 14px; gap: 8px; min-height: 50px; }
+  .part .part-type { display: none; }
+  .part .part-name { font-size: 11px; }
+  .detail { width: 100%; }
+  .signal-grid { grid-template-columns: minmax(0, 1fr); }
+  .signal-card { min-height: 0; }
+  .intelligence { padding-top: 42px; padding-bottom: 34px; }
+  .telemetry-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .telemetry-control { min-height: 76px; }
+  .telemetry-control input { width: calc(100% - 20px); }
+  .input-presets { max-width: 100%; overflow-x: auto; padding: 2px 0 6px; }
+  .preset { flex: 0 0 auto; min-height: 36px; }
+  .inference-panel { min-width: 0; }
+  .empty-specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .closing-note { gap: 20px; }
+  .caveat { align-items: flex-start; }
+  .site-links { gap: 14px; }
+  .site-links a { min-height: 40px; }
+}
+
+@media (max-width: 430px) {
+  .topbar { gap: 8px; }
+  .wordmark { gap: 6px; font-size: 9px; letter-spacing: .1em; white-space: nowrap; }
+  .mark { width: 22px; height: 22px; flex: 0 0 auto; }
+  .main-nav { gap: clamp(6px, 1.9vw, 9px); }
+  .main-nav a { font-size: 8px; white-space: nowrap; }
+  .hero h1 { font-size: clamp(48px, 14vw, 62px); }
+  .factline { gap: 12px 18px; }
+  .fact { min-width: 65px; }
+  .stage { min-height: 430px; height: 62svh; }
+  .stage-title { width: 57%; }
+  .stage-title b { font-size: 8px; }
+  .stage-title span { font-size: 7px; }
+  .stage-chip { top: 18px; right: 12px; width: 31%; max-width: 110px; font-size: 7px; }
+  .studio-note { bottom: 58px; max-width: calc(100% - 24px); padding: 7px 9px; font-size: 7px; }
+  .model-controls { bottom: 10px; gap: 1px; padding: 3px; }
+  .ctrl, .ctrl.icon { height: 38px; min-width: 35px; padding-inline: 5px; }
+  .ctrl.primary { height: 38px; min-height: 38px; padding-inline: 8px; font-size: 7px; }
+  .progress { width: clamp(34px, 11vw, 48px); }
+  .control-divider { margin: 0; }
+  .under-stage { font-size: 6px; }
+  .explorer-head h2 { font-size: 26px; }
+  .telemetry-grid { grid-template-columns: minmax(0, 1fr); }
+  .telemetry-control { min-height: 70px; }
+  .metric-name { font-size: 7px; }
+  .telemetry-control output { font-size: 15px; }
+  .telemetry-control output small { font-size: 8px; }
+  .empty-specs { grid-template-columns: 1fr 1fr; }
+  .dashboard-footer { line-height: 1.6; }
+  .caveat { font-size: 6px; }
+  .site-links { gap: 18px; }
+}
+
+@media (max-width: 360px) {
+  .page { padding-inline: 12px; }
+  .topbar { margin-inline: -12px; padding-inline: 12px; }
+  .wordmark { font-size: 8px; }
+  .main-nav { gap: 6px; }
+  .main-nav a { font-size: 6px; }
+  .model-controls { max-width: calc(100% - 12px); }
+  .ctrl, .ctrl.icon { min-width: 32px; padding-inline: 3px; }
+  .ctrl.primary { padding-inline: 6px; }
+  .progress { width: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) { scroll-behavior: auto !important; }
+  :root:not([data-motion="full"]) *, :root:not([data-motion="full"]) *::before, :root:not([data-motion="full"]) *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+html[data-motion="reduced"] { scroll-behavior: auto !important; }
+html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-motion="reduced"] *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
