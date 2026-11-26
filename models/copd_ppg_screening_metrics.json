@@ -1,0 +1,400 @@
+{
+  "model_version": "plumoring-copd-ppg-lopo-v0.1",
+  "dataset": "Ultra-Short PPG Signal Dataset for COPD Screening, Zenodo 18109876",
+  "source_url": "https://zenodo.org/records/18109876",
+  "task": "Research-only COPD-versus-control classification from PPG segments; cross-sectional diagnosis feasibility, not exacerbation forecasting.",
+  "label_mapping": "Verified against each CSV: P_* files are COPD (1); N_* files are controls (0).",
+  "independent_participants_per_archive": 6,
+  "cohort_per_archive": {
+    "copd": 4,
+    "controls": 2
+  },
+  "window_feature_method": "Scale-normalized waveform shape, derivative, peak, and normalized spectrum summaries; no demographics or auxiliary labels.",
+  "validation": "Leave-one-participant-out; every window from the held-out person stays out of training. The participant score is the median of sampled held-out window scores. Each duration archive is evaluated separately.",
+  "window_sampling": {
+    "strategy": "Deterministic reservoir sampling within each participant file",
+    "maximum_per_person_per_archive": 512,
+    "seed": 20261127,
+    "all_windows_counted": true
+  },
+  "no_skill_average_precision_reference": 0.6667,
+  "duration_variants": {
+    "2s": {
+      "archive": "2s_db.zip",
+      "people": 6,
+      "rows": 245688,
+      "copd_people": 4,
+      "control_people": 2,
+      "sampled_windows_per_person_max": 512,
+      "models": {
+        "regularized_logistic": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.125,
+          "participant_level_accuracy_at_default_threshold": 0.1667,
+          "sensitivity_at_default_threshold": 0.25,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 3,
+            "true_positive": 1
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        },
+        "rbf_support_vector": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.125,
+          "participant_level_accuracy_at_default_threshold": 0.1667,
+          "sensitivity_at_default_threshold": 0.25,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 3,
+            "true_positive": 1
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        },
+        "extra_trees": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.25,
+          "participant_level_accuracy_at_default_threshold": 0.3333,
+          "sensitivity_at_default_threshold": 0.5,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 2,
+            "true_positive": 2
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        }
+      }
+    },
+    "16s": {
+      "archive": "16s_db.zip",
+      "people": 6,
+      "rows": 30708,
+      "copd_people": 4,
+      "control_people": 2,
+      "sampled_windows_per_person_max": 512,
+      "models": {
+        "regularized_logistic": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.125,
+          "participant_level_accuracy_at_default_threshold": 0.1667,
+          "sensitivity_at_default_threshold": 0.25,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 3,
+            "true_positive": 1
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        },
+        "rbf_support_vector": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.125,
+          "participant_level_accuracy_at_default_threshold": 0.1667,
+          "sensitivity_at_default_threshold": 0.25,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 3,
+            "true_positive": 1
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        },
+        "extra_trees": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.25,
+          "participant_level_accuracy_at_default_threshold": 0.3333,
+          "sensitivity_at_default_threshold": 0.5,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 2,
+            "true_positive": 2
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        }
+      }
+    },
+    "32s": {
+      "archive": "32s_db.zip",
+      "people": 6,
+      "rows": 15354,
+      "copd_people": 4,
+      "control_people": 2,
+      "sampled_windows_per_person_max": 512,
+      "models": {
+        "regularized_logistic": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.25,
+          "participant_level_accuracy_at_default_threshold": 0.3333,
+          "sensitivity_at_default_threshold": 0.5,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 2,
+            "true_positive": 2
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        },
+        "rbf_support_vector": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.125,
+          "participant_level_accuracy_at_default_threshold": 0.1667,
+          "sensitivity_at_default_threshold": 0.25,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 3,
+            "true_positive": 1
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        },
+        "extra_trees": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.25,
+          "participant_level_accuracy_at_default_threshold": 0.3333,
+          "sensitivity_at_default_threshold": 0.5,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 2,
+            "true_positive": 2
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        }
+      }
+    },
+    "64s": {
+      "archive": "64s_db.zip",
+      "people": 6,
+      "rows": 7676,
+      "copd_people": 4,
+      "control_people": 2,
+      "sampled_windows_per_person_max": 512,
+      "models": {
+        "regularized_logistic": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.25,
+          "participant_level_accuracy_at_default_threshold": 0.3333,
+          "sensitivity_at_default_threshold": 0.5,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 2,
+            "true_positive": 2
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        },
+        "rbf_support_vector": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.25,
+          "participant_level_accuracy_at_default_threshold": 0.3333,
+          "sensitivity_at_default_threshold": 0.5,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 2,
+            "true_positive": 2
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        },
+        "extra_trees": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.375,
+          "participant_level_accuracy_at_default_threshold": 0.5,
+          "sensitivity_at_default_threshold": 0.75,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 1,
+            "true_positive": 3
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        }
+      }
+    },
+    "128s": {
+      "archive": "128s_db.zip",
+      "people": 6,
+      "rows": 3836,
+      "copd_people": 4,
+      "control_people": 2,
+      "sampled_windows_per_person_max": 512,
+      "models": {
+        "regularized_logistic": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.125,
+          "participant_level_accuracy_at_default_threshold": 0.1667,
+          "sensitivity_at_default_threshold": 0.25,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 3,
+            "true_positive": 1
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        },
+        "rbf_support_vector": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.25,
+          "participant_level_accuracy_at_default_threshold": 0.3333,
+          "sensitivity_at_default_threshold": 0.5,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 2,
+            "true_positive": 2
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        },
+        "extra_trees": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.25,
+          "participant_level_accuracy_at_default_threshold": 0.3333,
+          "sensitivity_at_default_threshold": 0.5,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 2,
+            "true_positive": 2
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        }
+      }
+    },
+    "256s": {
+      "archive": "256s_db.zip",
+      "people": 6,
+      "rows": 1916,
+      "copd_people": 4,
+      "control_people": 2,
+      "sampled_windows_per_person_max": 512,
+      "models": {
+        "regularized_logistic": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.125,
+          "participant_level_accuracy_at_default_threshold": 0.1667,
+          "sensitivity_at_default_threshold": 0.25,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 3,
+            "true_positive": 1
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        },
+        "rbf_support_vector": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.125,
+          "participant_level_accuracy_at_default_threshold": 0.1667,
+          "sensitivity_at_default_threshold": 0.25,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 3,
+            "true_positive": 1
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        },
+        "extra_trees": {
+          "validation": "leave-one-participant-out",
+          "independent_people_tested": 6,
+          "participant_level_roc_auc": 0.0,
+          "participant_level_average_precision": 0.525,
+          "participant_level_balanced_accuracy": 0.25,
+          "participant_level_accuracy_at_default_threshold": 0.3333,
+          "sensitivity_at_default_threshold": 0.5,
+          "specificity_at_default_threshold": 0.0,
+          "confusion_counts": {
+            "true_negative": 0,
+            "false_positive": 2,
+            "false_negative": 2,
+            "true_positive": 2
+          },
+          "score_note": "Median held-out window score per participant; scores are not calibrated probabilities."
+        }
+      }
+    }
+  },
+  "deployment_status": "not_ready",
+  "candidate_meets_exploratory_gate": false,
+  "readiness_reasons": [
+    "Only six identified participants are available in each raw archive (four with COPD and two controls); many windows do not increase the independent cohort size.",
+    "All archives are from the same six people and are not independent external cohorts.",
+    "The experiment uses public PPG signals rather than this proposed ring's calibrated red/infrared and motion pipeline.",
+    "The original study's 14-person engineered-feature file has no participant IDs and its healthy-window count conflicts with the published per-person table, so it is excluded from this grouped evaluation.",
+    "No external validation, calibration study, prospective collection, or clinical review has been completed."
+  ],
+  "inference_enabled": false,
+  "raw_data_included": false
+}

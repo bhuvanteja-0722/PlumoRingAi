@@ -1,0 +1,196 @@
+{
+  "model_version": "plumoring-copd-exacerbation-feasibility-0.1",
+  "dataset": "TOLIFE Clinical Study A Health Indices v2.0",
+  "dataset_doi": "10.5281/zenodo.23263785",
+  "task": "research-only prediction of a clinically recorded moderate/severe COPD exacerbation 1\u20137 days after an observation day, among participants already diagnosed with COPD",
+  "input_channels": [
+    "rf_mean",
+    "rf_std",
+    "mean_HR",
+    "std_RR",
+    "RMSSD",
+    "nRMSSD",
+    "gs_mean",
+    "sl_mean",
+    "smwd_mean",
+    "walked_time",
+    "walked_dist",
+    "SpO2",
+    "hr_mean"
+  ],
+  "lookback_days": 7,
+  "target_days_ahead": 7,
+  "minimum_valid_sensor_families": 2,
+  "split": "5-fold GroupKFold by participant kit; all rows from a participant stay in one fold",
+  "counts": {
+    "participants_with_reading_files": 86,
+    "participants_with_eligible_days": 68,
+    "participants_with_positive_days": 11,
+    "eligible_participant_days": 4344,
+    "positive_participant_days": 79,
+    "positive_prevalence": 0.01818600368324125,
+    "recorded_exacerbation_events": 80,
+    "events_by_severity": {
+      "Moderate": 63,
+      "Severe": 17
+    },
+    "days_by_valid_sensor_family_count": {
+      "2": 1888,
+      "3": 1511,
+      "4": 562,
+      "5": 383
+    }
+  },
+  "models": {
+    "logistic_regression": {
+      "grouped_oof_roc_auc": 0.4258002285307255,
+      "grouped_oof_average_precision": 0.014479914670920179,
+      "folds": [
+        {
+          "fold": 1,
+          "held_out_participants": 14,
+          "positive_days": 30,
+          "days": 869,
+          "roc_auc": 0.500357568533969,
+          "average_precision": 0.03247299150713394
+        },
+        {
+          "fold": 2,
+          "held_out_participants": 14,
+          "positive_days": 32,
+          "days": 870,
+          "roc_auc": 0.4750522076372315,
+          "average_precision": 0.034080449087429056
+        },
+        {
+          "fold": 3,
+          "held_out_participants": 13,
+          "positive_days": 1,
+          "days": 869,
+          "roc_auc": 0.8490783410138248,
+          "average_precision": 0.007575757575757576
+        },
+        {
+          "fold": 4,
+          "held_out_participants": 13,
+          "positive_days": 13,
+          "days": 868,
+          "roc_auc": 0.45200179937022045,
+          "average_precision": 0.013633938025819132
+        },
+        {
+          "fold": 5,
+          "held_out_participants": 14,
+          "positive_days": 3,
+          "days": 868,
+          "roc_auc": 0.4007707129094412,
+          "average_precision": 0.0037084211654682263
+        }
+      ]
+    },
+    "hist_gradient_boosting": {
+      "grouped_oof_roc_auc": 0.35439921646608397,
+      "grouped_oof_average_precision": 0.013112556039787476,
+      "folds": [
+        {
+          "fold": 1,
+          "held_out_participants": 14,
+          "positive_days": 30,
+          "days": 869,
+          "roc_auc": 0.3378426698450536,
+          "average_precision": 0.025173247322625596
+        },
+        {
+          "fold": 2,
+          "held_out_participants": 14,
+          "positive_days": 32,
+          "days": 870,
+          "roc_auc": 0.4430936754176611,
+          "average_precision": 0.03192971633513707
+        },
+        {
+          "fold": 3,
+          "held_out_participants": 13,
+          "positive_days": 1,
+          "days": 869,
+          "roc_auc": 0.4216589861751152,
+          "average_precision": 0.0019880715705765406
+        },
+        {
+          "fold": 4,
+          "held_out_participants": 13,
+          "positive_days": 13,
+          "days": 868,
+          "roc_auc": 0.3366621682411156,
+          "average_precision": 0.013700507526203488
+        },
+        {
+          "fold": 5,
+          "held_out_participants": 14,
+          "positive_days": 3,
+          "days": 868,
+          "roc_auc": 0.5822736030828517,
+          "average_precision": 0.009048380441442152
+        }
+      ]
+    },
+    "random_forest": {
+      "grouped_oof_roc_auc": 0.48738925905590097,
+      "grouped_oof_average_precision": 0.016943291509689765,
+      "folds": [
+        {
+          "fold": 1,
+          "held_out_participants": 14,
+          "positive_days": 30,
+          "days": 869,
+          "roc_auc": 0.40413190305919744,
+          "average_precision": 0.027170615553267004
+        },
+        {
+          "fold": 2,
+          "held_out_participants": 14,
+          "positive_days": 32,
+          "days": 870,
+          "roc_auc": 0.6389096062052506,
+          "average_precision": 0.04858798959490447
+        },
+        {
+          "fold": 3,
+          "held_out_participants": 13,
+          "positive_days": 1,
+          "days": 869,
+          "roc_auc": 0.15668202764976957,
+          "average_precision": 0.001364256480218281
+        },
+        {
+          "fold": 4,
+          "held_out_participants": 13,
+          "positive_days": 13,
+          "days": 868,
+          "roc_auc": 0.23238866396761135,
+          "average_precision": 0.011904112199941842
+        },
+        {
+          "fold": 5,
+          "held_out_participants": 14,
+          "positive_days": 3,
+          "days": 868,
+          "roc_auc": 0.6847784200385356,
+          "average_precision": 0.007931932644832138
+        }
+      ]
+    }
+  },
+  "naive_average_precision_reference": 0.01818600368324125,
+  "candidate_meets_exploratory_gate": false,
+  "deployment_model_exported": false,
+  "deployment_status": "not_ready",
+  "reason": "Grouped participant-held-out results do not exceed the no-skill event-prevalence reference by the prespecified margin and AUC gate. No patient-facing risk score is exported.",
+  "limitations": [
+    "This is a COPD exacerbation forecasting feasibility task among people already known to have COPD; it does not diagnose COPD or identify asthma, pneumonia, infection, or other pulmonary diseases.",
+    "TOLIFE uses smartwatch, mattress, mobility, and spirometer-related sensors, not the proposed finger ring. Results do not validate ring transfer.",
+    "Only HR/HRV, respiratory-rate, movement, and SpO2-like channels are used. FEV1, PEF, estimated CAT/CCQ/mMRC, audio, environmental, demographic, and clinical-visit fields are excluded.",
+    "Daily indices are sparse and the eligible event-positive examples come from few participants. There is no external validation cohort in this evaluation.",
+    "Scores are experimental ranking outputs, not calibrated probabilities, medical alerts, diagnosis, or care advice."
+  ]
+}

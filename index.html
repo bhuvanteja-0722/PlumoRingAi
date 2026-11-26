@@ -14,7 +14,7 @@
       },100),{once:true});
     }
   </script>
-  <meta name="description" content="PlumoRing AI — an interactive exploration of a sensing ring and its upcoming health-model interface.">
+  <meta name="description" content="PlumoRing AI — an interactive sensing-ring concept and pulmonary research workspace.">
   <script>try{const t=localStorage.getItem('plumoring-finish');if(['gold','black','doomsday'].includes(t))document.documentElement.dataset.theme=t;const m=localStorage.getItem('plumoring-motion');if(['system','full','reduced'].includes(m))document.documentElement.dataset.motion=m}catch{}</script>
   <title>PlumoRing AI — Health, within reach</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -187,9 +187,6 @@
     .organ-fallback .vessel{fill:none;stroke:#8f5260;stroke-width:2;stroke-linecap:round;opacity:.56}
     .organ-fallback .fallback-lungs,.organ-fallback .fallback-heart{transition:opacity .55s ease}
     .organ-viewport.has-lungs .fallback-lungs,.organ-viewport.has-heart .fallback-heart{opacity:0}
-    .organ-fallback .input-response{opacity:var(--input-response,0);mix-blend-mode:screen}
-    .organ-fallback .infection-response{opacity:var(--infection-response,0);mix-blend-mode:color-dodge}
-    .organ-fallback .airway-response{opacity:var(--airway-response,0);mix-blend-mode:screen}
     .organ-fallback .fallback-lungs{transform-box:fill-box;transform-origin:center;animation:preview-breathe var(--breath-cycle,4s) ease-in-out infinite}
     .organ-fallback .fallback-heart{transform-box:fill-box;transform-origin:center;animation:preview-pulse var(--heart-cycle,.83s) ease-in-out infinite}
     .organ-viewport.motion-paused .organ-fallback .fallback-lungs,.organ-viewport.motion-paused .organ-fallback .fallback-heart{animation-play-state:paused}
@@ -323,8 +320,9 @@
     .evidence-stats div{display:flex;flex-direction:column;gap:6px;padding:12px 10px;border:1px solid #dae7ef25;border-radius:7px;background:#ffffff08;backdrop-filter:blur(12px)}
     .evidence-stats b{color:#eef2e6;font:500 14px var(--mono);font-variant-numeric:tabular-nums}
     .evidence-stats span{color:#a8b0aa;font:7px/1.45 var(--mono);letter-spacing:.055em}
+    .ppg-metric-note{grid-column:1/-1;margin:-8px 0 0;color:var(--muted);font-size:8px;line-height:1.6}
     .study-foot{margin:13px 3px 0;color:var(--muted)}
-    .study-disclaimer{max-width:820px;margin:13px 0 0;color:var(--muted);font-size:8px;line-height:1.65}
+    .study-disclaimer{max-width:820px;margin:13px 0 0;color:var(--muted);font-size:8px;line-height:1.65}.study-disclaimer a{color:var(--accent);text-underline-offset:3px}
     @media(max-width:1180px){.explorer{grid-template-columns:1fr}.detail{grid-template-columns:minmax(0,1.1fr) minmax(250px,.9fr)}}
     @media(max-width:1050px){.study-section{padding:58px 0 50px}.glass-study-bottom{grid-template-columns:1fr;gap:18px}.evidence-stats{max-width:550px}}
     @media(max-width:760px){
@@ -341,6 +339,21 @@
     }
     @media(max-width:390px){.replay-readings .telemetry-control{padding:9px}.replay-readings .metric-name{font-size:5px}.replay-readings output{font-size:12px}.replay-position{font-size:6px}.glass-shard{min-height:138px}}
     @media(prefers-reduced-motion:reduce){.glass-study,.glass-shard,.risk-track i{transition:none}}
+    /* Keep every ring finish on its intended dark studio canvas. */
+    html,body{background-color:var(--paper)!important;color:var(--ink)}
+    body{background-image:radial-gradient(ellipse at 72% 16%,color-mix(in srgb,var(--stage-glow) 10%,transparent),transparent 40%),radial-gradient(ellipse at 18% 55%,color-mix(in srgb,var(--chart) 6%,transparent),transparent 39%)!important;background-attachment:fixed!important}
+    .pulmonary-signal-list{display:grid;gap:7px;margin:14px 0}
+    .pulmonary-signal-list article{display:grid;grid-template-columns:29px minmax(0,1fr) auto;align-items:center;gap:8px;min-height:56px;padding:8px;border:1px solid var(--dashboard-line);border-radius:6px;background:var(--dashboard-raised)}
+    .pulmonary-signal-icon{display:grid;place-items:center;width:25px;height:25px;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--dashboard-line));border-radius:50%;color:var(--accent);font-size:13px}
+    .pulmonary-signal-list b{display:block;color:var(--dashboard-text);font-size:9px;font-weight:600}
+    .pulmonary-signal-list small{display:block;margin-top:4px;color:var(--dashboard-muted);font:6px/1.45 var(--mono)}
+    .pulmonary-signal-list article>i{color:var(--dashboard-muted);font:6px var(--mono);font-style:normal;letter-spacing:.05em}
+    .pulmonary-cohort-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}
+    .pulmonary-cohort-stats div{display:flex;flex-direction:column;gap:5px;min-height:54px;padding:9px;border:1px solid var(--dashboard-line);border-radius:5px;background:#ffffff05}
+    .pulmonary-cohort-stats b{color:var(--dashboard-text);font:500 13px var(--mono);font-variant-numeric:tabular-nums}
+    .pulmonary-cohort-stats span{color:var(--dashboard-muted);font:5px/1.45 var(--mono);letter-spacing:.04em}
+    .model-result-state{min-height:350px}
+    @media(max-width:760px){.pulmonary-signal-list{gap:6px}.pulmonary-signal-list article{min-height:53px}.model-result-state{min-height:0}.pulmonary-cohort-stats span{font-size:6px}}
   </style>
 </head>
 <body>
@@ -355,9 +368,9 @@
       <div class="hero-copy">
         <p class="eyebrow">SPATIAL PHYSIOLOGY&nbsp; / &nbsp;01</p>
         <h1>Signals,<br><span>in motion.</span></h1>
-        <p class="intro">Explore the ring’s proposed sensor system, then step into a public-data monitoring study with synchronized 3D anatomy.</p>
+        <p class="intro">Explore the ring concept, then review a pulmonary study built from public wearable readings and clinical COPD flare records.</p>
         <div class="hero-actions"><a href="#ring" class="text-link">Explore the ring <span>↘</span></a><a href="#body" class="text-link secondary-link">Enter body view <span>↘</span></a></div>
-        <div class="factline"><div class="fact"><b>04</b><span>Ring sensor systems</span></div><div class="fact"><b>03</b><span>Vitals in risk study</span></div><div class="fact"><b>360°</b><span>Interactive assembly</span></div></div>
+        <div class="factline"><div class="fact"><b>04</b><span>Ring sensor systems</span></div><div class="fact"><b>01</b><span>Pulmonary study target</span></div><div class="fact"><b>360°</b><span>Interactive assembly</span></div></div>
       </div>
       <div class="hero-right" id="ring">
         <div class="hero-right-head">
@@ -407,7 +420,7 @@
     </section>
     <section class="signal-story" aria-labelledby="signal-title">
       <div class="section-kicker">02&nbsp; / &nbsp;A ring, then a research system</div>
-      <div class="signal-head"><h2 id="signal-title">Small signals.<br><span>More context.</span></h2><p>A proposed ring architecture sits above two separate research questions: estimating vital signs from ring signals, and studying early sepsis risk from hospital measurements.</p></div>
+      <div class="signal-head"><h2 id="signal-title">Small signals.<br><span>Pulmonary context.</span></h2><p>The ring is a product concept. The research below studies lung-related worsening in people already diagnosed with COPD, using public wearable-like readings. It does not diagnose a new disease.</p></div>
       <div class="signal-grid">
         <article class="signal-card"><span class="signal-icon ppg-icon">◉</span><span class="signal-tag">01 / OPTICAL PPG</span><h3>Light in.<br>Pulse data out.</h3><p>Red and infrared emitters with a photodiode observe changes in returning light at the finger.</p><span class="signal-foot">HEART RATE · SpO₂ ESTIMATE · RESPIRATION ESTIMATE</span></article>
         <article class="signal-card"><span class="signal-icon motion-icon">⌁</span><span class="signal-tag">02 / MOVEMENT</span><h3>Motion with<br>body context.</h3><p>A 3-axis accelerometer tracks movement and helps identify motion that can affect signal quality.</p><span class="signal-foot">ACCELERATION · ORIENTATION · MOTION ARTIFACT</span></article>
@@ -416,49 +429,35 @@
     </section>
     <section class="intelligence" id="monitoring" aria-labelledby="monitoring-title">
       <div class="intelligence-intro">
-        <div><div class="section-kicker">03&nbsp; / &nbsp;Continuous monitoring study</div><h2 id="monitoring-title">Follow the signal,<br><span>hour by hour.</span></h2></div>
-        <p>Scrub or play a de-identified hospital timeline. The model score, measured vitals, missing-reading cues, and 3D anatomy stay synchronized. This is recorded ICU data—not a live ring stream.</p>
+        <div><div class="section-kicker">03&nbsp; / &nbsp;Longitudinal pulmonary study</div><h2 id="monitoring-title">Follow the signal,<br><span>day by day.</span></h2></div>
+        <p>Review the pulmonary target, the available wearable-like channels, the participant-held-out model comparison, and the synchronized 3D anatomy. The public study is daily and multisensor; it is not a live ring stream.</p>
       </div>
       <div class="dashboard-shell">
-        <div class="dashboard-topline"><div class="dash-brand"><span class="dash-mark">✳</span><span>PLUMORING <b>AI</b><small>PUBLIC-DATA MONITORING REPLAY</small></span></div><div class="model-state"><i></i><span id="replay-model-state">LOADING HELD-OUT REPLAY</span></div></div>
+        <div class="dashboard-topline"><div class="dash-brand"><span class="dash-mark">✳</span><span>PLUMORING <b>AI</b><small>PULMONARY RESEARCH WORKSPACE</small></span></div><div class="model-state"><i></i><span id="pulmonary-model-state">CHECKING MODEL EVIDENCE</span></div></div>
         <div class="dashboard-main">
           <section class="telemetry-panel" aria-labelledby="telemetry-heading">
-            <div class="dash-panel-head"><div><span class="dash-overline">SET B · EXTERNAL HOLDOUT</span><h3 id="telemetry-heading">Continuous timeline</h3></div><span class="demo-badge">RECORDED · HOURLY</span></div>
-            <div class="replay-source" id="replay-source">Loading de-identified public record…</div>
-            <div class="telemetry-grid replay-readings">
-              <div class="telemetry-control"><span class="metric-name">HEART RATE <i>HR</i></span><output id="replay-hr">— <small>bpm</small></output></div>
-              <div class="telemetry-control"><span class="metric-name">OXYGEN SATURATION <i>SpO₂</i></span><output id="replay-spo2">— <small>%</small></output></div>
-              <div class="telemetry-control"><span class="metric-name">RESPIRATION RATE <i>RR</i></span><output id="replay-resp">— <small>br/min</small></output></div>
-              <div class="telemetry-control"><span class="metric-name">READING QUALITY</span><output id="replay-quality">—</output></div>
+            <div class="dash-panel-head"><div><span class="dash-overline">KNOWN-COPD COHORT · 7-DAY LOOKBACK</span><h3 id="telemetry-heading">Pulmonary flare study</h3></div><span class="demo-badge">DAILY · PUBLIC DATA</span></div>
+            <p class="replay-source">Study target: a clinically recorded moderate or severe COPD exacerbation in the next seven days, among people already diagnosed with COPD.</p>
+            <div class="pulmonary-signal-list" aria-label="Included ring-compatible reading families">
+              <article><span class="pulmonary-signal-icon">◉</span><div><b>Pulse + variability</b><small>PPG smartwatch · HR, stdRR, RMSSD</small></div><i>INCLUDED</i></article>
+              <article><span class="pulmonary-signal-icon">≈</span><div><b>Breathing rate</b><small>Night-time mattress sensor · daily index</small></div><i>INCLUDED</i></article>
+              <article><span class="pulmonary-signal-icon">⌁</span><div><b>Movement</b><small>Phone, shoes and watch · daily index</small></div><i>INCLUDED</i></article>
+              <article><span class="pulmonary-signal-icon">◌</span><div><b>Oxygen saturation</b><small>Spot reading · not ring-verified</small></div><i>LIMITED</i></article>
             </div>
-            <div class="wave-card trend-card">
-              <div class="wave-heading"><span>MEASURED VITALS + THREE MODEL SCORES <i>WINDOWED</i></span><span id="replay-hour-label">HOUR —</span></div>
-              <svg class="pulse-chart trend-chart" viewBox="0 0 800 120" preserveAspectRatio="none" role="img" aria-label="Recorded vital signs and model score over time">
-                <path class="trend-grid" d="M0 30H800 M0 60H800 M0 90H800"/>
-                <path class="trend-line trend-hr" id="trend-hr" d=""/>
-                <path class="trend-line trend-spo2" id="trend-spo2" d=""/>
-                <path class="trend-line trend-resp" id="trend-resp" d=""/>
-                <path class="trend-line trend-risk" id="trend-risk" d=""/><path class="trend-line trend-baseline" id="trend-baseline" d=""/><path class="trend-line trend-boosted" id="trend-boosted" d=""/>
-              </svg>
-              <div class="trend-legend"><span><i class="legend-hr"></i>HR</span><span><i class="legend-spo2"></i>SpO₂</span><span><i class="legend-resp"></i>RESP</span><span><i class="legend-risk"></i>TEMPORAL MODEL</span><span><i class="legend-baseline"></i>LOGISTIC</span><span><i class="legend-boosted"></i>BOOSTED TREES</span></div>
-              <div class="chart-axis"><span>START OF REPLAY</span><span id="replay-window-label">— RECORDED HOURS</span></div>
+            <div class="pulmonary-cohort-stats">
+              <div><b id="tolife-participants">86</b><span>MONITORED COPD PARTICIPANTS</span></div>
+              <div><b id="tolife-events">80</b><span>RECORDED FLARE EVENTS</span></div>
+              <div><b id="tolife-eligible">4,344</b><span>ELIGIBLE PARTICIPANT-DAYS</span></div>
+              <div><b id="tolife-positive">11</b><span>PEOPLE WITH POSITIVE DAYS</span></div>
             </div>
-            <div class="replay-transport">
-              <button class="spatial-button" id="replay-toggle" type="button" aria-pressed="false" disabled>▶&nbsp; PLAY REPLAY</button>
-              <button class="spatial-button" id="replay-step-back" type="button" aria-label="Previous recorded hour" disabled>←</button>
-              <button class="spatial-button" id="replay-step-forward" type="button" aria-label="Next recorded hour" disabled>→</button>
-              <span class="replay-position" id="replay-position">0 / 0</span>
-            </div>
-            <input class="replay-range" id="replay-range" type="range" min="0" max="0" value="0" aria-label="Scrub recorded hourly timeline" disabled>
-            <div class="trend-event" id="trend-event" aria-live="polite">Recorded data only · loading timeline</div>
-            <p class="replay-caveat">The challenge label marks a benchmark risk window; it is not a lung-infection label. Trend markers describe changes in this replay and are not medical alerts.</p>
+            <p class="replay-caveat">TOLIFE uses several non-ring devices. These channels resemble possible ring readings, but they do not establish that the proposed ring can measure them reliably.</p>
           </section>
           <section class="analysis-anatomy" id="body" aria-labelledby="body-title">
             <div class="dash-panel-head anatomy-panel-head">
-              <div><span class="dash-overline">CARDIOPULMONARY MOTION</span><h3 id="body-title">Heart &amp; lungs</h3></div>
+              <div><span class="dash-overline">ILLUSTRATIVE ANATOMY · NOT A SCAN</span><h3 id="body-title">Heart &amp; lungs</h3></div>
               <span class="anatomy-live"><i></i><b id="organ-load-status">LOADING ANATOMY</b></span>
             </div>
-            <p class="anatomy-intro">Heart rhythm follows the recorded pulse rate; both lungs breathe with the recorded respiration rate. Oxygen and breathing values drive a restrained surface tint for visual exploration only.</p>
+            <p class="anatomy-intro">Both organs remain interactive and animated. Motion uses clearly labeled illustrative defaults; no patient readings or disease output currently drive this model.</p>
             <div class="organ-viewport" id="organ-viewport" aria-label="Interactive 3D heart and lungs. Drag to orbit and scroll to zoom.">
               <svg class="organ-fallback" id="organ-fallback" viewBox="0 0 720 600" role="img" aria-label="Illustrated preview of both lungs, branching airways, and heart" preserveAspectRatio="xMidYMid meet">
                 <defs>
@@ -495,9 +494,6 @@
                     <path class="bronchus-detail" style="stroke-width:1.3" d="M326 282 L298 260 M326 282 L318 311 M394 284 L423 258 M394 284 L404 315 M301 260 L281 247 M316 310 L307 333 M420 261 L442 248 M404 313 L414 338"/>
                     <path fill="none" stroke="#d2c3b5" stroke-opacity=".52" stroke-width="3" d="M354 94h12 M354 108h12 M354 122h12 M354 136h12 M354 150h12 M354 164h12 M354 178h12 M354 192h12"/>
                   </g>
-                  <g class="input-response" fill="#e4aa52"><path d="M213 257c20-21 42-18 53 0-11 18-33 25-53 0Z M462 363c16-19 36-15 45 1-9 16-29 22-45-1Z M244 424c15-18 33-14 42 1-9 15-27 20-42-1Z"/></g>
-                  <g class="infection-response" fill="#a91f39"><path d="M203 322c21-28 49-26 60-2-8 25-32 37-60 2Z M458 291c19-22 43-18 51 2-10 21-30 28-51-2Z M273 400c16-21 37-19 46 0-7 20-27 28-46 0Z"/></g>
-                  <g class="airway-response" fill="none" stroke="#e5a045" stroke-width="8" stroke-linecap="round"><path d="M302 264 281 247 M316 309 307 333 M423 258 442 248 M404 313 414 338"/></g>
                 </g>
                 <g class="fallback-heart">
                   <path fill="url(#arteryBlue)" stroke="#bddce0" stroke-opacity=".35" stroke-width="2" d="M337 306 C320 275 323 247 337 232 C352 217 371 222 376 241 C379 213 401 204 417 218 C435 235 426 264 410 288 L387 319Z"/>
@@ -516,79 +512,80 @@
               <div class="organ-callout heart-callout"><i></i><span>HEART<small>NIH 3D anatomy</small></span></div>
               <div class="organ-callout left-lung-callout"><i></i><span>LEFT LUNG<small>Visible Human mesh</small></span></div>
               <div class="organ-callout right-lung-callout"><i></i><span>RIGHT LUNG<small>Visible Human mesh</small></span></div>
-              <div class="organ-response-hud" id="tissue-response-value" aria-live="polite">SURFACE RESPONSE · VISUAL ONLY</div>
+              <div class="organ-response-hud" id="tissue-response-value" aria-live="polite">NO DISEASE RESULT · ANATOMY ONLY</div>
               <div class="organ-bottom-hud"><span>DRAG TO ORBIT</span><span>SCROLL TO ZOOM</span></div>
             </div>
             <div class="anatomy-console">
               <div class="motion-readout">
-                <div><span>HEART PULSE</span><b id="heart-rate-value">72 <small>BPM</small></b></div>
-                <div><span>BREATH CYCLE</span><b id="breath-rate-value">15 <small>/ MIN</small></b></div>
+                <div><span>ILLUSTRATIVE PULSE</span><b id="heart-rate-value">72 <small>BPM</small></b></div>
+                <div><span>ILLUSTRATIVE BREATH RATE</span><b id="breath-rate-value">15 <small>/ MIN</small></b></div>
               </div>
               <div class="anatomy-actions">
-                <span class="anatomy-motion-note">RECORDED VITALS&nbsp; · &nbsp;VISUAL STUDY ONLY</span>
+                <span class="anatomy-motion-note">DEFAULT MOTION&nbsp; · &nbsp;NO PATIENT DATA</span>
                 <div class="organ-buttons"><button class="spatial-button" id="organ-motion" type="button" aria-pressed="true">Ⅱ&nbsp; PAUSE MOTION</button><button class="spatial-button" id="organ-reset" type="button">RESET VIEW</button></div>
               </div>
               <small class="anatomy-credit">Heart: Sourav Pan · lungs: kbrowne · <a href="https://3d.nih.gov/entries/3DPX-022787" target="_blank" rel="noreferrer">NIH 3D heart</a> · <a href="https://3d.nih.gov/entries/3DPX-013408" target="_blank" rel="noreferrer">Visible Human lungs</a> · CC BY 4.0 · materials adapted</small>
             </div>
           </section>
           <aside class="inference-panel" aria-labelledby="inference-heading">
-            <div class="dash-panel-head"><div><span class="dash-overline">EXPERIMENTAL DEEP-LEARNING OUTPUT</span><h3 id="inference-heading">Sepsis research score</h3></div><span class="latency-pill" id="model-window-label">16 HOURS</span></div>
-            <div class="risk-card" aria-live="polite">
-              <div class="risk-orbit"><span></span><b id="risk-score">—</b><small>RELATIVE SCORE</small></div>
-              <span class="empty-eyebrow" id="risk-state">WAITING FOR REPLAY</span>
-              <h4 id="risk-title">A research signal</h4>
-              <p id="risk-description">This experimental model was trained on hospital vital signs. It has not been validated with a smart ring.</p>
-              <div class="risk-track"><i id="risk-track-fill"></i></div>
-              <div class="risk-details"><span>BENCHMARK WINDOW</span><b id="benchmark-state">—</b></div>
-              <div class="risk-details"><span>INPUT COVERAGE</span><b id="coverage-state">—</b></div>
-              <p class="result-caveat">Not a diagnosis, clinical probability, infection classification, or care recommendation. This score does not change lung tissue appearance.</p>
+            <div class="dash-panel-head"><div><span class="dash-overline">GROUPED PARTICIPANT-HELD-OUT EVALUATION</span><h3 id="inference-heading">Model readiness</h3></div><span class="latency-pill" id="model-window-label">5 FOLDS</span></div>
+            <div class="model-result-state" aria-live="polite">
+              <span class="result-eyebrow" id="pulmonary-eval-state">RESEARCH MODEL · NOT READY</span>
+              <h4>No dependable flare signal yet.</h4>
+              <p>The tested models did not outperform the no-skill reference on people held out from training. PlumoRing AI therefore returns no disease or risk result.</p>
+              <div class="result-pattern"><span>STUDY OUTCOME</span><b>COPD exacerbation · known COPD</b></div>
+              <div class="result-pattern"><span>BEST CANDIDATE</span><b id="best-model-name">Random forest</b></div>
+              <div class="result-pattern"><span>BEST ROC-AUC</span><b id="best-model-auc">0.487</b></div>
+              <div class="result-pattern"><span>BEST AVG PRECISION</span><b id="best-model-ap">0.017</b></div>
+              <div class="result-pattern"><span>NO-SKILL REFERENCE</span><b id="no-skill-ap">0.018</b></div>
+              <p class="result-caveat">This is not a COPD diagnosis, pneumonia/asthma detector, calibrated probability, medical alert, or care advice. No color or texture represents disease severity.</p>
             </div>
-            <details class="clinical-inputs"><summary>HOSPITAL MODEL INPUTS · CURRENT HOUR</summary><div class="clinical-input-grid" id="clinical-input-grid"><span>Waiting for replay</span></div></details>
-            <div class="model-footnote"><span class="lock-icon">⌁</span><span>Research replay only · hourly ICU data · ring transfer not evaluated</span></div>
+            <div class="model-footnote"><span class="lock-icon">⌁</span><span>No inference endpoint or patient-facing score is enabled.</span></div>
           </aside>
         </div>
-        <div class="dashboard-footer"><span>PUBLIC DATA REPLAY&nbsp; / &nbsp;NO LIVE SENSOR STREAM</span><span>PLUMORING AI&nbsp; · &nbsp;RESEARCH PROTOTYPE</span></div>
+        <div class="dashboard-footer"><span>PUBLIC DAILY INDICES&nbsp; / &nbsp;NO LIVE RING STREAM</span><span>PLUMORING AI&nbsp; · &nbsp;RESEARCH PROTOTYPE</span></div>
       </div>
-      <div class="intelligence-note"><span>CONTINUOUS MONITORING STUDY</span><p>Press play to follow the recorded timeline. The 3D heart and lungs respond to HR, respiration, and SpO₂. The sepsis research score remains a separate, non-diagnostic output.</p></div>
+      <div class="intelligence-note"><span>PULMONARY-ONLY SCOPE</span><p>The strongest public wearable-like pulmonary outcome located is COPD exacerbation among people already diagnosed with COPD. Its readings are sparse daily summaries, and the held-out comparison failed; there is no validated ring-based disease detector.</p></div>
     </section>
     <section class="study-section" id="deep-learning" aria-labelledby="study-title">
       <div class="study-intro">
-        <div><div class="section-kicker">04&nbsp; / &nbsp;Deep learning, separated by evidence</div><h2 id="study-title">Four datasets.<br><span>Separate questions.</span></h2></div>
-        <p>Ring physiology, waveform breathing, hospital sepsis risk, and respiratory audio each need the dataset and model that match the signal. Their labels stay in separate research tracks.</p>
+        <div><div class="section-kicker">04&nbsp; / &nbsp;Pulmonary models, separated by evidence</div><h2 id="study-title">Use lung labels.<br><span>Respect signal limits.</span></h2></div>
+        <p>Only pulmonary outcomes belong in this project. A disease label must be paired with the same readings at the same time scale; unmatched hospital diagnoses, lung sounds, and derived symptom scores cannot fill that gap.</p>
       </div>
       <div class="glass-study" id="glass-study">
-        <div class="glass-study-top"><span>PLUMORING AI&nbsp; / &nbsp;RESEARCH INDEX</span><span id="glass-study-active">01&nbsp; RING SENSING</span></div>
-        <div class="glass-shards" aria-label="Choose a research track">
-          <button class="glass-shard active" type="button" data-study="ring">
-            <span>01&nbsp; / &nbsp;RING PHYSIOLOGY</span><strong>PPG<br>+ motion</strong><i>54 people · public ring recordings</i><b>↗</b>
+        <div class="glass-study-top"><span>PLUMORING AI&nbsp; / &nbsp;PULMONARY EVIDENCE</span><span id="glass-study-active">01&nbsp; COPD FLARE FORECAST</span></div>
+        <div class="glass-shards" aria-label="Choose a pulmonary research track">
+          <button class="glass-shard active" type="button" data-study="copd">
+            <span>01&nbsp; / &nbsp;COPD EXACERBATION</span><strong>Known COPD<br>flare study</strong><i>86 people · clinical event labels</i><b>↗</b>
           </button>
-          <button class="glass-shard" type="button" data-study="bidmc">
-            <span>02&nbsp; / &nbsp;PPG + RESPIRATION</span><strong>Breaths<br>from pulse</strong><i>53 annotated ICU waveforms</i><b>↗</b>
+          <button class="glass-shard" type="button" data-study="ppg">
+            <span>02&nbsp; / &nbsp;COPD + PPG</span><strong>Diagnosed COPD<br>vs controls</strong><i>4 COPD · 2 controls · 6 people</i><b>↗</b>
           </button>
-          <button class="glass-shard" type="button" data-study="sepsis">
-            <span>03&nbsp; / &nbsp;HOSPITAL SEQUENCE</span><strong>16 hours<br>of vitals</strong><i>40,336 ICU records · public challenge</i><b>↗</b>
+          <button class="glass-shard" type="button" data-study="ring">
+            <span>03&nbsp; / &nbsp;TRUE RING DATA</span><strong>PPG<br>+ motion</strong><i>54 people · no disease labels</i><b>↗</b>
           </button>
-          <button class="glass-shard" type="button" data-study="sounds">
-            <span>04&nbsp; / &nbsp;RESPIRATORY AUDIO</span><strong>Wheeze<br>+ crackle</strong><i>920 recordings · separate task</i><b>↗</b>
+          <button class="glass-shard" type="button" data-study="gap">
+            <span>04&nbsp; / &nbsp;DISEASE COVERAGE</span><strong>No asthma<br>or pneumonia</strong><i>No matched ring-reading cohort found</i><b>↗</b>
           </button>
         </div>
         <div class="glass-study-bottom">
           <div class="study-detail">
-            <span class="dash-overline" id="study-detail-kicker">RING ESTIMATION · NO DISEASE LABELS</span>
-            <h3 id="study-detail-title">Estimate measurements from ring signals.</h3>
-            <p id="study-detail-copy">HealthRing pairs red/infrared PPG and 3-axis motion with reference heart rate, respiration rate, and oxygen saturation. This track has no disease diagnosis labels; it cannot train the infection model.</p>
+            <span class="dash-overline" id="study-detail-kicker">TOLIFE V2.0 · 5-FOLD PARTICIPANT SPLIT</span>
+            <h3 id="study-detail-title">Forecast a COPD flare only in known COPD.</h3>
+            <p id="study-detail-copy">TOLIFE contains daily indices and clinically recorded moderate/severe COPD exacerbations. We tested seven-day HR/HRV, breathing, movement and SpO₂-like inputs; participant-held-out scores did not beat the no-skill reference. No model is deployed.</p>
           </div>
           <div class="evidence-stats">
-            <div><b id="metric-roc">—</b><span>TEMPORAL ROC-AUC · SET B</span></div>
-            <div><b id="metric-logistic">—</b><span>LOGISTIC ROC-AUC · SET B</span></div>
-            <div><b id="metric-boosted">—</b><span>BOOSTED ROC-AUC · SET B</span></div>
-            <div><b id="metric-ap">—</b><span id="metric-ap-label">SELECTED MODEL AP · SET B</span></div>
+            <div><b id="metric-roc">0.487</b><span id="metric-roc-label">RANDOM FOREST · GROUPED ROC-AUC</span></div>
+            <div><b id="metric-logistic">0.426</b><span id="metric-logistic-label">LOGISTIC · GROUPED ROC-AUC</span></div>
+            <div><b id="metric-boosted">0.354</b><span id="metric-boosted-label">BOOSTED TREES · GROUPED ROC-AUC</span></div>
+            <div><b id="metric-ap">0.017</b><span id="metric-ap-label">BEST AVERAGE PRECISION · BASE 0.018</span></div>
           </div>
+          <p class="ppg-metric-note" id="ppg-metric-note" hidden></p>
         </div>
         <div class="glass-cursor-glow" aria-hidden="true"></div>
       </div>
-      <div class="study-foot"><span>MODEL: TEMPORAL CONVOLUTION · SE GATE · BiGRU · SELF-ATTENTION</span><span id="study-model-version">WAITING FOR TRAINING REPORT</span></div>
-      <p class="study-disclaimer">HealthRing is a separate ring-sensing dataset. The sepsis model uses hospital HR, SpO₂ and respiration values; it is not a smart-ring disease model and does not detect pneumonia or other lung infections.</p>
+      <div class="study-foot"><span>FEASIBILITY BASELINES · NO DEEP MODEL DEPLOYED</span><span id="study-model-version">TOLIFE V2.0 · 5-FOLD GROUPED EVALUATION</span></div>
+      <p class="study-disclaimer">No pulmonary disease diagnosis is supported. COPD exacerbation forecasting differs from COPD diagnosis. The separate COPD PPG study has six people (four COPD, two controls) and is not ring validation. HealthRing provides ring PPG/IMU but no disease labels; TOLIFE provides COPD event labels from non-ring devices. Sources: <a href="https://zenodo.org/records/23263785" target="_blank" rel="noreferrer">TOLIFE v2.0</a> · <a href="https://www.nature.com/articles/s41597-026-07289-x" target="_blank" rel="noreferrer">HealthRing</a> · <a href="https://zenodo.org/records/18109876" target="_blank" rel="noreferrer">COPD PPG data</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10280226/" target="_blank" rel="noreferrer">Original 14-person PPG study</a>.</p>
     </section>
     <section class="closing-note"><div><span class="section-kicker">DESIGNED AROUND THE HUMAN SIGNAL</span><h2>Wearable by nature.<br><em>Intelligent by design.</em></h2></div><a class="back-to-top" href="#top">Back to the top <span>↑</span></a></section>
     <footer class="caveat"><span><strong>PlumoRing AI</strong> · concept ring + software research</span><span>Recorded public data · no live sensor · no clinical use</span><nav class="site-links" aria-label="Project information"><a href="privacy.html">Privacy</a><a href="settings.html">Settings</a></nav></footer>
@@ -826,9 +823,6 @@
     heartGroup.position.set(0,-.22,.37);
     anatomy.add(heartGroup);
 
-    const responseUniform={value:0};
-    const infectionUniform={value:0};
-    const airwayUniform={value:0};
     const lungMaterial=new THREE.MeshPhysicalMaterial({
       color:0xa95661,
       roughness:.66,
@@ -842,34 +836,17 @@
       side:THREE.DoubleSide
     });
     lungMaterial.onBeforeCompile=shader=>{
-      shader.uniforms.uPlumoTissueResponse=responseUniform;
-      shader.uniforms.uPlumoInfection=infectionUniform;
-      shader.uniforms.uPlumoAirway=airwayUniform;
       shader.vertexShader=shader.vertexShader
         .replace('#include <common>','#include <common>\nvarying vec3 vPlumoAnatomyPosition;')
         .replace('#include <begin_vertex>','#include <begin_vertex>\nvPlumoAnatomyPosition = position;');
       shader.fragmentShader=shader.fragmentShader
-        .replace('#include <common>','#include <common>\nvarying vec3 vPlumoAnatomyPosition;\nuniform float uPlumoTissueResponse;\nuniform float uPlumoInfection;\nuniform float uPlumoAirway;')
+        .replace('#include <common>','#include <common>\nvarying vec3 vPlumoAnatomyPosition;')
         .replace('#include <color_fragment>',
           '#include <color_fragment>\n' +
-          'vec3 plumoPoint = vPlumoAnatomyPosition * 0.004;\n' +
-          'float plumoBroad = sin(plumoPoint.x * 2.3 + sin(plumoPoint.y * 2.1)) * sin(plumoPoint.z * 1.9 + plumoPoint.y * 1.4);\n' +
-          'float plumoFine = sin(plumoPoint.x * 5.2 + plumoPoint.z * 2.7) * cos(plumoPoint.y * 4.8 - plumoPoint.z * 1.8);\n' +
-          'float plumoField = plumoBroad * 0.72 + plumoFine * 0.28;\n' +
-          'float plumoPatch = smoothstep(-0.2, 0.58, plumoField);\n' +
           'float plumoGrain = fract(sin(dot(floor(vPlumoAnatomyPosition * 0.018), vec3(12.9898,78.233,37.719))) * 43758.5453);\n' +
-          'vec3 plumoInfectionTone = vec3(0.48,0.105,0.14) * mix(0.88,1.12,plumoGrain);\n' +
-          'vec3 plumoAirwayTone = vec3(0.48,0.22,0.12);\n' +
-          'float plumoInfectionMask = uPlumoInfection * (0.22 + plumoPatch * 0.72);\n' +
-          'float plumoAirwayMask = uPlumoAirway * (0.12 + plumoPatch * 0.5);\n' +
-          'vec3 plumoInputTone = mix(vec3(0.56,0.43,0.2), vec3(0.64,0.1,0.16), uPlumoTissueResponse);\n' +
-          'float plumoInputMask = plumoPatch * uPlumoTissueResponse * 0.88;\n' +
-          'diffuseColor.rgb = mix(diffuseColor.rgb, plumoInputTone, plumoInputMask);\n' +
-          'diffuseColor.rgb = mix(diffuseColor.rgb, plumoInfectionTone, uPlumoTissueResponse * plumoInfectionMask);\n' +
-          'diffuseColor.rgb = mix(diffuseColor.rgb, plumoAirwayTone, uPlumoTissueResponse * plumoAirwayMask);\n' +
-          'diffuseColor.rgb *= 1.0 + (plumoGrain - 0.5) * uPlumoTissueResponse * 0.06;');
+          'diffuseColor.rgb *= 1.0 + (plumoGrain - 0.5) * 0.035;');
     };
-    lungMaterial.customProgramCacheKey=()=> 'plumoring-lung-response-v4';
+    lungMaterial.customProgramCacheKey=()=> 'plumoring-lung-surface-v5';
 
     function centerAndScaleModel(root,targetHeight){
       root.updateMatrixWorld(true);
@@ -970,173 +947,110 @@
     const motionButton=document.querySelector('#organ-motion');
 
     const modelApiBase=location.protocol==='file:'?'http://127.0.0.1:5000':location.origin;
-    const replayEls={
-      source:document.querySelector('#replay-source'),state:document.querySelector('#replay-model-state'),
-      hr:document.querySelector('#replay-hr'),spo2:document.querySelector('#replay-spo2'),resp:document.querySelector('#replay-resp'),quality:document.querySelector('#replay-quality'),
-      hour:document.querySelector('#replay-hour-label'),window:document.querySelector('#replay-window-label'),position:document.querySelector('#replay-position'),
-      range:document.querySelector('#replay-range'),toggle:document.querySelector('#replay-toggle'),back:document.querySelector('#replay-step-back'),forward:document.querySelector('#replay-step-forward'),
-      score:document.querySelector('#risk-score'),riskState:document.querySelector('#risk-state'),riskTitle:document.querySelector('#risk-title'),riskDescription:document.querySelector('#risk-description'),riskFill:document.querySelector('#risk-track-fill'),
-      benchmark:document.querySelector('#benchmark-state'),coverage:document.querySelector('#coverage-state'),event:document.querySelector('#trend-event')
-    };
-    let replayRows=[],replayIndex=0,replayTimer=null,replayLoaded=false,replaySelectedModel='selected research model';
-    const asNumber=value=>value===null||value===undefined||value===''||!Number.isFinite(Number(value))?null:Number(value);
-    const displayValue=(value,digits=0)=>asNumber(value)===null?'—':asNumber(value).toFixed(digits);
-    function setReading(element,value,unit,digits=0){
-      const shown=displayValue(value,digits);element.replaceChildren(document.createTextNode(shown+' '));
-      const small=document.createElement('small');small.textContent=unit;element.append(small);
-    }
-    function setTissueResponse(value){
-      const amount=THREE.MathUtils.clamp(Number(value)||0,0,1);
-      responseUniform.value=amount;
-      infectionUniform.value=0;airwayUniform.value=0;
-      organViewport.style.setProperty('--input-response',amount.toFixed(3));
-      organViewport.style.setProperty('--infection-response','0');
-      organViewport.style.setProperty('--airway-response','0');
-      tissueValue.textContent='LUNG SURFACE · PHYSIOLOGY INPUT PREVIEW';
-    }
-    function driveAnatomyFromReadings(row,index){
-      const keys=['hr','spo2','resp'];
-      const current=Object.fromEntries(keys.map(key=>[key,row[key]]));
-      const history=replayRows.slice(Math.max(0,index-15),index+1);
-      const lastKnown=key=>{for(let i=history.length-1;i>=0;i--){const value=asNumber(history[i][key]);if(value!==null)return value}return null};
-      const hr=lastKnown('hr'),spo2=lastKnown('spo2'),resp=lastKnown('resp');
-      if(hr!==null)setHeartRate(hr);
-      if(resp!==null)setBreathRate(resp);
-      const oxygenShift=spo2===null?0:THREE.MathUtils.clamp((97-spo2)/18,0,1);
-      const breathShift=resp===null?0:THREE.MathUtils.clamp(Math.abs(resp-15)/24,0,1);
-      setTissueResponse(oxygenShift*.68+breathShift*.32);
-      setReading(replayEls.hr,current.hr,'bpm');
-      setReading(replayEls.spo2,current.spo2,'%');
-      setReading(replayEls.resp,current.resp,'br/min');
-      const observed=Array.isArray(row.observed)?row.observed:[];
-      const ringChannels=[observed[0],observed[1],observed[6]];
-      replayEls.quality.textContent=observed.length?ringChannels.map(Boolean).filter(Boolean).length+' / 3':'—';
-      const recent=history.filter(item=>Array.isArray(item.observed));
-      const available=recent.reduce((sum,item)=>sum+item.observed.map(Boolean).filter(Boolean).length,0);
-      const featureCount=observed.length||40;
-      const possible=Math.max(1,recent.length*featureCount);
-      replayEls.coverage.textContent=Math.round(available/possible*100)+'% · '+recent.length+' h';
-      renderClinicalInputs(row.clinical_inputs||{});
-    }
-    function renderClinicalInputs(inputs){
-      const grid=document.querySelector('#clinical-input-grid');grid.replaceChildren();
-      const entries=Object.entries(inputs);
-      if(!entries.length){grid.textContent='Clinical input details are not included in this replay.';return}
-      for(const [name,value] of entries){const item=document.createElement('span'),label=document.createElement('span'),reading=document.createElement('b');label.textContent=name;reading.textContent=asNumber(value)===null?'Missing':String(value);item.append(label,reading);grid.append(item)}
-    }
-    function updateTrend(index){
-      const rows=replayRows.slice(0,index+1);
-      const specs=[['trend-hr','hr',40,160],['trend-spo2','spo2',80,100],['trend-resp','resp',8,40],['trend-risk','risk_score',0,1],['trend-baseline','baseline_score',0,1],['trend-boosted','boosted_score',0,1]];
-      for(const [id,key,min,max] of specs){
-        const path=document.querySelector('#'+id);let d='',started=false;
-        rows.forEach((row,i)=>{
-          const raw=asNumber(row[key]);if(raw===null){started=false;return}
-          const x=rows.length<2?400:i/(rows.length-1)*800;
-          const y=108-(THREE.MathUtils.clamp((raw-min)/(max-min),0,1)*96);
-          d+=(started?' L ':'M ')+x.toFixed(1)+' '+y.toFixed(1);started=true;
-        });
-        path.setAttribute('d',d);
-      }
-    }
-    function updateReplay(index){
-      if(!replayRows.length)return;
-      replayIndex=THREE.MathUtils.clamp(index,0,replayRows.length-1);
-      const row=replayRows[replayIndex],score=asNumber(row.selected_score??row.risk_score);
-      driveAnatomyFromReadings(row,replayIndex);
-      replayEls.hour.textContent='HOUR '+String(row.hour??replayIndex+1);
-      replayEls.position.textContent=(replayIndex+1)+' / '+replayRows.length;
-      replayEls.range.value=String(replayIndex);
-      replayEls.range.max=String(replayRows.length-1);
-      replayEls.window.textContent=replayRows.length+' RECORDED HOURS';
-      replayEls.score.textContent=Number.isFinite(score)?String(Math.round(THREE.MathUtils.clamp(score,0,1)*100)):'—';
-      replayEls.riskFill.style.width=Number.isFinite(score)?(THREE.MathUtils.clamp(score,0,1)*100).toFixed(1)+'%':'0%';
-      replayEls.riskState.textContent='RELATIVE '+replaySelectedModel.toUpperCase()+' SCORE · HOUR '+String(row.hour??replayIndex+1);
-      replayEls.riskTitle.textContent='Experimental hospital sepsis-risk output';
-      replayEls.riskDescription.textContent='Selected using set-A validation, then shown on a held-out hospital record. It is not a calibrated probability, a ring reading, or a pulmonary diagnosis.';
-      replayEls.benchmark.textContent=row.benchmark_label===1?'1 · challenge label':row.benchmark_label===0?'0 · challenge label':'Not recorded';
-      const previous=replayRows[replayIndex-1],changes=[];
-      if(previous){
-        for(const [key,label,unit,digits] of [['hr','HR','bpm',0],['spo2','SpO₂','points',1],['resp','RR','br/min',0]]){
-          const a=asNumber(previous[key]),b=asNumber(row[key]);if(a!==null&&b!==null&&a!==b){const delta=b-a;changes.push(label+' '+(delta>0?'↑':'↓')+' '+Math.abs(delta).toFixed(digits)+' '+unit)}
-        }
-        const oldScore=asNumber(previous.selected_score??previous.risk_score);if(score!==null&&oldScore!==null&&Math.abs(score-oldScore)>=.01)changes.push('research score '+(score>oldScore?'↑':'↓')+' '+Math.round(Math.abs(score-oldScore)*100)+' points');
-      }
-      replayEls.event.textContent=changes.length?'Change from prior recorded hour: '+changes.join(' · '):'No adjacent-hour change to display';
-      updateTrend(replayIndex);
-      replayEls.back.disabled=replayIndex===0;
-      replayEls.forward.disabled=replayIndex===replayRows.length-1;
-    }
-    function stopReplay(){
-      if(replayTimer){clearInterval(replayTimer);replayTimer=null}
-      replayEls.toggle.setAttribute('aria-pressed','false');replayEls.toggle.innerHTML='▶&nbsp; PLAY REPLAY';
-    }
-    function startReplay(){
-      if(!replayLoaded||replayRows.length<2)return;
-      if(replayIndex>=replayRows.length-1)updateReplay(0);
-      replayEls.toggle.setAttribute('aria-pressed','true');replayEls.toggle.innerHTML='Ⅱ&nbsp; PAUSE REPLAY';
-      replayTimer=setInterval(()=>{if(replayIndex>=replayRows.length-1){stopReplay();return}updateReplay(replayIndex+1)},850);
-    }
-    replayEls.toggle.addEventListener('click',()=>replayTimer?stopReplay():startReplay());
-    replayEls.back.addEventListener('click',()=>{stopReplay();updateReplay(replayIndex-1)});
-    replayEls.forward.addEventListener('click',()=>{stopReplay();updateReplay(replayIndex+1)});
-    replayEls.range.addEventListener('input',event=>{stopReplay();updateReplay(Number(event.currentTarget.value))});
-    async function fetchJson(candidates){
+    async function fetchResearchReport(endpoint,filename){
+      const candidates=[modelApiBase+endpoint,new URL('./models/'+filename,import.meta.url).href];
       let lastError;
-      for(const url of candidates){try{const response=await fetch(url,{headers:{Accept:'application/json'}});if(!response.ok)throw new Error('HTTP '+response.status);return await response.json()}catch(error){lastError=error}}
-      throw lastError||new Error('No source available');
-    }
-    async function loadReplay(){
-      try{
-        const data=await fetchJson([modelApiBase+'/api/replay',new URL('./assets/research_replay.json',import.meta.url).href]);
-        if(!Array.isArray(data.rows)||!data.rows.length)throw new Error('Replay file has no timeline rows.');
-        replayRows=data.rows;replaySelectedModel=data.selected_model||'selected research model';replayLoaded=true;replayEls.source.textContent=data.dataset+' · '+data.notice;
-        replayEls.state.textContent='HELD-OUT REPLAY READY · '+data.model;
-        replayEls.range.disabled=false;replayEls.toggle.disabled=false;replayEls.back.disabled=false;replayEls.forward.disabled=false;
-        updateReplay(0);
-      }catch(error){
-        replayEls.state.textContent='RECORDED REPLAY NOT AVAILABLE';
-        replayEls.source.textContent='The research timeline has not been generated yet. Run the documented public-data training workflow.';
-        replayEls.event.textContent=error.message;
-        replayEls.toggle.disabled=true;replayEls.range.disabled=true;
+      for(const url of candidates){
+        try{const response=await fetch(url,{headers:{Accept:'application/json'}});if(!response.ok)throw new Error('HTTP '+response.status);return await response.json()}
+        catch(error){lastError=error}
       }
+      throw lastError||new Error('Research report is not available.');
     }
-    async function loadMetrics(){
-      try{
-        const report=await fetchJson([modelApiBase+'/models/sepsis_metrics.json',new URL('./models/sepsis_metrics.json',import.meta.url).href]);
-        const external=report.external_test_setB||{};
-        const test=external.temporal||external;
-        const comparisons=report.model_comparison||{};
-        const logistic=comparisons.logistic_regression_16h_window?.external_test_setB||external.logistic||{};
-        const boosted=comparisons.hist_gradient_boosting_16h_summary?.external_test_setB||external.boosted||{};
-        const selectedKey=report.selected_model_by_setA_validation_average_precision?.key;
-        const selectedResult=comparisons[selectedKey]?.external_test_setB||
-          (selectedKey==='hist_gradient_boosting_summary'?boosted:selectedKey==='logistic_regression_summary'?logistic:test);
-        document.querySelector('#metric-roc').textContent=Number.isFinite(Number(test.roc_auc))?Number(test.roc_auc).toFixed(3):'—';
-        document.querySelector('#metric-logistic').textContent=Number.isFinite(Number(logistic.roc_auc))?Number(logistic.roc_auc).toFixed(3):'—';
-        document.querySelector('#metric-boosted').textContent=Number.isFinite(Number(boosted.roc_auc))?Number(boosted.roc_auc).toFixed(3):'—';
-        document.querySelector('#metric-ap').textContent=Number.isFinite(Number(selectedResult.average_precision))?Number(selectedResult.average_precision).toFixed(3):'—';
-        document.querySelector('#metric-ap-label').textContent=(report.selected_model_by_setA_validation_average_precision?.label||'SELECTED MODEL')+' · SET B AP';
-        document.querySelector('#study-model-version').textContent=report.model_version+' · SET B · '+Number(test.windows||external.windows||0).toLocaleString()+' HELD-OUT WINDOWS';
-        document.querySelector('#replay-model-state').textContent='METRICS LOADED · '+report.model_version;
-      }catch(error){document.querySelector('#study-model-version').textContent='TRAINING REPORT NOT AVAILABLE'}
-    }
+    const fetchPulmonaryReport=()=>fetchResearchReport('/api/pulmonary/metrics','pulmonary_feasibility_metrics.json');
+    const fetchCopdPpgReport=()=>fetchResearchReport('/api/pulmonary/copd-ppg-metrics','copd_ppg_screening_metrics.json');
+    let pulmonaryReport=null,copdPpgReport=null,activeStudy='copd';
     const trackDetails={
-      ring:{active:'01 · RING PHYSIOLOGY',kicker:'RING ESTIMATION · NO DISEASE LABELS',title:'Estimate measurements from ring signals.',copy:'HealthRing pairs red/infrared PPG and 3-axis motion from 54 adults with reference HR, RR, SpO₂ and blood pressure. Its 100 Hz signals support ring-vital estimation and motion robustness, not disease classification.'},
-      bidmc:{active:'02 · PPG + RESPIRATION',kicker:'WAVEFORM VALIDATION · 53 RECORDINGS',title:'Compare pulse signals with breath references.',copy:'BIDMC provides 125 Hz PPG and impedance-respiration waveforms, 1 Hz vitals and manually annotated breaths. It can support a separate respiration-estimation benchmark; it has no ring hardware or disease labels.'},
-      sepsis:{active:'03 · HOSPITAL RISK SEQUENCE',kicker:'PHYSIONET CHALLENGE 2019 · 40 CLINICAL INPUTS',title:'Compare three methods on the sepsis-risk label.',copy:'A temporal Conv–BiGRU–attention network is compared with logistic regression and histogram gradient boosting. The models use up to 40 hourly hospital signals, labs, and context fields. This separate hospital task cannot diagnose a lung infection or establish ring performance.'},
-      sounds:{active:'04 · RESPIRATORY AUDIO',kicker:'ICBHI · SOUND TASK, SEPARATE MODEL',title:'Study wheeze and crackle recordings.',copy:'ICBHI contains annotated lung-sound recordings and diagnosis metadata. It can support a separate audio classifier, but this ring does not record lung sounds, so those labels cannot be used as ring inputs.'}
+      copd:{active:'01 · COPD FLARE FORECAST',kicker:'TOLIFE V2.0 · 5-FOLD PARTICIPANT SPLIT',title:'Forecast a COPD flare only in known COPD.',copy:'TOLIFE contains daily indices and clinically recorded moderate/severe COPD exacerbations. We tested seven-day HR/HRV, breathing, movement and SpO₂-like inputs; participant-held-out scores did not beat the no-skill reference. No model is deployed.'},
+      ppg:{active:'02 · COPD + PPG',kicker:'ZENODO PPG · 6 PEOPLE · LEAVE-ONE-PERSON-OUT',title:'A disease-labeled PPG feasibility run.',copy:'This public set has four COPD-labeled people and two controls. We compared regularized logistic regression, an RBF support-vector machine, and Extra Trees while holding out one whole person per fold. All three methods scored 0.000 participant-level ROC-AUC; logistic average precision was 0.525 versus a 0.667 prevalence baseline. The cohort is far too small for a dependable detector, and the data are not from this ring.'},
+      ring:{active:'03 · TRUE RING DATA',kicker:'HEALTHRING · 54 PEOPLE · NO PULMONARY DISEASE LABELS',title:'Real ring signals can estimate physiology, not disease here.',copy:'HealthRing provides finger-worn PPG and accelerometer signals with reference heart rate, respiratory rate and SpO₂. Its cohort has no COPD, asthma or pneumonia diagnosis labels, so it supports signal estimation—not pulmonary disease classification.'},
+      gap:{active:'04 · DISEASE COVERAGE',kicker:'NO MATCHED PUBLIC RING-READING COHORT FOUND',title:'Asthma and pneumonia cannot be inferred from these labels.',copy:'This project has no disease-labelled asthma, pneumonia, or bronchitis cohort paired with the same ring-compatible readings. We do not substitute lung sounds, imaging, or derived symptom scores for matched ring data.'}
     };
     document.querySelectorAll('[data-study]').forEach(button=>button.addEventListener('click',()=>{
       const track=trackDetails[button.dataset.study];if(!track)return;
+      activeStudy=button.dataset.study;
       document.querySelectorAll('[data-study]').forEach(item=>item.classList.toggle('active',item===button));
       document.querySelector('#glass-study-active').textContent=track.active;
       document.querySelector('#study-detail-kicker').textContent=track.kicker;
       document.querySelector('#study-detail-title').textContent=track.title;
       document.querySelector('#study-detail-copy').textContent=track.copy;
+      renderStudyMetrics();
     }));
     const glassStudy=document.querySelector('#glass-study');
     glassStudy.addEventListener('pointermove',event=>{const rect=glassStudy.getBoundingClientRect();glassStudy.style.setProperty('--pointer-x',((event.clientX-rect.left)/rect.width*100).toFixed(1)+'%');glassStudy.style.setProperty('--pointer-y',((event.clientY-rect.top)/rect.height*100).toFixed(1)+'%')});
     glassStudy.addEventListener('pointerleave',()=>{glassStudy.style.setProperty('--pointer-x','50%');glassStudy.style.setProperty('--pointer-y','40%')});
+    const metricText=value=>Number.isFinite(Number(value))?Number(value).toFixed(3):'—';
+    function renderStudyMetrics(){
+      const stats=document.querySelector('.evidence-stats'),note=document.querySelector('#ppg-metric-note');
+      const values=[document.querySelector('#metric-roc'),document.querySelector('#metric-logistic'),document.querySelector('#metric-boosted'),document.querySelector('#metric-ap')];
+      const labels=[document.querySelector('#metric-roc-label'),document.querySelector('#metric-logistic-label'),document.querySelector('#metric-boosted-label'),document.querySelector('#metric-ap-label')];
+      note.hidden=false;
+      stats.hidden=false;
+      if(activeStudy==='ppg'){
+        const metrics=copdPpgReport?.duration_variants?.['2s']?.models||{};
+        const logistic=metrics.regularized_logistic,support=metrics.rbf_support_vector,trees=metrics.extra_trees;
+        values[0].textContent=metricText(logistic?.participant_level_roc_auc);
+        values[1].textContent=metricText(support?.participant_level_roc_auc);
+        values[2].textContent=metricText(trees?.participant_level_roc_auc);
+        values[3].textContent=metricText(logistic?.participant_level_average_precision);
+        labels[0].textContent='LOGISTIC · PERSON-LEVEL ROC-AUC';
+        labels[1].textContent='RBF SVM · PERSON-LEVEL ROC-AUC';
+        labels[2].textContent='EXTRA TREES · PERSON-LEVEL ROC-AUC';
+        labels[3].textContent='LOGISTIC · PERSON-LEVEL AVG PRECISION';
+        const reference=copdPpgReport?.no_skill_average_precision_reference;
+        note.textContent=copdPpgReport
+          ?`2-second PPG · 6 held-out people · all three candidate ROC-AUCs were 0.000; logistic average precision was ${metricText(logistic?.participant_level_average_precision)} against a ${metricText(reference)} prevalence baseline. The other five duration variants reuse these same people. No candidate is deployed.`
+          :'COPD PPG results are not loaded. Run the documented subject-held-out evaluation to display aggregate evidence.';
+        document.querySelector('#study-model-version').textContent='COPD PPG · 2S · SIX-PERSON GROUPED EVALUATION';
+      }else if(activeStudy==='copd'){
+        const models=pulmonaryReport?.models||{},order=['logistic_regression','hist_gradient_boosting','random_forest'];
+        const bestKey=order.slice().sort((a,b)=>(models[b]?.grouped_oof_average_precision||0)-(models[a]?.grouped_oof_average_precision||0))[0];
+        const best=models[bestKey]||{};
+        values[0].textContent=metricText(models.random_forest?.grouped_oof_roc_auc);
+        values[1].textContent=metricText(models.logistic_regression?.grouped_oof_roc_auc);
+        values[2].textContent=metricText(models.hist_gradient_boosting?.grouped_oof_roc_auc);
+        values[3].textContent=metricText(best.grouped_oof_average_precision);
+        labels[0].textContent='RANDOM FOREST · GROUPED ROC-AUC';
+        labels[1].textContent='LOGISTIC · GROUPED ROC-AUC';
+        labels[2].textContent='BOOSTED TREES · GROUPED ROC-AUC';
+        labels[3].textContent='BEST AVG PRECISION · BASE '+metricText(pulmonaryReport?.naive_average_precision_reference);
+        note.hidden=true;
+        document.querySelector('#study-model-version').textContent=pulmonaryReport?pulmonaryReport.dataset+' · '+pulmonaryReport.split:'TOLIFE · GROUPED EVALUATION';
+      }else if(activeStudy==='ring'){
+        values[0].textContent='54';values[1].textContent='0';values[2].textContent='—';values[3].textContent='—';
+        labels[0].textContent='HEALTHRING PARTICIPANTS';labels[1].textContent='PULMONARY LABELS';labels[2].textContent='DISEASE MODEL';labels[3].textContent='RING PHYSIOLOGY ONLY';
+        note.textContent='This cohort can support ring-vital estimation and signal-quality work. It has no COPD, asthma, pneumonia, or exacerbation labels, so disease-classification metrics do not apply.';
+        document.querySelector('#study-model-version').textContent='HEALTHRING · 54 PEOPLE · PHYSIOLOGY REFERENCES';
+      }else{
+        stats.hidden=true;
+        note.textContent='No matched, public ring-reading cohort with confirmed asthma, pneumonia, or bronchitis labels was found for this study.';
+        document.querySelector('#study-model-version').textContent='PULMONARY LABEL COVERAGE · DATASET GAP';
+      }
+    }
+    async function loadPulmonaryMetrics(){
+      const [primary,ppg]=await Promise.allSettled([fetchPulmonaryReport(),fetchCopdPpgReport()]);
+      if(primary.status==='fulfilled'){
+        const report=pulmonaryReport=primary.value,counts=report.counts||{},models=report.models||{};
+        const order=['logistic_regression','hist_gradient_boosting','random_forest'];
+        const bestKey=order.slice().sort((a,b)=>(models[b]?.grouped_oof_average_precision||0)-(models[a]?.grouped_oof_average_precision||0))[0];
+        const best=models[bestKey]||{},bestName={logistic_regression:'Logistic regression',hist_gradient_boosting:'Histogram gradient boosting',random_forest:'Random forest'}[bestKey]||'No candidate';
+        document.querySelector('#pulmonary-model-state').textContent='NO PATIENT-FACING MODEL · EVIDENCE GATE FAILED';
+        document.querySelector('#pulmonary-eval-state').textContent='GROUPED CV · NOT READY FOR USE';
+        document.querySelector('#tolife-participants').textContent=Number(counts.participants_with_reading_files||0).toLocaleString();
+        document.querySelector('#tolife-events').textContent=Number(counts.recorded_exacerbation_events||0).toLocaleString();
+        document.querySelector('#tolife-eligible').textContent=Number(counts.eligible_participant_days||0).toLocaleString();
+        document.querySelector('#tolife-positive').textContent=Number(counts.participants_with_positive_days||0).toLocaleString();
+        document.querySelector('#best-model-name').textContent=bestName;
+        document.querySelector('#best-model-auc').textContent=metricText(best.grouped_oof_roc_auc);
+        document.querySelector('#best-model-ap').textContent=metricText(best.grouped_oof_average_precision);
+        document.querySelector('#no-skill-ap').textContent=metricText(report.naive_average_precision_reference);
+      }else{
+        document.querySelector('#pulmonary-model-state').textContent='PULMONARY EVALUATION REPORT UNAVAILABLE';
+        document.querySelector('#pulmonary-eval-state').textContent='NO MODEL OUTPUT AVAILABLE';
+        document.querySelector('#study-model-version').textContent='Run the documented pulmonary evaluation to load aggregate evidence.';
+      }
+      if(ppg.status==='fulfilled')copdPpgReport=ppg.value;
+      renderStudyMetrics();
+    }
     function setHeartRate(value){
       heartBpm=THREE.MathUtils.clamp(Number(value)||72,45,150);
       heartReadout.innerHTML=heartBpm+' <small>BPM</small>';
@@ -1199,8 +1113,7 @@
       organRenderer.render(organScene,organCamera);
     }
     animateOrgans();
-    loadReplay();
-    loadMetrics();
+    loadPulmonaryMetrics();
   </script>
 </body>
 </html>
