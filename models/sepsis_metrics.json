@@ -1,0 +1,302 @@
+{
+  "model_version": "plumoring-sepsis-multisignal-0.2",
+  "task": "experimental early sepsis risk research on hospital-recorded vital signs",
+  "dataset": "PhysioNet Computing in Cardiology Challenge 2019",
+  "data_source": "set A for patient-disjoint development/validation; set B for held-out external evaluation",
+  "input_signals": [
+    "HR",
+    "O2Sat",
+    "Temp",
+    "SBP",
+    "MAP",
+    "DBP",
+    "Resp",
+    "EtCO2",
+    "BaseExcess",
+    "HCO3",
+    "FiO2",
+    "pH",
+    "PaCO2",
+    "SaO2",
+    "AST",
+    "BUN",
+    "Alkalinephos",
+    "Calcium",
+    "Chloride",
+    "Creatinine",
+    "Bilirubin_direct",
+    "Glucose",
+    "Lactate",
+    "Magnesium",
+    "Phosphate",
+    "Potassium",
+    "Bilirubin_total",
+    "TroponinI",
+    "Hct",
+    "Hgb",
+    "PTT",
+    "WBC",
+    "Fibrinogen",
+    "Platelets",
+    "Age",
+    "Gender",
+    "Unit1",
+    "Unit2",
+    "HospAdmTime",
+    "ICULOS"
+  ],
+  "input_feature_count": 40,
+  "window_hours": 16,
+  "train_patients": 16269,
+  "validation_patients": 4067,
+  "external_test_patients": 20000,
+  "sampled_train_patients": 16269,
+  "sampled_validation_patients": 4067,
+  "sampled_external_test_patients": 20000,
+  "train_sampled_windows": 120000,
+  "validation_sampled_windows": 50000,
+  "external_test_sampled_windows": 50000,
+  "validation": {
+    "windows": 50000,
+    "positive_rate": 0.02353999949991703,
+    "roc_auc": 0.7871315403511141,
+    "average_precision": 0.09837595854710926,
+    "balanced_accuracy_at_0_5": 0.6716179668025942,
+    "confusion_matrix_at_0_5": [
+      [
+        44550,
+        4273
+      ],
+      [
+        670,
+        507
+      ]
+    ],
+    "patient_bootstrap_95pct_roc_auc": [
+      0.7607959592022956,
+      0.8115948147990389
+    ],
+    "patient_bootstrap_95pct_average_precision": [
+      0.08685183906628359,
+      0.11863232022089122
+    ],
+    "bootstrap_patients": 4067
+  },
+  "external_test_setB": {
+    "windows": 50000,
+    "positive_rate": 0.01865999959409237,
+    "roc_auc": 0.755608628060706,
+    "average_precision": 0.06003287397537396,
+    "balanced_accuracy_at_0_5": 0.58993844429662,
+    "confusion_matrix_at_0_5": [
+      [
+        46849,
+        2218
+      ],
+      [
+        723,
+        210
+      ]
+    ],
+    "patient_bootstrap_95pct_roc_auc": [
+      0.7351413398813248,
+      0.7761927321401393
+    ],
+    "patient_bootstrap_95pct_average_precision": [
+      0.053365501554111607,
+      0.06892891735940172
+    ],
+    "bootstrap_patients": 20000
+  },
+  "model_comparison": {
+    "temporal_conv_bigru_attention": {
+      "validation": {
+        "windows": 50000,
+        "positive_rate": 0.02353999949991703,
+        "roc_auc": 0.7871315403511141,
+        "average_precision": 0.09837595854710926,
+        "balanced_accuracy_at_0_5": 0.6716179668025942,
+        "confusion_matrix_at_0_5": [
+          [
+            44550,
+            4273
+          ],
+          [
+            670,
+            507
+          ]
+        ],
+        "patient_bootstrap_95pct_roc_auc": [
+          0.7607959592022956,
+          0.8115948147990389
+        ],
+        "patient_bootstrap_95pct_average_precision": [
+          0.08685183906628359,
+          0.11863232022089122
+        ],
+        "bootstrap_patients": 4067
+      },
+      "external_test_setB": {
+        "windows": 50000,
+        "positive_rate": 0.01865999959409237,
+        "roc_auc": 0.755608628060706,
+        "average_precision": 0.06003287397537396,
+        "balanced_accuracy_at_0_5": 0.58993844429662,
+        "confusion_matrix_at_0_5": [
+          [
+            46849,
+            2218
+          ],
+          [
+            723,
+            210
+          ]
+        ],
+        "patient_bootstrap_95pct_roc_auc": [
+          0.7351413398813248,
+          0.7761927321401393
+        ],
+        "patient_bootstrap_95pct_average_precision": [
+          0.053365501554111607,
+          0.06892891735940172
+        ],
+        "bootstrap_patients": 20000
+      }
+    },
+    "logistic_regression_16h_window": {
+      "validation": {
+        "windows": 50000,
+        "positive_rate": 0.02353999949991703,
+        "roc_auc": 0.7929265791846264,
+        "average_precision": 0.10689877739753213,
+        "balanced_accuracy_at_0_5": 0.7153839269348641,
+        "confusion_matrix_at_0_5": [
+          [
+            37043,
+            11780
+          ],
+          [
+            386,
+            791
+          ]
+        ],
+        "patient_bootstrap_95pct_roc_auc": [
+          0.7693633934929605,
+          0.8145654171013019
+        ],
+        "patient_bootstrap_95pct_average_precision": [
+          0.08973269222210147,
+          0.1286559390544733
+        ],
+        "bootstrap_patients": 4067
+      },
+      "external_test_setB": {
+        "windows": 50000,
+        "positive_rate": 0.01865999959409237,
+        "roc_auc": 0.7001112353515527,
+        "average_precision": 0.05212398532316453,
+        "balanced_accuracy_at_0_5": 0.6285058505758176,
+        "confusion_matrix_at_0_5": [
+          [
+            43797,
+            5270
+          ],
+          [
+            593,
+            340
+          ]
+        ],
+        "patient_bootstrap_95pct_roc_auc": [
+          0.6805161661680924,
+          0.7224345558065428
+        ],
+        "patient_bootstrap_95pct_average_precision": [
+          0.04595298114229664,
+          0.059840639481942126
+        ],
+        "bootstrap_patients": 20000
+      }
+    },
+    "hist_gradient_boosting_16h_summary": {
+      "validation": {
+        "windows": 50000,
+        "positive_rate": 0.02353999949991703,
+        "roc_auc": 0.8078986826532079,
+        "average_precision": 0.11865142962842778,
+        "balanced_accuracy_at_0_5": 0.5809805645628773,
+        "confusion_matrix_at_0_5": [
+          [
+            47895,
+            928
+          ],
+          [
+            964,
+            213
+          ]
+        ],
+        "patient_bootstrap_95pct_roc_auc": [
+          0.7794377585356256,
+          0.8270857780363966
+        ],
+        "patient_bootstrap_95pct_average_precision": [
+          0.10270931178713563,
+          0.14428162908011186
+        ],
+        "bootstrap_patients": 4067
+      },
+      "external_test_setB": {
+        "windows": 50000,
+        "positive_rate": 0.01865999959409237,
+        "roc_auc": 0.7427358715124766,
+        "average_precision": 0.06345659457675756,
+        "balanced_accuracy_at_0_5": 0.5236321659268051,
+        "confusion_matrix_at_0_5": [
+          [
+            48704,
+            363
+          ],
+          [
+            882,
+            51
+          ]
+        ],
+        "patient_bootstrap_95pct_roc_auc": [
+          0.7186573640966541,
+          0.7622739780409618
+        ],
+        "patient_bootstrap_95pct_average_precision": [
+          0.05687442456130696,
+          0.07538469449024833
+        ],
+        "bootstrap_patients": 20000
+      }
+    }
+  },
+  "selected_model_by_setA_validation_average_precision": {
+    "key": "hist_gradient_boosting_summary",
+    "label": "Histogram gradient-boosting baseline"
+  },
+  "training_history": [
+    {
+      "epoch": 1,
+      "loss": 0.5252722794065079,
+      "validation_average_precision": 0.09837595854710926
+    },
+    {
+      "epoch": 2,
+      "loss": 0.44012418056067565,
+      "validation_average_precision": 0.08518176461188272
+    },
+    {
+      "epoch": 3,
+      "loss": 0.36491696893597564,
+      "validation_average_precision": 0.08220021965090096
+    }
+  ],
+  "limits": [
+    "The label is the PhysioNet benchmark six-hour-shifted sepsis label; it is not a pulmonary diagnosis.",
+    "Hospital vital signs are not smart-ring sensor data. This model does not establish ring-to-disease transfer.",
+    "Scores are not calibrated or clinically validated and must not guide care.",
+    "Evaluation uses a seeded sample of windows; set B is not the official hidden challenge test set."
+  ]
+}

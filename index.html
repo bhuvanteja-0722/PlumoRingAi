@@ -223,17 +223,131 @@
     .result-pattern{display:flex;justify-content:space-between;gap:12px;margin-top:14px;padding-top:11px;border-top:1px solid var(--dashboard-line);color:#b3a18c;font:7px var(--mono);letter-spacing:.08em}
     .result-pattern b{color:var(--dashboard-text);font-weight:400;text-align:right}
     .model-result-state .result-caveat{margin-top:13px;padding:9px 10px;border:1px solid #a58c5838;border-radius:4px;background:#a58c580d;font-size:7px}
+    .model-run{width:100%;min-height:40px;margin-top:12px;border:1px solid color-mix(in srgb,var(--accent) 60%,var(--dashboard-line));border-radius:5px;background:var(--accent);color:var(--accent-ink);font:700 8px var(--mono);letter-spacing:.09em;text-transform:uppercase;transition:filter .2s,opacity .2s}
+    .model-run:hover:not(:disabled){filter:brightness(1.1)}.model-run:disabled{cursor:not-allowed;opacity:.48}
+    .model-result-score{display:flex;justify-content:space-between;gap:12px;margin:13px 0 0;padding:11px 0;border-bottom:1px solid var(--dashboard-line);color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.07em}
+    .model-result-score b{color:var(--dashboard-text);font-weight:500;text-align:right}
+    .model-class-scores{display:grid;gap:9px;margin-top:14px}
+    .model-class-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 9px;color:var(--dashboard-muted);font:6px var(--mono);letter-spacing:.03em}
+    .model-class-row b{color:var(--dashboard-text);font-weight:400;font-variant-numeric:tabular-nums}
+    .model-class-row i{grid-column:1/-1;height:3px;overflow:hidden;border-radius:4px;background:#ffffff14}
+    .model-class-row i span{display:block;height:100%;border-radius:inherit;background:var(--chart)}
     @media(max-width:1180px){.dashboard-main{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);grid-template-areas:"telemetry inference" "anatomy anatomy"}.analysis-anatomy{border-inline:0;border-top:1px solid var(--dashboard-line);padding:22px}.organ-viewport{height:clamp(400px,52vw,560px);max-height:560px}.anatomy-console{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.motion-readout,.anatomy-actions,.anatomy-credit{grid-column:1/-1}}
     @media(max-width:760px){.dashboard-main{grid-template-columns:minmax(0,1fr);grid-template-areas:"telemetry" "anatomy" "inference"}.analysis-anatomy{padding:19px 13px;border-inline:0;border-top:1px solid var(--dashboard-line)}.organ-viewport{height:clamp(370px,112vw,520px);min-height:370px;max-height:520px}.organ-hud-top{top:13px;left:12px}.organ-hud-right{top:13px;right:12px}.organ-callout{font-size:6px}.heart-callout{top:57%;left:3%}.left-lung-callout{top:28%;left:3%}.right-lung-callout{top:28%;right:3%}.heart-callout:after,.left-lung-callout:after,.right-lung-callout:before{width:20px}.organ-response-hud{left:12px;bottom:43px}.anatomy-console{display:block;padding-top:13px}.motion-readout{margin-bottom:15px}.anatomy-actions{align-items:flex-start;flex-direction:column}.organ-buttons{align-self:stretch}.organ-buttons .spatial-button{flex:1}.anatomy-live{max-width:50%;font-size:5px}.anatomy-intro{font-size:8px}}
     @media(max-width:390px){.organ-viewport{height:390px;min-height:390px}.organ-callout{font-size:6px}.organ-callout small{font-size:5px}.organ-bottom-hud{font-size:5px}.organ-response-hud{font-size:5px}.anatomy-panel-head h3{font-size:15px}.anatomy-live{font-size:5px}}
     @media(prefers-reduced-motion:reduce){.organ-viewport,.spatial-range{scroll-behavior:auto}}
+  </style>
+
+  <style>
+    .explorer{grid-template-columns:minmax(0,1.12fr) minmax(430px,.88fr);align-items:start}
+    .detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,.78fr);gap:17px;align-items:stretch}
+    .detail-content{min-width:0}
+    .component-viewer{display:flex;flex-direction:column;min-width:0;min-height:258px;padding:10px;border:1px solid var(--line);border-radius:8px;background:radial-gradient(ellipse at 50% 44%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 66%),color-mix(in srgb,var(--surface) 70%,transparent)}
+    .component-viewer-meta{display:flex;justify-content:space-between;gap:6px;color:var(--muted);font:6px/1.4 var(--mono);letter-spacing:.08em}
+    .component-view-stage{position:relative;flex:1;min-height:205px;margin-top:8px;overflow:hidden;border-radius:5px;background:radial-gradient(ellipse at center,#ffffff12,transparent 70%)}
+    #component-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+    .component-placeholder{position:absolute;inset:0;display:grid;place-content:center;text-align:center;color:var(--muted);font:8px/1.8 var(--mono);letter-spacing:.1em;pointer-events:none}
+    .component-placeholder[hidden]{display:none}
+    .component-viewer>p{margin:7px 0 0;color:var(--muted);font-size:7px;line-height:1.5}
+    .intelligence{scroll-margin-top:88px}
+    .replay-source{margin:-8px 0 15px;color:var(--dashboard-muted);font:7px/1.55 var(--mono)}
+    .replay-readings{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .replay-readings .telemetry-control{min-height:67px;padding:10px 11px}
+    .replay-readings output{font-size:15px}
+    .replay-readings .metric-name{font-size:6px}
+    .trend-card{margin-top:12px;padding:12px 11px 9px}
+    .trend-chart{height:105px;margin-top:11px;overflow:visible}
+    .trend-grid{fill:none;stroke:#ffffff10;stroke-width:1;vector-effect:non-scaling-stroke}
+    .trend-line{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+    .trend-hr{stroke:#d4ae6a}
+    .trend-spo2{stroke:#80d4bd}
+    .trend-resp{stroke:#a991d7}
+    .trend-risk{stroke:#e57c72;stroke-dasharray:5 5}.trend-baseline{stroke:#e5c878;stroke-dasharray:2 5;opacity:.8}.trend-boosted{stroke:#b79be0;stroke-dasharray:8 4;opacity:.84}
+    .trend-legend{display:flex;flex-wrap:wrap;gap:8px 12px;padding-top:7px;color:var(--dashboard-muted);font:6px var(--mono)}
+    .trend-legend span{display:flex;align-items:center;gap:4px}
+    .trend-legend i{width:7px;height:3px;border-radius:3px;background:#d4ae6a}
+    .trend-legend .legend-spo2{background:#80d4bd}.trend-legend .legend-resp{background:#a991d7}.trend-legend .legend-risk{background:#e57c72}.trend-legend .legend-baseline{background:#e5c878}.trend-legend .legend-boosted{background:#b79be0}
+    .replay-transport{display:flex;align-items:center;gap:5px;margin-top:12px}
+    .replay-transport .spatial-button{min-height:38px;padding:0 10px}
+    .replay-position{margin-left:auto;color:var(--dashboard-muted);font:7px var(--mono);font-variant-numeric:tabular-nums}
+    .replay-range{display:block;width:100%;height:4px;margin:11px 0 8px;accent-color:var(--accent);cursor:pointer}
+    .replay-range:disabled{opacity:.45;cursor:wait}
+    .trend-event{min-height:24px;padding:7px 9px;border-left:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,transparent);color:var(--dashboard-text);font:7px/1.5 var(--mono)}
+    .replay-caveat{margin:10px 0 0;color:var(--dashboard-muted);font-size:7px;line-height:1.55}
+    .risk-card{display:flex;flex-direction:column;align-items:stretch;min-height:315px;padding:20px 16px;border:1px solid var(--dashboard-line);border-radius:7px;background:radial-gradient(ellipse at 50% 0,color-mix(in srgb,var(--accent) 11%,transparent),transparent 54%),#111714;text-align:left}
+    .risk-orbit{position:relative;align-self:center;display:flex;flex-direction:column;justify-content:center;align-items:center;width:120px;height:120px;margin:0 0 16px;border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);border-radius:50%;color:var(--dashboard-text)}
+    .risk-orbit:before,.risk-orbit:after{content:"";position:absolute;inset:8px;border:1px solid #ffffff12;border-radius:50%}
+    .risk-orbit:after{inset:-8px;border-color:#ffffff09}
+    .risk-orbit>span{position:absolute;left:12px;top:19px;width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 13px var(--accent)}
+    .risk-orbit>b{font:500 29px var(--mono);font-variant-numeric:tabular-nums}
+    .risk-orbit>small{margin-top:4px;color:var(--dashboard-muted);font:6px var(--mono);letter-spacing:.12em}
+    .risk-card h4{margin:8px 0 6px;color:var(--dashboard-text);font-size:19px;letter-spacing:-.04em}
+    .risk-card>p{margin:0;color:var(--dashboard-muted);font-size:9px;line-height:1.65}
+    .risk-track{height:4px;margin:15px 0 7px;overflow:hidden;border-radius:4px;background:#ffffff14}
+    .risk-track i{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),#da776c);transition:width .35s ease}
+    .risk-details{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-top:1px solid var(--dashboard-line);color:var(--dashboard-muted);font:6px var(--mono);letter-spacing:.07em}
+    .risk-details b{color:var(--dashboard-text);font-weight:400;text-align:right}
+    .risk-card .result-caveat{margin-top:10px;padding:9px 10px;border:1px solid #a58c5838;border-radius:4px;background:#a58c580d;color:var(--dashboard-muted);font-size:7px;line-height:1.6}
+    .clinical-inputs{margin-top:14px;border:1px solid var(--dashboard-line);border-radius:12px;background:#ffffff04;color:var(--dashboard-muted)}
+    .clinical-inputs summary{padding:12px 14px;cursor:pointer;color:var(--dashboard-text);font:8px var(--mono);letter-spacing:.08em}
+    .clinical-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:0 12px 13px}
+    .clinical-input-grid>span{display:flex;justify-content:space-between;gap:8px;padding:7px 8px;border:1px solid #ffffff0d;border-radius:6px;background:#ffffff04;font:7px var(--mono)}
+    .clinical-input-grid b{color:var(--dashboard-text);font-weight:500}
+    .study-section{position:relative;padding:74px 0 65px;scroll-margin-top:84px}
+    .study-intro{display:flex;justify-content:space-between;align-items:end;gap:35px;margin-bottom:28px}
+    .study-intro h2{margin-top:18px;font-size:clamp(38px,4.5vw,60px)}
+    .study-intro>p{max-width:390px;color:var(--muted);font-size:11px;line-height:1.75}
+    .glass-study{--pointer-x:50%;--pointer-y:50%;--tilt-x:0deg;--tilt-y:0deg;position:relative;isolation:isolate;overflow:hidden;padding:clamp(20px,3vw,38px);border:1px solid color-mix(in srgb,var(--accent) 25%,var(--line));border-radius:18px;background:radial-gradient(ellipse at 50% 45%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 54%),linear-gradient(145deg,color-mix(in srgb,var(--surface) 77%,#111 23%),#111411);box-shadow:0 32px 90px #0003;perspective:1300px;transform-style:preserve-3d;transition:transform .28s ease-out}
+    .glass-study:before{content:"";position:absolute;z-index:-1;inset:-1px;background:radial-gradient(420px circle at var(--pointer-x) var(--pointer-y),#d1e5ff25,transparent 66%);pointer-events:none}
+    .glass-study:after{content:"";position:absolute;z-index:-1;inset:0;background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-gradient(90deg,#ffffff06 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(ellipse at center,#000,transparent 82%);pointer-events:none}
+    .glass-study-top,.study-foot{display:flex;justify-content:space-between;gap:12px;color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.1em}
+    .glass-study-top{padding-bottom:18px;border-bottom:1px solid #ffffff20}
+    .glass-study-top span:last-child{color:var(--accent)}
+    .glass-shards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:24px 0 21px;transform-style:preserve-3d}
+    .glass-shard{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;min-height:210px;padding:20px 18px;overflow:hidden;border:1px solid #dae7ef2c;border-radius:12px;color:#f1f2ed;text-align:left;background:linear-gradient(145deg,#34483f,#1b2822 70%,#18211d);appearance:none;backdrop-filter:blur(18px) saturate(138%);box-shadow:inset 0 1px #ffffff20,0 13px 34px #0005;transition:transform .35s cubic-bezier(.2,.75,.2,1),border-color .25s,background .25s,box-shadow .25s;transform:translateZ(0);cursor:pointer}
+    .glass-shard:before{content:"";position:absolute;inset:0;background:linear-gradient(145deg,#ffffff18,transparent 42%),radial-gradient(ellipse at 80% 0,#8cb9e420,transparent 50%);pointer-events:none}
+    .glass-shard:after{content:"";position:absolute;right:-36px;bottom:-57px;width:145px;height:145px;border:1px solid #e9f1f533;border-radius:50%;box-shadow:0 0 0 13px #e9f1f50a,0 0 0 28px #e9f1f506;pointer-events:none}
+    .glass-shard:nth-child(1){clip-path:polygon(0 0,100% 0,92% 100%,0 93%);background:linear-gradient(145deg,#c4b06f36,#71847b20 64%,#dde2e81b)}
+    .glass-shard:nth-child(2){clip-path:polygon(8% 0,100% 7%,100% 100%,0 100%);background:linear-gradient(145deg,#c1d0d834,#657e9124 58%,#f3ffff12)}
+    .glass-shard:nth-child(3){clip-path:polygon(0 8%,92% 0,100% 93%,6% 100%);background:linear-gradient(145deg,#a9c0a62d,#89949e20 60%,#fcffff13)}
+    .glass-shard>span{position:relative;z-index:1;color:#d0d8d5;font:7px var(--mono);letter-spacing:.1em}
+    .glass-shard strong{position:relative;z-index:1;font-size:clamp(18px,2.5vw,28px);font-weight:500;line-height:1.04;letter-spacing:-.06em}
+    .glass-shard>i{position:relative;z-index:1;color:#c4cec9;font:normal 8px/1.5 var(--mono)}
+    .glass-shard>b{position:absolute;z-index:1;right:16px;top:15px;color:#eef1e8;font-size:15px;font-weight:400}
+    .glass-shard:hover,.glass-shard:focus-visible{z-index:2;transform:translateY(-8px) translateZ(22px) rotateX(-1.3deg);border-color:#e8f5fd77;box-shadow:inset 0 1px #ffffff4a,0 22px 45px #0007,0 0 28px #a3c4dd16}
+    .glass-shard.active{border-color:color-mix(in srgb,var(--accent) 72%,#ffffff);box-shadow:inset 0 1px #ffffff45,0 14px 42px #0007,0 0 26px color-mix(in srgb,var(--accent) 15%,transparent)}
+    .glass-study-bottom{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.75fr);gap:34px;padding-top:20px;border-top:1px solid #ffffff20}
+    .study-detail h3{margin:9px 0;font-size:clamp(22px,3vw,35px);font-weight:500;letter-spacing:-.05em;color:#eff0e9}
+    .study-detail p{max-width:650px;margin:0;color:#aab2ac;font-size:10px;line-height:1.75}
+    .evidence-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;align-self:end}
+    .evidence-stats div{display:flex;flex-direction:column;gap:6px;padding:12px 10px;border:1px solid #dae7ef25;border-radius:7px;background:#ffffff08;backdrop-filter:blur(12px)}
+    .evidence-stats b{color:#eef2e6;font:500 14px var(--mono);font-variant-numeric:tabular-nums}
+    .evidence-stats span{color:#a8b0aa;font:7px/1.45 var(--mono);letter-spacing:.055em}
+    .study-foot{margin:13px 3px 0;color:var(--muted)}
+    .study-disclaimer{max-width:820px;margin:13px 0 0;color:var(--muted);font-size:8px;line-height:1.65}
+    @media(max-width:1180px){.explorer{grid-template-columns:1fr}.detail{grid-template-columns:minmax(0,1.1fr) minmax(250px,.9fr)}}
+    @media(max-width:1050px){.study-section{padding:58px 0 50px}.glass-study-bottom{grid-template-columns:1fr;gap:18px}.evidence-stats{max-width:550px}}
+    @media(max-width:760px){
+      .detail{grid-template-columns:1fr;gap:12px}.component-viewer{min-height:250px}.component-view-stage{min-height:220px}
+      .replay-readings{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .replay-transport .spatial-button{min-height:44px}
+      .trend-chart{height:92px}.trend-legend{gap:7px}
+      .risk-card{min-height:0}
+      .study-section{padding:48px 0 42px}.study-intro{display:block}.study-intro h2{font-size:42px;margin-top:15px}.study-intro>p{margin-top:13px;font-size:10px}
+      .glass-study{padding:15px;border-radius:13px}.glass-shards{grid-template-columns:1fr;gap:9px;padding:15px 0}.glass-shard{min-height:150px;padding:15px 14px}.glass-shard strong{font-size:25px}.glass-shard>span,.glass-shard>i{font-size:7px}
+      .glass-study-bottom{gap:14px}.study-detail h3{font-size:25px}.study-detail p{font-size:9px}
+      .evidence-stats{gap:5px}.evidence-stats div{padding:10px 7px}.evidence-stats b{font-size:12px}.evidence-stats span{font-size:5px}
+      .glass-study-top,.study-foot{font-size:6px;line-height:1.5}
+    }
+    @media(max-width:390px){.replay-readings .telemetry-control{padding:9px}.replay-readings .metric-name{font-size:5px}.replay-readings output{font-size:12px}.replay-position{font-size:6px}.glass-shard{min-height:138px}}
+    @media(prefers-reduced-motion:reduce){.glass-study,.glass-shard,.risk-track i{transition:none}}
   </style>
 </head>
 <body>
   <main class="page">
     <header class="topbar">
       <a class="wordmark" href="#top" aria-label="PlumoRing AI home"><span class="mark">p</span> PLUMORING <em>AI</em></a>
-      <nav class="main-nav" aria-label="Main navigation"><a href="#ring">The ring</a><a href="#body">Body in motion</a><a href="#architecture">Architecture</a><a href="#intelligence">Intelligence</a></nav>
+      <nav class="main-nav" aria-label="Main navigation"><a href="#ring">The ring</a><a href="#architecture">Architecture</a><a href="#monitoring">Monitoring</a><a href="#deep-learning">Deep learning</a></nav>
       <div class="top-meta"><span class="live"></span> Spatial health systems&nbsp; / &nbsp;Concept 01</div>
     </header>
     <span id="top"></span>
@@ -241,9 +355,9 @@
       <div class="hero-copy">
         <p class="eyebrow">SPATIAL PHYSIOLOGY&nbsp; / &nbsp;01</p>
         <h1>Signals,<br><span>in motion.</span></h1>
-        <p class="intro">Explore the ring’s proposed sensor system, then follow its readings into a shared 3D heart-and-lung analysis view.</p>
+        <p class="intro">Explore the ring’s proposed sensor system, then step into a public-data monitoring study with synchronized 3D anatomy.</p>
         <div class="hero-actions"><a href="#ring" class="text-link">Explore the ring <span>↘</span></a><a href="#body" class="text-link secondary-link">Enter body view <span>↘</span></a></div>
-        <div class="factline"><div class="fact"><b>04</b><span>Ring sensor systems</span></div><div class="fact"><b>08</b><span>Model input channels</span></div><div class="fact"><b>360°</b><span>Interactive assembly</span></div></div>
+        <div class="factline"><div class="fact"><b>04</b><span>Ring sensor systems</span></div><div class="fact"><b>03</b><span>Vitals in risk study</span></div><div class="fact"><b>360°</b><span>Interactive assembly</span></div></div>
       </div>
       <div class="hero-right" id="ring">
         <div class="hero-right-head">
@@ -278,51 +392,73 @@
         <div class="parts" id="parts"></div>
       </div>
       <aside class="detail" id="detail" aria-live="polite">
-        <div class="detail-index">SELECT A COMPONENT&nbsp; / &nbsp;00</div>
-        <h3>Small form.<br>Many layers.</h3>
-        <p>Each part in this study represents a common approach used in compact health wearables. Select a component to see what role it could play.</p>
-        <div class="detail-data"><span>Measurement status</span><b>Concept components · awaiting PlumoRing AI CAD</b></div>
+        <div class="detail-content" id="detail-content">
+          <div class="detail-index">SELECT A COMPONENT&nbsp; / &nbsp;00</div>
+          <h3>Small form.<br>Many layers.</h3>
+          <p>Each part in this study represents a common approach used in compact health wearables. Select a component to see its role and inspect an isolated 3D view.</p>
+          <div class="detail-data"><span>Measurement status</span><b>Concept components · awaiting PlumoRing AI CAD</b></div>
+        </div>
+        <div class="component-viewer">
+          <div class="component-viewer-meta"><span id="component-viewer-label">PART VIEWER</span><span>DRAG · ORBIT / SCROLL · ZOOM</span></div>
+          <div class="component-view-stage"><canvas id="component-canvas" aria-label="Interactive isolated 3D view of the selected ring component"></canvas><div class="component-placeholder" id="component-placeholder">SELECT A PART<br>TO INSPECT</div></div>
+          <p id="component-viewer-note">Representative geometry · rotate with pointer or touch</p>
+        </div>
       </aside>
     </section>
     <section class="signal-story" aria-labelledby="signal-title">
-      <div class="section-kicker">02&nbsp; / &nbsp;From signal to understanding</div>
-      <div class="signal-head"><h2 id="signal-title">Small signals.<br><span>More context.</span></h2><p>All eight input channels feed one analysis workspace. Heart rate and respiration directly drive the anatomy motion; model output from the same input window can add a visual lung response.</p></div>
+      <div class="section-kicker">02&nbsp; / &nbsp;A ring, then a research system</div>
+      <div class="signal-head"><h2 id="signal-title">Small signals.<br><span>More context.</span></h2><p>A proposed ring architecture sits above two separate research questions: estimating vital signs from ring signals, and studying early sepsis risk from hospital measurements.</p></div>
       <div class="signal-grid">
         <article class="signal-card"><span class="signal-icon ppg-icon">◉</span><span class="signal-tag">01 / OPTICAL PPG</span><h3>Light in.<br>Pulse data out.</h3><p>Red and infrared emitters with a photodiode observe changes in returning light at the finger.</p><span class="signal-foot">HEART RATE · SpO₂ ESTIMATE · RESPIRATION ESTIMATE</span></article>
         <article class="signal-card"><span class="signal-icon motion-icon">⌁</span><span class="signal-tag">02 / MOVEMENT</span><h3>Motion with<br>body context.</h3><p>A 3-axis accelerometer tracks movement and helps identify motion that can affect signal quality.</p><span class="signal-foot">ACCELERATION · ORIENTATION · MOTION ARTIFACT</span></article>
         <article class="signal-card"><span class="signal-icon temp-icon">⌖</span><span class="signal-tag">03 / SKIN TEMP + EDA</span><h3>Contact-level<br>changes.</h3><p>An NTC sensor follows skin-temperature shifts while dry electrodes capture changes in skin conductance.</p><span class="signal-foot">TEMP DELTA · SKIN CONDUCTANCE</span></article>
       </div>
     </section>
-    <section class="intelligence" id="intelligence" aria-labelledby="intelligence-title">
+    <section class="intelligence" id="monitoring" aria-labelledby="monitoring-title">
       <div class="intelligence-intro">
-        <div><div class="section-kicker">03&nbsp; / &nbsp;PlumoRing analysis</div><h2 id="intelligence-title">Signals into context,<br><span>made explorable.</span></h2></div>
-        <p>All eight displayed channels shape a subtle, non-diagnostic lung preview; heart rate and respiration also drive the anatomy motion. A returned model class can add its own visual pattern when the evaluated model is connected.</p>
+        <div><div class="section-kicker">03&nbsp; / &nbsp;Continuous monitoring study</div><h2 id="monitoring-title">Follow the signal,<br><span>hour by hour.</span></h2></div>
+        <p>Scrub or play a de-identified hospital timeline. The model score, measured vitals, missing-reading cues, and 3D anatomy stay synchronized. This is recorded ICU data—not a live ring stream.</p>
       </div>
       <div class="dashboard-shell">
-        <div class="dashboard-topline"><div class="dash-brand"><span class="dash-mark">✳</span><span>PLUMORING <b>AI</b><small>COMPANION SYSTEM / MODEL WORKSPACE</small></span></div><div class="model-state"><i></i><span>MODEL NOT CONNECTED</span></div></div>
+        <div class="dashboard-topline"><div class="dash-brand"><span class="dash-mark">✳</span><span>PLUMORING <b>AI</b><small>PUBLIC-DATA MONITORING REPLAY</small></span></div><div class="model-state"><i></i><span id="replay-model-state">LOADING HELD-OUT REPLAY</span></div></div>
         <div class="dashboard-main">
           <section class="telemetry-panel" aria-labelledby="telemetry-heading">
-            <div class="dash-panel-head"><div><span class="dash-overline">SPOT-CHECK TELEMETRY</span><h3 id="telemetry-heading">Input stream preview</h3></div><span class="demo-badge">DEMO INPUTS</span></div>
-            <div class="input-presets" role="group" aria-label="Illustrative telemetry presets"><button class="preset active" type="button" data-preset="rest">Resting snapshot</button><button class="preset" type="button" data-preset="movement">Movement-rich</button><button class="preset" type="button" data-preset="quality">Motion artifact</button></div>
-            <div class="telemetry-grid" id="telemetry-grid">
-              <div class="telemetry-control" data-key="hr" data-part-link="ppg"><span class="metric-name">HEART RATE <i>HR</i> <button class="locate-sensor" type="button" aria-label="Locate optical sensor in ring">↗</button></span><output>72 <small>bpm</small></output><input type="range" min="45" max="150" value="72" aria-label="Demo heart rate in beats per minute"><span class="range-track"></span></div>
-              <div class="telemetry-control" data-key="spo2" data-part-link="ppg"><span class="metric-name">OXYGEN SATURATION <i>SpO₂</i> <button class="locate-sensor" type="button" aria-label="Locate optical sensor in ring">↗</button></span><output>97 <small>%</small></output><input type="range" min="85" max="100" value="97" aria-label="Demo oxygen saturation percentage"><span class="range-track"></span></div>
-              <div class="telemetry-control" data-key="resp" data-part-link="ppg"><span class="metric-name">RESPIRATION RATE <i>RR</i> <button class="locate-sensor" type="button" aria-label="Locate optical sensor in ring">↗</button></span><output>15 <small>br/min</small></output><input type="range" min="8" max="36" value="15" aria-label="Demo respiration rate per minute"><span class="range-track"></span></div>
-              <div class="telemetry-control context-input" data-key="wheeze"><span class="metric-name">ACOUSTIC FEATURE <i>COMPANION</i></span><output>0.4 <small>/ 10</small></output><input type="range" min="0" max="10" step="0.1" value="0.4" aria-label="Demo acoustic feature score"><span class="range-track"></span></div>
-              <div class="telemetry-control" data-key="temp" data-part-link="temp"><span class="metric-name">SKIN TEMP DELTA <i>TEMP</i> <button class="locate-sensor" type="button" aria-label="Locate temperature sensor in ring">↗</button></span><output>+0.2 <small>°C</small></output><input type="range" min="-1.5" max="2.5" step="0.1" value="0.2" aria-label="Demo change in skin temperature"><span class="range-track"></span></div>
-              <div class="telemetry-control" data-key="accel" data-part-link="accel"><span class="metric-name">IMU MOTION <i>ACC</i> <button class="locate-sensor" type="button" aria-label="Locate motion sensor in ring">↗</button></span><output>0.05 <small>g</small></output><input type="range" min="0" max="2" step="0.01" value="0.05" aria-label="Demo acceleration magnitude"><span class="range-track"></span></div>
-              <div class="telemetry-control" data-key="eda" data-part-link="eda"><span class="metric-name">SKIN CONDUCTANCE <i>EDA</i> <button class="locate-sensor" type="button" aria-label="Locate EDA electrodes in ring">↗</button></span><output>0.12 <small>µS</small></output><input type="range" min="0" max="10" step="0.01" value="0.12" aria-label="Demo skin conductance"><span class="range-track"></span></div>
-              <div class="telemetry-control context-input" data-key="pm"><span class="metric-name">AMBIENT PARTICLES <i>CONTEXT</i></span><output>18 <small>µg/m³</small></output><input type="range" min="0" max="250" value="18" aria-label="Demo ambient particulate concentration"><span class="range-track"></span></div>
+            <div class="dash-panel-head"><div><span class="dash-overline">SET B · EXTERNAL HOLDOUT</span><h3 id="telemetry-heading">Continuous timeline</h3></div><span class="demo-badge">RECORDED · HOURLY</span></div>
+            <div class="replay-source" id="replay-source">Loading de-identified public record…</div>
+            <div class="telemetry-grid replay-readings">
+              <div class="telemetry-control"><span class="metric-name">HEART RATE <i>HR</i></span><output id="replay-hr">— <small>bpm</small></output></div>
+              <div class="telemetry-control"><span class="metric-name">OXYGEN SATURATION <i>SpO₂</i></span><output id="replay-spo2">— <small>%</small></output></div>
+              <div class="telemetry-control"><span class="metric-name">RESPIRATION RATE <i>RR</i></span><output id="replay-resp">— <small>br/min</small></output></div>
+              <div class="telemetry-control"><span class="metric-name">READING QUALITY</span><output id="replay-quality">—</output></div>
             </div>
-            <div class="sensor-origin"><span><i class="origin-dot ring-dot"></i>Ring channels · click to locate</span><span><i class="origin-dot context-dot"></i>Optional companion inputs</span><button type="button" class="reset-inputs" id="reset-inputs">Reset demo values</button></div>
-            <div class="wave-card"><div class="wave-heading"><span>OPTICAL PULSE TRACE <i>ILLUSTRATIVE</i></span><span id="pulse-rate-label">72 bpm</span></div><svg class="pulse-chart" viewBox="0 0 800 100" preserveAspectRatio="none" role="img" aria-label="Illustrative pulse waveform"><defs><linearGradient id="pulseFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" class="wave-stop"/><stop offset="100%" class="wave-stop-end"/></linearGradient></defs><path class="wave-area" d="M0 58 L25 58 L33 55 L42 60 L52 58 L68 58 L78 52 L84 62 L95 58 L112 58 L124 54 L131 58 L144 58 L153 58 L161 50 L169 67 L180 26 L188 76 L198 54 L208 59 L226 58 L242 58 L253 55 L261 61 L275 58 L291 58 L303 50 L310 62 L321 58 L339 58 L351 53 L359 59 L374 58 L383 49 L391 68 L402 23 L410 77 L420 54 L430 58 L449 58 L465 58 L478 52 L487 61 L501 58 L519 58 L531 50 L538 62 L549 58 L568 58 L581 54 L590 59 L604 58 L613 48 L621 67 L632 24 L640 76 L650 55 L660 58 L681 58 L696 58 L708 52 L717 61 L731 58 L748 58 L761 51 L769 62 L780 58 L800 58 L800 100 L0 100 Z"/><path class="wave-line" d="M0 58 L25 58 L33 55 L42 60 L52 58 L68 58 L78 52 L84 62 L95 58 L112 58 L124 54 L131 58 L144 58 L153 58 L161 50 L169 67 L180 26 L188 76 L198 54 L208 59 L226 58 L242 58 L253 55 L261 61 L275 58 L291 58 L303 50 L310 62 L321 58 L339 58 L351 53 L359 59 L374 58 L383 49 L391 68 L402 23 L410 77 L420 54 L430 58 L449 58 L465 58 L478 52 L487 61 L501 58 L519 58 L531 50 L538 62 L549 58 L568 58 L581 54 L590 59 L604 58 L613 48 L621 67 L632 24 L640 76 L650 55 L660 58 L681 58 L696 58 L708 52 L717 61 L731 58 L748 58 L761 51 L769 62 L780 58 L800 58"/></svg><div class="chart-axis"><span>− 30 SEC</span><span>NOW</span></div></div>
+            <div class="wave-card trend-card">
+              <div class="wave-heading"><span>MEASURED VITALS + THREE MODEL SCORES <i>WINDOWED</i></span><span id="replay-hour-label">HOUR —</span></div>
+              <svg class="pulse-chart trend-chart" viewBox="0 0 800 120" preserveAspectRatio="none" role="img" aria-label="Recorded vital signs and model score over time">
+                <path class="trend-grid" d="M0 30H800 M0 60H800 M0 90H800"/>
+                <path class="trend-line trend-hr" id="trend-hr" d=""/>
+                <path class="trend-line trend-spo2" id="trend-spo2" d=""/>
+                <path class="trend-line trend-resp" id="trend-resp" d=""/>
+                <path class="trend-line trend-risk" id="trend-risk" d=""/><path class="trend-line trend-baseline" id="trend-baseline" d=""/><path class="trend-line trend-boosted" id="trend-boosted" d=""/>
+              </svg>
+              <div class="trend-legend"><span><i class="legend-hr"></i>HR</span><span><i class="legend-spo2"></i>SpO₂</span><span><i class="legend-resp"></i>RESP</span><span><i class="legend-risk"></i>TEMPORAL MODEL</span><span><i class="legend-baseline"></i>LOGISTIC</span><span><i class="legend-boosted"></i>BOOSTED TREES</span></div>
+              <div class="chart-axis"><span>START OF REPLAY</span><span id="replay-window-label">— RECORDED HOURS</span></div>
+            </div>
+            <div class="replay-transport">
+              <button class="spatial-button" id="replay-toggle" type="button" aria-pressed="false" disabled>▶&nbsp; PLAY REPLAY</button>
+              <button class="spatial-button" id="replay-step-back" type="button" aria-label="Previous recorded hour" disabled>←</button>
+              <button class="spatial-button" id="replay-step-forward" type="button" aria-label="Next recorded hour" disabled>→</button>
+              <span class="replay-position" id="replay-position">0 / 0</span>
+            </div>
+            <input class="replay-range" id="replay-range" type="range" min="0" max="0" value="0" aria-label="Scrub recorded hourly timeline" disabled>
+            <div class="trend-event" id="trend-event" aria-live="polite">Recorded data only · loading timeline</div>
+            <p class="replay-caveat">The challenge label marks a benchmark risk window; it is not a lung-infection label. Trend markers describe changes in this replay and are not medical alerts.</p>
           </section>
           <section class="analysis-anatomy" id="body" aria-labelledby="body-title">
             <div class="dash-panel-head anatomy-panel-head">
               <div><span class="dash-overline">CARDIOPULMONARY MOTION</span><h3 id="body-title">Heart &amp; lungs</h3></div>
               <span class="anatomy-live"><i></i><b id="organ-load-status">LOADING ANATOMY</b></span>
             </div>
-            <p class="anatomy-intro">Heart and breath motion follow their input channels. All eight displayed channels shape a restrained preview; only a returned model class adds an infection or airway pattern.</p>
+            <p class="anatomy-intro">Heart rhythm follows the recorded pulse rate; both lungs breathe with the recorded respiration rate. Oxygen and breathing values drive a restrained surface tint for visual exploration only.</p>
             <div class="organ-viewport" id="organ-viewport" aria-label="Interactive 3D heart and lungs. Drag to orbit and scroll to zoom.">
               <svg class="organ-fallback" id="organ-fallback" viewBox="0 0 720 600" role="img" aria-label="Illustrated preview of both lungs, branching airways, and heart" preserveAspectRatio="xMidYMid meet">
                 <defs>
@@ -380,7 +516,7 @@
               <div class="organ-callout heart-callout"><i></i><span>HEART<small>NIH 3D anatomy</small></span></div>
               <div class="organ-callout left-lung-callout"><i></i><span>LEFT LUNG<small>Visible Human mesh</small></span></div>
               <div class="organ-callout right-lung-callout"><i></i><span>RIGHT LUNG<small>Visible Human mesh</small></span></div>
-              <div class="organ-response-hud" id="tissue-response-value" aria-live="polite">LUNG TEXTURE · INPUT-LINKED PREVIEW</div>
+              <div class="organ-response-hud" id="tissue-response-value" aria-live="polite">SURFACE RESPONSE · VISUAL ONLY</div>
               <div class="organ-bottom-hud"><span>DRAG TO ORBIT</span><span>SCROLL TO ZOOM</span></div>
             </div>
             <div class="anatomy-console">
@@ -389,35 +525,73 @@
                 <div><span>BREATH CYCLE</span><b id="breath-rate-value">15 <small>/ MIN</small></b></div>
               </div>
               <div class="anatomy-actions">
-                <span class="anatomy-motion-note">8 INPUT CHANNELS&nbsp; · &nbsp;PREVIEW ONLY</span>
+                <span class="anatomy-motion-note">RECORDED VITALS&nbsp; · &nbsp;VISUAL STUDY ONLY</span>
                 <div class="organ-buttons"><button class="spatial-button" id="organ-motion" type="button" aria-pressed="true">Ⅱ&nbsp; PAUSE MOTION</button><button class="spatial-button" id="organ-reset" type="button">RESET VIEW</button></div>
               </div>
               <small class="anatomy-credit">Heart: Sourav Pan · lungs: kbrowne · <a href="https://3d.nih.gov/entries/3DPX-022787" target="_blank" rel="noreferrer">NIH 3D heart</a> · <a href="https://3d.nih.gov/entries/3DPX-013408" target="_blank" rel="noreferrer">Visible Human lungs</a> · CC BY 4.0 · materials adapted</small>
             </div>
           </section>
           <aside class="inference-panel" aria-labelledby="inference-heading">
-            <div class="dash-panel-head"><div><span class="dash-overline">MODEL OUTPUT</span><h3 id="inference-heading">Screening result</h3></div><span class="latency-pill">— ms</span></div>
-            <div class="model-empty-state"><div class="empty-orbit"><span></span><i></i><b>AI</b></div><span class="empty-eyebrow">WAITING FOR VALIDATED MODEL FILES</span><h4>No screening result yet</h4><p>This panel is ready for outputs from an evaluated model package.</p>
-              <div class="pending-result"><div><span>SCREENING OUTPUT</span><b>Awaiting model response</b></div><span class="pending-pill">PENDING</span></div>
-              <div class="pending-alert"><span>SPOT-CHECK NOTICE</span><p>Single snapshots can be noisy. Model-specific guidance and validation details will appear here after integration.</p></div>
-              <div class="pending-breakdown"><span>INPUT FLAG BREAKDOWN</span><b>Channel mapping pending</b></div>
+            <div class="dash-panel-head"><div><span class="dash-overline">EXPERIMENTAL DEEP-LEARNING OUTPUT</span><h3 id="inference-heading">Sepsis research score</h3></div><span class="latency-pill" id="model-window-label">16 HOURS</span></div>
+            <div class="risk-card" aria-live="polite">
+              <div class="risk-orbit"><span></span><b id="risk-score">—</b><small>RELATIVE SCORE</small></div>
+              <span class="empty-eyebrow" id="risk-state">WAITING FOR REPLAY</span>
+              <h4 id="risk-title">A research signal</h4>
+              <p id="risk-description">This experimental model was trained on hospital vital signs. It has not been validated with a smart ring.</p>
+              <div class="risk-track"><i id="risk-track-fill"></i></div>
+              <div class="risk-details"><span>BENCHMARK WINDOW</span><b id="benchmark-state">—</b></div>
+              <div class="risk-details"><span>INPUT COVERAGE</span><b id="coverage-state">—</b></div>
+              <p class="result-caveat">Not a diagnosis, clinical probability, infection classification, or care recommendation. This score does not change lung tissue appearance.</p>
             </div>
-            <div class="model-result-state" id="model-result-state" hidden aria-live="polite">
-              <span class="result-eyebrow">SCREENING OUTPUT&nbsp; / &nbsp;MODEL LABEL</span>
-              <h4 id="model-result-label"></h4>
-              <p id="model-result-description">An illustrative anatomy cue is mapped from this returned class.</p>
-              <div class="result-pattern"><span>LUNG VISUAL</span><b id="model-result-pattern">Awaiting output</b></div>
-              <p class="result-caveat">Class-linked visual only. It is not a medical image or diagnosis. This model output contains no validated disease-severity score.</p>
-            </div>
-            <div class="model-footnote"><span class="lock-icon">⌁</span><span id="model-footnote-copy">Demo telemetry only. No diagnosis is generated by this preview.</span></div>
+            <details class="clinical-inputs"><summary>HOSPITAL MODEL INPUTS · CURRENT HOUR</summary><div class="clinical-input-grid" id="clinical-input-grid"><span>Waiting for replay</span></div></details>
+            <div class="model-footnote"><span class="lock-icon">⌁</span><span>Research replay only · hourly ICU data · ring transfer not evaluated</span></div>
           </aside>
         </div>
-        <div class="dashboard-footer"><span>MODEL INTEGRATION SLOT&nbsp; / &nbsp;INPUT SCHEMA + WEIGHTS + VALIDATION</span><span>PLUMORING AI&nbsp; · &nbsp;CONCEPT WORKSPACE</span></div>
+        <div class="dashboard-footer"><span>PUBLIC DATA REPLAY&nbsp; / &nbsp;NO LIVE SENSOR STREAM</span><span>PLUMORING AI&nbsp; · &nbsp;RESEARCH PROTOTYPE</span></div>
       </div>
-      <div class="intelligence-note"><span>MODEL INTEGRATION SLOT&nbsp; / &nbsp;INPUT SCHEMA + WEIGHTS + VALIDATION</span><p>Connect an evaluated model package and its input/output schema to activate inference and result visualizations.</p></div>
+      <div class="intelligence-note"><span>CONTINUOUS MONITORING STUDY</span><p>Press play to follow the recorded timeline. The 3D heart and lungs respond to HR, respiration, and SpO₂. The sepsis research score remains a separate, non-diagnostic output.</p></div>
+    </section>
+    <section class="study-section" id="deep-learning" aria-labelledby="study-title">
+      <div class="study-intro">
+        <div><div class="section-kicker">04&nbsp; / &nbsp;Deep learning, separated by evidence</div><h2 id="study-title">Four datasets.<br><span>Separate questions.</span></h2></div>
+        <p>Ring physiology, waveform breathing, hospital sepsis risk, and respiratory audio each need the dataset and model that match the signal. Their labels stay in separate research tracks.</p>
+      </div>
+      <div class="glass-study" id="glass-study">
+        <div class="glass-study-top"><span>PLUMORING AI&nbsp; / &nbsp;RESEARCH INDEX</span><span id="glass-study-active">01&nbsp; RING SENSING</span></div>
+        <div class="glass-shards" aria-label="Choose a research track">
+          <button class="glass-shard active" type="button" data-study="ring">
+            <span>01&nbsp; / &nbsp;RING PHYSIOLOGY</span><strong>PPG<br>+ motion</strong><i>54 people · public ring recordings</i><b>↗</b>
+          </button>
+          <button class="glass-shard" type="button" data-study="bidmc">
+            <span>02&nbsp; / &nbsp;PPG + RESPIRATION</span><strong>Breaths<br>from pulse</strong><i>53 annotated ICU waveforms</i><b>↗</b>
+          </button>
+          <button class="glass-shard" type="button" data-study="sepsis">
+            <span>03&nbsp; / &nbsp;HOSPITAL SEQUENCE</span><strong>16 hours<br>of vitals</strong><i>40,336 ICU records · public challenge</i><b>↗</b>
+          </button>
+          <button class="glass-shard" type="button" data-study="sounds">
+            <span>04&nbsp; / &nbsp;RESPIRATORY AUDIO</span><strong>Wheeze<br>+ crackle</strong><i>920 recordings · separate task</i><b>↗</b>
+          </button>
+        </div>
+        <div class="glass-study-bottom">
+          <div class="study-detail">
+            <span class="dash-overline" id="study-detail-kicker">RING ESTIMATION · NO DISEASE LABELS</span>
+            <h3 id="study-detail-title">Estimate measurements from ring signals.</h3>
+            <p id="study-detail-copy">HealthRing pairs red/infrared PPG and 3-axis motion with reference heart rate, respiration rate, and oxygen saturation. This track has no disease diagnosis labels; it cannot train the infection model.</p>
+          </div>
+          <div class="evidence-stats">
+            <div><b id="metric-roc">—</b><span>TEMPORAL ROC-AUC · SET B</span></div>
+            <div><b id="metric-logistic">—</b><span>LOGISTIC ROC-AUC · SET B</span></div>
+            <div><b id="metric-boosted">—</b><span>BOOSTED ROC-AUC · SET B</span></div>
+            <div><b id="metric-ap">—</b><span id="metric-ap-label">SELECTED MODEL AP · SET B</span></div>
+          </div>
+        </div>
+        <div class="glass-cursor-glow" aria-hidden="true"></div>
+      </div>
+      <div class="study-foot"><span>MODEL: TEMPORAL CONVOLUTION · SE GATE · BiGRU · SELF-ATTENTION</span><span id="study-model-version">WAITING FOR TRAINING REPORT</span></div>
+      <p class="study-disclaimer">HealthRing is a separate ring-sensing dataset. The sepsis model uses hospital HR, SpO₂ and respiration values; it is not a smart-ring disease model and does not detect pneumonia or other lung infections.</p>
     </section>
     <section class="closing-note"><div><span class="section-kicker">DESIGNED AROUND THE HUMAN SIGNAL</span><h2>Wearable by nature.<br><em>Intelligent by design.</em></h2></div><a class="back-to-top" href="#top">Back to the top <span>↑</span></a></section>
-    <footer class="caveat"><span><strong>PlumoRing AI concept experience</strong> · representative ring architecture</span><span>Illustrative demo data · model and medical validation pending</span><nav class="site-links" aria-label="Project information"><a href="privacy.html">Privacy</a><a href="settings.html">Settings</a></nav></footer>
+    <footer class="caveat"><span><strong>PlumoRing AI</strong> · concept ring + software research</span><span>Recorded public data · no live sensor · no clinical use</span><nav class="site-links" aria-label="Project information"><a href="privacy.html">Privacy</a><a href="settings.html">Settings</a></nav></footer>
   </main>
   <script type="module">
     import * as THREE from 'three';
@@ -548,7 +722,31 @@
     const travel={shell:1.03,board:.47,ppg:.12,eda:-.39,seal:-.23,contacts:-.81,liner:-1.03,temp:.16,battery:.72,accel:.28,radio:.4,coil:-.52};
     const list=document.querySelector('#parts');
     parts.forEach((p,i)=>{const b=document.createElement('button');b.type='button';b.className='part';b.dataset.part=p.id;b.style.setProperty('--part',p.color);b.innerHTML='<span class="num">'+p.label+'</span><i class="swatch"></i><span class="part-name">'+p.name+'</span><span class="part-type">'+p.type+'</span><span class="arrow">↗</span>';b.addEventListener('click',()=>selectPart(p.id));list.appendChild(b)});
-    function selectPart(id){const p=parts.find(x=>x.id===id);if(!p)return;selected=id;scrollExplodeMode=false;setExplode(1);document.querySelectorAll('.part').forEach(b=>b.classList.toggle('active',b.dataset.part===id));document.querySelectorAll('.telemetry-control[data-part-link]').forEach(card=>card.classList.toggle('linked',card.dataset.partLink===id));document.querySelector('#detail').innerHTML='<div class="detail-index">COMPONENT&nbsp; / &nbsp;'+p.label+'</div><h3>'+p.name+'</h3><p>'+p.role+'</p><div class="detail-data"><span>What it could measure / do</span><b>'+p.data+'</b></div>'}
+    const detailContent=document.querySelector('#detail-content'),componentCanvas=document.querySelector('#component-canvas'),componentPlaceholder=document.querySelector('#component-placeholder'),componentViewerLabel=document.querySelector('#component-viewer-label'),componentViewerNote=document.querySelector('#component-viewer-note');
+    let componentRenderer=null,componentScene=null,componentCamera=null,componentControls=null,componentObject=null,componentActive=false,componentBaseY=0;
+    try{
+      componentScene=new THREE.Scene();
+      componentCamera=new THREE.PerspectiveCamera(34,1,.01,100);
+      componentRenderer=new THREE.WebGLRenderer({canvas:componentCanvas,antialias:true,alpha:true,powerPreference:'low-power'});
+      componentRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.4));componentRenderer.outputColorSpace=THREE.SRGBColorSpace;componentRenderer.toneMapping=THREE.ACESFilmicToneMapping;componentRenderer.setClearColor(0x000000,0);
+      componentScene.add(new THREE.HemisphereLight(0xe6eee8,0x202720,2.1));
+      const componentKey=new THREE.DirectionalLight(0xffedcf,3.3);componentKey.position.set(-2,3,4);componentScene.add(componentKey);
+      const componentFill=new THREE.DirectionalLight(0x91bca3,1.5);componentFill.position.set(3,1,-2);componentScene.add(componentFill);
+      componentControls=new OrbitControls(componentCamera,componentCanvas);componentControls.enableDamping=true;componentControls.enablePan=false;componentControls.minDistance=.18;componentControls.maxDistance=12;componentControls.target.set(0,0,0);
+      new ResizeObserver(()=>{const r=componentCanvas.getBoundingClientRect();if(!r.width||!r.height)return;componentRenderer.setSize(r.width,r.height,false);componentCamera.aspect=r.width/r.height;componentCamera.updateProjectionMatrix()}).observe(componentCanvas);
+    }catch(error){componentPlaceholder.textContent='3D PREVIEW UNAVAILABLE';console.warn('Isolated component viewer unavailable.',error)}
+    function showComponentPreview(id){
+      if(!componentRenderer||!componentScene)return;
+      const source=groups.get(id);if(!source)return;
+      if(componentObject){componentScene.remove(componentObject);componentObject=null}
+      const isolated=new THREE.Group(),clone=source.clone(true);clone.position.set(0,0,0);clone.rotation.copy(source.rotation);clone.scale.copy(source.scale);clone.updateMatrixWorld(true);
+      const bounds=new THREE.Box3().setFromObject(clone),size=bounds.getSize(new THREE.Vector3()),center=bounds.getCenter(new THREE.Vector3()),extent=Math.max(size.x,size.y,size.z,.08);
+      isolated.position.copy(center).multiplyScalar(-1);componentBaseY=isolated.position.y;isolated.add(clone);componentScene.add(isolated);componentObject=isolated;
+      const fit=extent*2.65;componentCamera.position.set(fit*.75,fit*.62,fit);componentCamera.near=Math.max(.005,extent/100);componentCamera.far=extent*20;componentCamera.updateProjectionMatrix();componentControls.target.set(0,0,0);componentControls.minDistance=extent*.85;componentControls.maxDistance=extent*7;componentControls.update();
+      componentViewerLabel.textContent='COMPONENT / '+parts.find(p=>p.id===id).label;componentViewerNote.textContent='Representative geometry · drag to orbit · scroll to zoom';componentPlaceholder.hidden=true;componentActive=true;
+    }
+    function resetComponentPreview(){if(componentObject&&componentScene)componentScene.remove(componentObject);componentObject=null;componentActive=false;componentPlaceholder.hidden=false;componentViewerLabel.textContent='PART VIEWER';componentViewerNote.textContent='Representative geometry · rotate with pointer or touch'}
+    function selectPart(id){const p=parts.find(x=>x.id===id);if(!p)return;selected=id;scrollExplodeMode=false;setExplode(1);document.querySelectorAll('.part').forEach(b=>b.classList.toggle('active',b.dataset.part===id));document.querySelectorAll('.telemetry-control[data-part-link]').forEach(card=>card.classList.toggle('linked',card.dataset.partLink===id));detailContent.innerHTML='<div class="detail-index">COMPONENT&nbsp; / &nbsp;'+p.label+'</div><h3>'+p.name+'</h3><p>'+p.role+'</p><div class="detail-data"><span>What it could measure / do</span><b>'+p.data+'</b></div>';showComponentPreview(id)}
     function setExplode(v){targetExplode=THREE.MathUtils.clamp(v,0,1);const n=Math.round(targetExplode*100);const input=document.querySelector('#explode-range'),playButton=document.querySelector('#play');input.value=String(n);input.style.setProperty('--progress',n+'%');playButton.textContent=targetExplode>.5?'REASSEMBLE':'EXPLODE';playButton.setAttribute('aria-label',targetExplode>.5?'Reassemble ring':'Explode ring');const state=targetExplode>.98?'EXPLODED':targetExplode<.02?'ASSEMBLED':'IN MOTION',focus=selected?parts.find(p=>p.id===selected).label+' / '+parts.length+' PARTS':parts.length+' PARTS';document.querySelector('#assembly-status').textContent=state+'  ·  '+focus}
     document.querySelector('#explode-range').addEventListener('input',e=>{scrollExplodeMode=false;const next=Number(e.currentTarget.value)/100;if(next<.05){selected=null;document.querySelectorAll('.part').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.telemetry-control.linked').forEach(card=>card.classList.remove('linked'))}setExplode(next)});
     document.querySelector('#play').addEventListener('click',()=>{scrollExplodeMode=false;const next=targetExplode>.5?0:1;if(next===0){selected=null;document.querySelectorAll('.part').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.telemetry-control.linked').forEach(card=>card.classList.remove('linked'))}setExplode(next);playing=true});
@@ -564,7 +762,7 @@
     setFinish(finish);
     function zoom(f){const d=camera.position.clone().sub(controls.target),n=THREE.MathUtils.clamp(d.length()*f,controls.minDistance,controls.maxDistance);camera.position.copy(controls.target).add(d.normalize().multiplyScalar(n))}
     document.querySelector('#zoom-in').addEventListener('click',()=>zoom(.88));document.querySelector('#zoom-out').addEventListener('click',()=>zoom(1.14));
-    document.querySelector('#reset').addEventListener('click',()=>{camera.position.set(2.65,3.2,4.65);controls.target.set(0,0,0);scrollExplodeMode=false;selected=null;setExplode(0);document.querySelectorAll('.part').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.telemetry-control.linked').forEach(card=>card.classList.remove('linked'));document.querySelector('#detail').innerHTML='<div class="detail-index">SELECT A COMPONENT&nbsp; / &nbsp;00</div><h3>Small form.<br>Many layers.</h3><p>Each part in this study represents a common approach used in compact health wearables. Select a component to see its representative role.</p><div class="detail-data"><span>Measurement status</span><b>Concept components · awaiting PlumoRing AI CAD</b></div>'});
+    document.querySelector('#reset').addEventListener('click',()=>{camera.position.set(2.65,3.2,4.65);controls.target.set(0,0,0);scrollExplodeMode=false;selected=null;setExplode(0);document.querySelectorAll('.part').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.telemetry-control.linked').forEach(card=>card.classList.remove('linked'));detailContent.innerHTML='<div class="detail-index">SELECT A COMPONENT&nbsp; / &nbsp;00</div><h3>Small form.<br>Many layers.</h3><p>Each part in this study represents a common approach used in compact health wearables. Select a component to see its representative role and inspect an isolated 3D view.</p><div class="detail-data"><span>Measurement status</span><b>Concept components · awaiting PlumoRing AI CAD</b></div>';resetComponentPreview()});
 
     const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
     renderer.domElement.addEventListener('pointermove',e=>{const r=renderer.domElement.getBoundingClientRect();pointer.x=((e.clientX-r.left)/r.width)*2-1;pointer.y=-((e.clientY-r.top)/r.height)*2+1;pointerInside=true;raycaster.setFromCamera(pointer,camera);const hit=raycaster.intersectObjects(assembly.children,true).find(h=>h.object.userData.partId);hovered=hit?.object.userData.partId||null;document.querySelectorAll('.telemetry-control[data-part-link]').forEach(card=>card.classList.toggle('linked',card.dataset.partLink===(hovered||selected)));if(hovered){tooltip.style.display='block';tooltip.textContent=parts.find(p=>p.id===hovered)?.name||'';tooltip.style.left=Math.min(e.clientX-r.left+14,r.width-150)+'px';tooltip.style.top=Math.max(56,e.clientY-r.top-12)+'px'}else tooltip.style.display='none'});
@@ -574,22 +772,11 @@
     const resize=new ResizeObserver(()=>{const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()});resize.observe(stage);
     const clock=new THREE.Clock();
     const layerRank={shell:0,board:1,ppg:2,eda:3,temp:4,accel:5,battery:6,radio:7,seal:8,coil:9,contacts:10,liner:11},layerSpan=1-Math.max(...Object.values(layerRank))*.04;
-    const demoValues={hr:72,spo2:97,resp:15,wheeze:.4,temp:.2,accel:.05,eda:.12,pm:18};
-    const demoUnits={hr:'bpm',spo2:'%',resp:'br/min',wheeze:'/ 10',temp:'°C',accel:'g',eda:'µS',pm:'µg/m³'};
-    const demoFormat={hr:v=>String(Math.round(v)),spo2:v=>String(Math.round(v)),resp:v=>String(Math.round(v)),wheeze:v=>Number(v).toFixed(1),temp:v=>(v>=0?'+':'')+Number(v).toFixed(1),accel:v=>Number(v).toFixed(2),eda:v=>Number(v).toFixed(2),pm:v=>String(Math.round(v))};
-    const telemetryInputs=[...document.querySelectorAll('.telemetry-control input')];
-    function updateTelemetry(input){const card=input.closest('.telemetry-control'),key=card.dataset.key,value=Number(input.value),output=card.querySelector('output'),min=Number(input.min),max=Number(input.max),fill=(value-min)/(max-min)*100;output.innerHTML=demoFormat[key](value)+' <small>'+demoUnits[key]+'</small>';input.style.setProperty('--fill',fill+'%');if(key==='hr')document.querySelector('#pulse-rate-label').textContent=Math.round(value)+' bpm'}
-    telemetryInputs.forEach(input=>{updateTelemetry(input);input.addEventListener('input',()=>{document.querySelectorAll('.preset').forEach(button=>button.classList.remove('active'));clearModelOutput();updateTelemetry(input)})});
-    document.querySelectorAll('.telemetry-control[data-part-link]').forEach(card=>card.addEventListener('click',event=>{if(event.target.matches('input'))return;selectPart(card.dataset.partLink);document.querySelector('#viewer').scrollIntoView({behavior:prefersReducedMotion?'auto':'smooth',block:'center'})}));
-    const demoPresets={rest:demoValues,movement:{hr:108,spo2:97,resp:20,wheeze:.6,temp:.4,accel:.7,eda:.32,pm:18},quality:{hr:72,spo2:97,resp:15,wheeze:.4,temp:.2,accel:1.24,eda:.12,pm:18}};
-    function applyDemo(values){clearModelOutput();telemetryInputs.forEach(input=>{const key=input.closest('.telemetry-control').dataset.key;input.value=values[key];updateTelemetry(input);if(key==='hr')setHeartRate(values[key]);if(key==='resp')setBreathRate(values[key])});previewFromInputs()}
-    document.querySelectorAll('.preset').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.preset').forEach(item=>item.classList.toggle('active',item===button));applyDemo(demoPresets[button.dataset.preset])}));
-    document.querySelector('#reset-inputs').addEventListener('click',()=>{document.querySelectorAll('.preset').forEach(item=>item.classList.toggle('active',item.dataset.preset==='rest'));applyDemo(demoValues)});
     const revealTargets=[...document.querySelectorAll('.signal-card,.intelligence-intro,.dashboard-shell,.intelligence-note,.closing-note')];
     revealTargets.forEach(item=>item.classList.add('reveal'));
     if('IntersectionObserver' in window){const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');revealObserver.unobserve(entry.target)}}),{threshold:.12,rootMargin:'0px 0px -35px 0px'});revealTargets.forEach(item=>revealObserver.observe(item))}else revealTargets.forEach(item=>item.classList.add('is-visible'));
     if(!prefersReducedMotion)import('https://esm.sh/animejs').then(({animate:animeAnimate,stagger})=>{animeAnimate(document.querySelectorAll('.hero-copy .eyebrow,.hero-copy h1,.hero-copy .intro,.hero-copy .hero-actions,.hero-copy .factline'),{opacity:[0,1],y:[16,0],delay:stagger(75),duration:720})}).catch(()=>{});
-    function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);explode+=(targetExplode-explode)*(1-Math.exp(-5.8*dt));if(Math.abs(targetExplode-explode)<.001){explode=targetExplode;if(playing)playing=false}for(const [id,g] of groups){const raw=THREE.MathUtils.clamp((explode-layerRank[id]*.04)/layerSpan,0,1),layer=raw*raw*(3-2*raw);g.position.y=travel[id]*layer}const pulse=prefersReducedMotion ? .4 : .15+.33*(.5+.5*Math.sin(clock.elapsedTime*2.4));glassRed.emissiveIntensity=pulse;glassIR.emissiveIntensity=.08;if(autoRotate&&!pointerInside&&!selected&&explode<.04)assembly.rotation.y+=dt*.13;controls.update();renderer.render(scene,camera)}
+    function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);explode+=(targetExplode-explode)*(1-Math.exp(-5.8*dt));if(Math.abs(targetExplode-explode)<.001){explode=targetExplode;if(playing)playing=false}for(const [id,g] of groups){const raw=THREE.MathUtils.clamp((explode-layerRank[id]*.04)/layerSpan,0,1),layer=raw*raw*(3-2*raw);g.position.y=travel[id]*layer}const pulse=prefersReducedMotion ? .4 : .15+.33*(.5+.5*Math.sin(clock.elapsedTime*2.4));glassRed.emissiveIntensity=pulse;glassIR.emissiveIntensity=.08;if(autoRotate&&!pointerInside&&!selected&&explode<.04)assembly.rotation.y+=dt*.13;controls.update();renderer.render(scene,camera);if(componentActive&&componentRenderer&&componentControls){if(componentObject)componentObject.position.y=componentBaseY+(prefersReducedMotion?0:Math.sin(clock.elapsedTime*1.25)*.045);componentControls.update();componentRenderer.render(componentScene,componentCamera)}}
     animate();
 
     // Real Visible Human lungs and a separately animated anatomical heart.
@@ -782,82 +969,174 @@
     const tissueValue=document.querySelector('#tissue-response-value');
     const motionButton=document.querySelector('#organ-motion');
 
-    function setTissueResponse(value,source='input'){
+    const modelApiBase=location.protocol==='file:'?'http://127.0.0.1:5000':location.origin;
+    const replayEls={
+      source:document.querySelector('#replay-source'),state:document.querySelector('#replay-model-state'),
+      hr:document.querySelector('#replay-hr'),spo2:document.querySelector('#replay-spo2'),resp:document.querySelector('#replay-resp'),quality:document.querySelector('#replay-quality'),
+      hour:document.querySelector('#replay-hour-label'),window:document.querySelector('#replay-window-label'),position:document.querySelector('#replay-position'),
+      range:document.querySelector('#replay-range'),toggle:document.querySelector('#replay-toggle'),back:document.querySelector('#replay-step-back'),forward:document.querySelector('#replay-step-forward'),
+      score:document.querySelector('#risk-score'),riskState:document.querySelector('#risk-state'),riskTitle:document.querySelector('#risk-title'),riskDescription:document.querySelector('#risk-description'),riskFill:document.querySelector('#risk-track-fill'),
+      benchmark:document.querySelector('#benchmark-state'),coverage:document.querySelector('#coverage-state'),event:document.querySelector('#trend-event')
+    };
+    let replayRows=[],replayIndex=0,replayTimer=null,replayLoaded=false,replaySelectedModel='selected research model';
+    const asNumber=value=>value===null||value===undefined||value===''||!Number.isFinite(Number(value))?null:Number(value);
+    const displayValue=(value,digits=0)=>asNumber(value)===null?'—':asNumber(value).toFixed(digits);
+    function setReading(element,value,unit,digits=0){
+      const shown=displayValue(value,digits);element.replaceChildren(document.createTextNode(shown+' '));
+      const small=document.createElement('small');small.textContent=unit;element.append(small);
+    }
+    function setTissueResponse(value){
       const amount=THREE.MathUtils.clamp(Number(value)||0,0,1);
       responseUniform.value=amount;
+      infectionUniform.value=0;airwayUniform.value=0;
       organViewport.style.setProperty('--input-response',amount.toFixed(3));
-      tissueValue.textContent=source==='model'?(infectionUniform.value?'LUNG TEXTURE · INFECTION CLASS':airwayUniform.value?'LUNG TEXTURE · AIRWAY CLASS':'LUNG TEXTURE · MODEL CLASS'):'LUNG TEXTURE · LIVE INPUT PREVIEW';
-    }
-    const modelResultState=document.querySelector('#model-result-state');
-    const modelEmptyState=document.querySelector('.model-empty-state');
-    let modelConnected=false;
-    const modelInputAliases={hr:['heartRate','hr'],spo2:['oxygenSaturation','spo2'],resp:['respirationRate','resp'],wheeze:['acousticFeature','wheeze'],temp:['skinTemperatureDelta','temperatureDelta','temp'],accel:['acceleration','accel'],eda:['skinConductance','eda'],pm:['ambientParticles','pm25','pm']};
-    function readLiveInputs(){return Object.fromEntries(telemetryInputs.map(input=>[input.closest('.telemetry-control').dataset.key,Number(input.value)]))}
-    function syncModelInputs(inputValues={}){
-      telemetryInputs.forEach(input=>{
-        const key=input.closest('.telemetry-control').dataset.key;
-        const sourceKey=modelInputAliases[key].find(alias=>inputValues[alias]!==undefined&&inputValues[alias]!==null);
-        if(!sourceKey||!Number.isFinite(Number(inputValues[sourceKey])))return;
-        const min=Number(input.min),max=Number(input.max),value=THREE.MathUtils.clamp(Number(inputValues[sourceKey]),min,max);
-        input.value=String(value);
-        updateTelemetry(input);
-      });
-      const values=readLiveInputs();
-      setHeartRate(values.hr);
-      setBreathRate(values.resp);
-      return values;
-    }
-    function previewFromInputs(values=readLiveInputs()){
-      const heartRate=THREE.MathUtils.clamp((values.hr-72)/78,0,1);
-      const spo2=THREE.MathUtils.clamp((100-values.spo2)/15,0,1);
-      const respiration=THREE.MathUtils.clamp((values.resp-15)/21,0,1);
-      const acoustic=THREE.MathUtils.clamp(values.wheeze/10,0,1);
-      const temperature=THREE.MathUtils.clamp((values.temp-.2)/2.3,0,1);
-      const movement=THREE.MathUtils.clamp(values.accel/2,0,1);
-      const conductance=THREE.MathUtils.clamp(values.eda/10,0,1);
-      const ambient=THREE.MathUtils.clamp(values.pm/250,0,1);
-      const inputCue=THREE.MathUtils.clamp(heartRate*.08+spo2*.24+respiration*.18+acoustic*.18+temperature*.14+movement*.07+conductance*.06+ambient*.05,0,1);
-      setTissueResponse(inputCue,'input');
-    }
-    function updateFromModel(result={}){
-      const label=String(result.label||'').trim();
-      if(!label)throw new TypeError('Model output must include a non-empty label.');
-      const inputValues=result.inputValues||result.inputs||{};
-      syncModelInputs(inputValues);
-      const category=String(result.visualPattern||result.category||'').toLowerCase();
-      const normalized=label.toLowerCase();
-      const infection=category==='infection'||/infection|pneumonia/.test(normalized);
-      const airway=category==='airway'||/asthma|bronch|wheez/.test(normalized);
-      infectionUniform.value=infection?1:0;
-      airwayUniform.value=airway?1:0;
-      organViewport.style.setProperty('--infection-response',infection?'0.82':'0');
-      organViewport.style.setProperty('--airway-response',airway?'0.72':'0');
-      setTissueResponse((infection||airway)?0.72:0,'model');
-      document.querySelector('#model-result-label').textContent=label;
-      document.querySelector('#model-result-description').textContent='A fixed visual pattern is mapped from this returned model class. It does not estimate disease severity.';
-      document.querySelector('#model-result-pattern').textContent=infection?'Illustrative infection pattern':airway?'Illustrative airway pattern':'No disease-specific tissue pattern';
-      document.querySelector('#model-footnote-copy').textContent='Model output shown as provided. This visualization is illustrative and is not clinical advice.';
-      modelEmptyState.hidden=true;
-      modelResultState.hidden=false;
-      if(Number.isFinite(Number(result.latencyMs)))document.querySelector('.latency-pill').textContent=Math.round(Number(result.latencyMs))+' ms';
-      modelConnected=true;
-      document.querySelector('.model-state span').textContent='MODEL OUTPUT RECEIVED';
-    }
-    function clearModelOutput(){
-      infectionUniform.value=0;
-      airwayUniform.value=0;
       organViewport.style.setProperty('--infection-response','0');
       organViewport.style.setProperty('--airway-response','0');
-      previewFromInputs();
-      modelResultState.hidden=true;
-      modelEmptyState.hidden=false;
-      document.querySelector('#model-footnote-copy').textContent='Demo telemetry only. No diagnosis is generated by this preview.';
-      document.querySelector('.latency-pill').textContent='— ms';
-      document.querySelector('.model-state span').textContent=modelConnected?'MODEL EVALUATION PENDING':'MODEL NOT CONNECTED';
-      updateOrganStatus();
+      tissueValue.textContent='LUNG SURFACE · PHYSIOLOGY INPUT PREVIEW';
     }
-    window.PlumoRingVisuals={updateFromModel,clearResponse:clearModelOutput};
-
+    function driveAnatomyFromReadings(row,index){
+      const keys=['hr','spo2','resp'];
+      const current=Object.fromEntries(keys.map(key=>[key,row[key]]));
+      const history=replayRows.slice(Math.max(0,index-15),index+1);
+      const lastKnown=key=>{for(let i=history.length-1;i>=0;i--){const value=asNumber(history[i][key]);if(value!==null)return value}return null};
+      const hr=lastKnown('hr'),spo2=lastKnown('spo2'),resp=lastKnown('resp');
+      if(hr!==null)setHeartRate(hr);
+      if(resp!==null)setBreathRate(resp);
+      const oxygenShift=spo2===null?0:THREE.MathUtils.clamp((97-spo2)/18,0,1);
+      const breathShift=resp===null?0:THREE.MathUtils.clamp(Math.abs(resp-15)/24,0,1);
+      setTissueResponse(oxygenShift*.68+breathShift*.32);
+      setReading(replayEls.hr,current.hr,'bpm');
+      setReading(replayEls.spo2,current.spo2,'%');
+      setReading(replayEls.resp,current.resp,'br/min');
+      const observed=Array.isArray(row.observed)?row.observed:[];
+      const ringChannels=[observed[0],observed[1],observed[6]];
+      replayEls.quality.textContent=observed.length?ringChannels.map(Boolean).filter(Boolean).length+' / 3':'—';
+      const recent=history.filter(item=>Array.isArray(item.observed));
+      const available=recent.reduce((sum,item)=>sum+item.observed.map(Boolean).filter(Boolean).length,0);
+      const featureCount=observed.length||40;
+      const possible=Math.max(1,recent.length*featureCount);
+      replayEls.coverage.textContent=Math.round(available/possible*100)+'% · '+recent.length+' h';
+      renderClinicalInputs(row.clinical_inputs||{});
+    }
+    function renderClinicalInputs(inputs){
+      const grid=document.querySelector('#clinical-input-grid');grid.replaceChildren();
+      const entries=Object.entries(inputs);
+      if(!entries.length){grid.textContent='Clinical input details are not included in this replay.';return}
+      for(const [name,value] of entries){const item=document.createElement('span'),label=document.createElement('span'),reading=document.createElement('b');label.textContent=name;reading.textContent=asNumber(value)===null?'Missing':String(value);item.append(label,reading);grid.append(item)}
+    }
+    function updateTrend(index){
+      const rows=replayRows.slice(0,index+1);
+      const specs=[['trend-hr','hr',40,160],['trend-spo2','spo2',80,100],['trend-resp','resp',8,40],['trend-risk','risk_score',0,1],['trend-baseline','baseline_score',0,1],['trend-boosted','boosted_score',0,1]];
+      for(const [id,key,min,max] of specs){
+        const path=document.querySelector('#'+id);let d='',started=false;
+        rows.forEach((row,i)=>{
+          const raw=asNumber(row[key]);if(raw===null){started=false;return}
+          const x=rows.length<2?400:i/(rows.length-1)*800;
+          const y=108-(THREE.MathUtils.clamp((raw-min)/(max-min),0,1)*96);
+          d+=(started?' L ':'M ')+x.toFixed(1)+' '+y.toFixed(1);started=true;
+        });
+        path.setAttribute('d',d);
+      }
+    }
+    function updateReplay(index){
+      if(!replayRows.length)return;
+      replayIndex=THREE.MathUtils.clamp(index,0,replayRows.length-1);
+      const row=replayRows[replayIndex],score=asNumber(row.selected_score??row.risk_score);
+      driveAnatomyFromReadings(row,replayIndex);
+      replayEls.hour.textContent='HOUR '+String(row.hour??replayIndex+1);
+      replayEls.position.textContent=(replayIndex+1)+' / '+replayRows.length;
+      replayEls.range.value=String(replayIndex);
+      replayEls.range.max=String(replayRows.length-1);
+      replayEls.window.textContent=replayRows.length+' RECORDED HOURS';
+      replayEls.score.textContent=Number.isFinite(score)?String(Math.round(THREE.MathUtils.clamp(score,0,1)*100)):'—';
+      replayEls.riskFill.style.width=Number.isFinite(score)?(THREE.MathUtils.clamp(score,0,1)*100).toFixed(1)+'%':'0%';
+      replayEls.riskState.textContent='RELATIVE '+replaySelectedModel.toUpperCase()+' SCORE · HOUR '+String(row.hour??replayIndex+1);
+      replayEls.riskTitle.textContent='Experimental hospital sepsis-risk output';
+      replayEls.riskDescription.textContent='Selected using set-A validation, then shown on a held-out hospital record. It is not a calibrated probability, a ring reading, or a pulmonary diagnosis.';
+      replayEls.benchmark.textContent=row.benchmark_label===1?'1 · challenge label':row.benchmark_label===0?'0 · challenge label':'Not recorded';
+      const previous=replayRows[replayIndex-1],changes=[];
+      if(previous){
+        for(const [key,label,unit,digits] of [['hr','HR','bpm',0],['spo2','SpO₂','points',1],['resp','RR','br/min',0]]){
+          const a=asNumber(previous[key]),b=asNumber(row[key]);if(a!==null&&b!==null&&a!==b){const delta=b-a;changes.push(label+' '+(delta>0?'↑':'↓')+' '+Math.abs(delta).toFixed(digits)+' '+unit)}
+        }
+        const oldScore=asNumber(previous.selected_score??previous.risk_score);if(score!==null&&oldScore!==null&&Math.abs(score-oldScore)>=.01)changes.push('research score '+(score>oldScore?'↑':'↓')+' '+Math.round(Math.abs(score-oldScore)*100)+' points');
+      }
+      replayEls.event.textContent=changes.length?'Change from prior recorded hour: '+changes.join(' · '):'No adjacent-hour change to display';
+      updateTrend(replayIndex);
+      replayEls.back.disabled=replayIndex===0;
+      replayEls.forward.disabled=replayIndex===replayRows.length-1;
+    }
+    function stopReplay(){
+      if(replayTimer){clearInterval(replayTimer);replayTimer=null}
+      replayEls.toggle.setAttribute('aria-pressed','false');replayEls.toggle.innerHTML='▶&nbsp; PLAY REPLAY';
+    }
+    function startReplay(){
+      if(!replayLoaded||replayRows.length<2)return;
+      if(replayIndex>=replayRows.length-1)updateReplay(0);
+      replayEls.toggle.setAttribute('aria-pressed','true');replayEls.toggle.innerHTML='Ⅱ&nbsp; PAUSE REPLAY';
+      replayTimer=setInterval(()=>{if(replayIndex>=replayRows.length-1){stopReplay();return}updateReplay(replayIndex+1)},850);
+    }
+    replayEls.toggle.addEventListener('click',()=>replayTimer?stopReplay():startReplay());
+    replayEls.back.addEventListener('click',()=>{stopReplay();updateReplay(replayIndex-1)});
+    replayEls.forward.addEventListener('click',()=>{stopReplay();updateReplay(replayIndex+1)});
+    replayEls.range.addEventListener('input',event=>{stopReplay();updateReplay(Number(event.currentTarget.value))});
+    async function fetchJson(candidates){
+      let lastError;
+      for(const url of candidates){try{const response=await fetch(url,{headers:{Accept:'application/json'}});if(!response.ok)throw new Error('HTTP '+response.status);return await response.json()}catch(error){lastError=error}}
+      throw lastError||new Error('No source available');
+    }
+    async function loadReplay(){
+      try{
+        const data=await fetchJson([modelApiBase+'/api/replay',new URL('./assets/research_replay.json',import.meta.url).href]);
+        if(!Array.isArray(data.rows)||!data.rows.length)throw new Error('Replay file has no timeline rows.');
+        replayRows=data.rows;replaySelectedModel=data.selected_model||'selected research model';replayLoaded=true;replayEls.source.textContent=data.dataset+' · '+data.notice;
+        replayEls.state.textContent='HELD-OUT REPLAY READY · '+data.model;
+        replayEls.range.disabled=false;replayEls.toggle.disabled=false;replayEls.back.disabled=false;replayEls.forward.disabled=false;
+        updateReplay(0);
+      }catch(error){
+        replayEls.state.textContent='RECORDED REPLAY NOT AVAILABLE';
+        replayEls.source.textContent='The research timeline has not been generated yet. Run the documented public-data training workflow.';
+        replayEls.event.textContent=error.message;
+        replayEls.toggle.disabled=true;replayEls.range.disabled=true;
+      }
+    }
+    async function loadMetrics(){
+      try{
+        const report=await fetchJson([modelApiBase+'/models/sepsis_metrics.json',new URL('./models/sepsis_metrics.json',import.meta.url).href]);
+        const external=report.external_test_setB||{};
+        const test=external.temporal||external;
+        const comparisons=report.model_comparison||{};
+        const logistic=comparisons.logistic_regression_16h_window?.external_test_setB||external.logistic||{};
+        const boosted=comparisons.hist_gradient_boosting_16h_summary?.external_test_setB||external.boosted||{};
+        const selectedKey=report.selected_model_by_setA_validation_average_precision?.key;
+        const selectedResult=comparisons[selectedKey]?.external_test_setB||
+          (selectedKey==='hist_gradient_boosting_summary'?boosted:selectedKey==='logistic_regression_summary'?logistic:test);
+        document.querySelector('#metric-roc').textContent=Number.isFinite(Number(test.roc_auc))?Number(test.roc_auc).toFixed(3):'—';
+        document.querySelector('#metric-logistic').textContent=Number.isFinite(Number(logistic.roc_auc))?Number(logistic.roc_auc).toFixed(3):'—';
+        document.querySelector('#metric-boosted').textContent=Number.isFinite(Number(boosted.roc_auc))?Number(boosted.roc_auc).toFixed(3):'—';
+        document.querySelector('#metric-ap').textContent=Number.isFinite(Number(selectedResult.average_precision))?Number(selectedResult.average_precision).toFixed(3):'—';
+        document.querySelector('#metric-ap-label').textContent=(report.selected_model_by_setA_validation_average_precision?.label||'SELECTED MODEL')+' · SET B AP';
+        document.querySelector('#study-model-version').textContent=report.model_version+' · SET B · '+Number(test.windows||external.windows||0).toLocaleString()+' HELD-OUT WINDOWS';
+        document.querySelector('#replay-model-state').textContent='METRICS LOADED · '+report.model_version;
+      }catch(error){document.querySelector('#study-model-version').textContent='TRAINING REPORT NOT AVAILABLE'}
+    }
+    const trackDetails={
+      ring:{active:'01 · RING PHYSIOLOGY',kicker:'RING ESTIMATION · NO DISEASE LABELS',title:'Estimate measurements from ring signals.',copy:'HealthRing pairs red/infrared PPG and 3-axis motion from 54 adults with reference HR, RR, SpO₂ and blood pressure. Its 100 Hz signals support ring-vital estimation and motion robustness, not disease classification.'},
+      bidmc:{active:'02 · PPG + RESPIRATION',kicker:'WAVEFORM VALIDATION · 53 RECORDINGS',title:'Compare pulse signals with breath references.',copy:'BIDMC provides 125 Hz PPG and impedance-respiration waveforms, 1 Hz vitals and manually annotated breaths. It can support a separate respiration-estimation benchmark; it has no ring hardware or disease labels.'},
+      sepsis:{active:'03 · HOSPITAL RISK SEQUENCE',kicker:'PHYSIONET CHALLENGE 2019 · 40 CLINICAL INPUTS',title:'Compare three methods on the sepsis-risk label.',copy:'A temporal Conv–BiGRU–attention network is compared with logistic regression and histogram gradient boosting. The models use up to 40 hourly hospital signals, labs, and context fields. This separate hospital task cannot diagnose a lung infection or establish ring performance.'},
+      sounds:{active:'04 · RESPIRATORY AUDIO',kicker:'ICBHI · SOUND TASK, SEPARATE MODEL',title:'Study wheeze and crackle recordings.',copy:'ICBHI contains annotated lung-sound recordings and diagnosis metadata. It can support a separate audio classifier, but this ring does not record lung sounds, so those labels cannot be used as ring inputs.'}
+    };
+    document.querySelectorAll('[data-study]').forEach(button=>button.addEventListener('click',()=>{
+      const track=trackDetails[button.dataset.study];if(!track)return;
+      document.querySelectorAll('[data-study]').forEach(item=>item.classList.toggle('active',item===button));
+      document.querySelector('#glass-study-active').textContent=track.active;
+      document.querySelector('#study-detail-kicker').textContent=track.kicker;
+      document.querySelector('#study-detail-title').textContent=track.title;
+      document.querySelector('#study-detail-copy').textContent=track.copy;
+    }));
+    const glassStudy=document.querySelector('#glass-study');
+    glassStudy.addEventListener('pointermove',event=>{const rect=glassStudy.getBoundingClientRect();glassStudy.style.setProperty('--pointer-x',((event.clientX-rect.left)/rect.width*100).toFixed(1)+'%');glassStudy.style.setProperty('--pointer-y',((event.clientY-rect.top)/rect.height*100).toFixed(1)+'%')});
+    glassStudy.addEventListener('pointerleave',()=>{glassStudy.style.setProperty('--pointer-x','50%');glassStudy.style.setProperty('--pointer-y','40%')});
     function setHeartRate(value){
       heartBpm=THREE.MathUtils.clamp(Number(value)||72,45,150);
       heartReadout.innerHTML=heartBpm+' <small>BPM</small>';
@@ -868,9 +1147,6 @@
       breathReadout.innerHTML=breathsPerMinute+' <small>/ MIN</small>';
       organViewport.style.setProperty('--breath-cycle',(60/breathsPerMinute).toFixed(3)+'s');
     }
-    document.querySelector('.telemetry-control[data-key="hr"] input').addEventListener('input',e=>setHeartRate(e.currentTarget.value));
-    document.querySelector('.telemetry-control[data-key="resp"] input').addEventListener('input',e=>setBreathRate(e.currentTarget.value));
-    previewFromInputs();
 
     motionButton.setAttribute('aria-pressed',String(organMotion));
     organViewport.classList.toggle('motion-paused',!organMotion);
@@ -923,6 +1199,8 @@
       organRenderer.render(organScene,organCamera);
     }
     animateOrgans();
+    loadReplay();
+    loadMetrics();
   </script>
 </body>
 </html>
