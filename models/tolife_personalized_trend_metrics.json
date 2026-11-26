@@ -1,0 +1,40 @@
+{
+  "model_version": "plumoring-personalized-trend-feasibility-0.1",
+  "dataset": "TOLIFE Clinical Study A Health Indices v2.0",
+  "dataset_doi": "10.5281/zenodo.23263785",
+  "task": "research-only ranking of a clinically recorded moderate/severe COPD exacerbation 1\u20137 days later among people already diagnosed with COPD",
+  "method": "Training-free patient-personalized adverse-change composite. For each available vital, current-day values are standardized against that same person's previous 14 calendar days using median and robust MAD scale; an adverse direction is applied (higher HR/RR, lower SpO2), at least two channels and four prior observations per used channel are required, and available channel scores are combined with a monotonic normal-tail transform. No outcome is used to fit or tune the score.",
+  "input_channels": [
+    "daily heart-rate index",
+    "daily respiratory-rate index",
+    "daily SpO2 index"
+  ],
+  "baseline_days": 14,
+  "target_days_ahead": 7,
+  "counts": {
+    "participants": 36,
+    "participants_with_positive_windows": 3,
+    "eligible_participant_days": 1015,
+    "positive_participant_days": 28,
+    "positive_prevalence_equal_participant_weight": 0.007494727590731742,
+    "skipped_days_insufficient_prior_channels_or_current_data": 3421,
+    "minimum_prior_observations_per_used_channel": 4,
+    "minimum_current_channels": 2
+  },
+  "metrics": {
+    "roc_auc_equal_participant_weight": 0.44383647169114465,
+    "average_precision_equal_participant_weight": 0.006368775787624723,
+    "roc_auc_pooled_days": 0.47159502098711825,
+    "average_precision_pooled_days": 0.024768403935113092
+  },
+  "no_skill_average_precision_reference_equal_participant_weight": 0.007494727590731742,
+  "deployment_status": "not_deployed_research_only",
+  "limitations": [
+    "This is an exploratory adaptation of a published personalized wearable-vitals idea to sparse daily TOLIFE indices; it is not an exact reproduction of the published BVS3 pipeline.",
+    "TOLIFE did not use the proposed PlumoRing and has no raw ring PPG validation.",
+    "This task forecasts exacerbation among people already diagnosed with COPD; it does not diagnose COPD, asthma, pneumonia, infection, or other pulmonary disease.",
+    "The data are sparse daily indices rather than the hourly data used in the published 2026 wearable study.",
+    "No alert threshold was tuned or enabled. A research ranking score is not clinical advice or a patient risk probability."
+  ],
+  "reproduction": "python scripts/evaluate_tolife_personalized_trend.py"
+}

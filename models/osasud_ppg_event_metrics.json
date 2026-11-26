@@ -1,0 +1,513 @@
+{
+  "model_version": "plumoring-osasud-ppg-event-feasibility-0.1",
+  "dataset": "OSASUD \u00b7 stroke-unit overnight PSG and finger PPG",
+  "dataset_doi": "10.1038/s41597-022-01272-y",
+  "dataset_url": "https://springernature.figshare.com/articles/dataset/Main_dataset_file/19214289",
+  "task": "research-only detection of any physician-annotated apnea or hypopnea in a 30-second overnight window among hospitalized stroke-unit patients",
+  "input_channels": {
+    "strict_ppg_only": [
+      "finger PPG waveform",
+      "PPG-derived pulse timing and interval variability",
+      "PPG-derived oxygen saturation",
+      "PPG-derived perfusion index"
+    ],
+    "expanded_ring_like_vitals": [
+      "strict PPG-only inputs",
+      "reference heart rate from hospital ECG",
+      "reference respiratory rate from hospital thoracic impedance"
+    ]
+  },
+  "excluded_channels": [
+    "ECG waveforms",
+    "PSG airflow",
+    "thoracic/abdominal effort",
+    "snoring/audio",
+    "body position",
+    "labels or event metadata"
+  ],
+  "secondary_track_sensor_source_note": "The expanded scalar-vitals comparison adds hospital ECG-derived HR and thoracic-impedance-derived RR; it is not a ring-only model and is not eligible for ring inference.",
+  "feature_names": [
+    "spo2_coverage",
+    "spo2_mean",
+    "spo2_std",
+    "spo2_min",
+    "spo2_max",
+    "spo2_p10",
+    "spo2_p90",
+    "spo2_slope",
+    "perfusion_coverage",
+    "perfusion_mean",
+    "perfusion_std",
+    "perfusion_min",
+    "perfusion_max",
+    "perfusion_p10",
+    "perfusion_p90",
+    "perfusion_slope",
+    "reference_hr_coverage",
+    "reference_hr_mean",
+    "reference_hr_std",
+    "reference_hr_min",
+    "reference_hr_max",
+    "reference_hr_p10",
+    "reference_hr_p90",
+    "reference_hr_slope",
+    "reference_rr_coverage",
+    "reference_rr_mean",
+    "reference_rr_std",
+    "reference_rr_min",
+    "reference_rr_max",
+    "reference_rr_p10",
+    "reference_rr_p90",
+    "reference_rr_slope",
+    "ppg_amplitude_p2p_median",
+    "ppg_ac_rms_median",
+    "ppg_derivative_rms_median",
+    "ppg_valid_seconds",
+    "ppg_derived_pulse_rate_bpm",
+    "ppg_ibi_cv",
+    "ppg_ibi_rmssd_seconds"
+  ],
+  "split": "5-fold GroupKFold by participant; no participant appears in both train and held-out fold",
+  "counts": {
+    "source_rows": 961357,
+    "source_participants": 30,
+    "windows": 27627,
+    "positive_windows": 8640,
+    "positive_prevalence": 0.312737539363666,
+    "excluded_low_ppg_quality_windows": 4405,
+    "annotation_seconds_by_label": {
+      "APNEA-CENTRAL": 10828,
+      "APNEA-MIXED": 12360,
+      "APNEA-OBSTRUCTIVE": 44217,
+      "HYPOPNEA": 78035,
+      "NONE": 815917
+    },
+    "seconds_per_window": 30,
+    "participants_with_windows": 30
+  },
+  "naive_average_precision_reference_equal_participant_weight": 0.3118960277185508,
+  "best_candidate": {
+    "feature_set": "strict_ppg_only",
+    "model": "extra_trees"
+  },
+  "best_candidate_metrics": {
+    "roc_auc_equal_participant_weight": 0.7801345326679172,
+    "average_precision_equal_participant_weight": 0.6329241713685535,
+    "roc_auc_pooled_windows": 0.7847579374484297,
+    "average_precision_pooled_windows": 0.6377189912109933,
+    "threshold_0_5_sensitivity_equal_participant_weight": 0.6457087082195582,
+    "threshold_0_5_specificity_equal_participant_weight": 0.7807085681942927,
+    "threshold_0_5_balanced_accuracy_pooled_windows": 0.7150647573924849
+  },
+  "feature_set_results": {
+    "strict_ppg_only": {
+      "input_features": [
+        "spo2_coverage",
+        "spo2_mean",
+        "spo2_std",
+        "spo2_min",
+        "spo2_max",
+        "spo2_p10",
+        "spo2_p90",
+        "spo2_slope",
+        "perfusion_coverage",
+        "perfusion_mean",
+        "perfusion_std",
+        "perfusion_min",
+        "perfusion_max",
+        "perfusion_p10",
+        "perfusion_p90",
+        "perfusion_slope",
+        "ppg_amplitude_p2p_median",
+        "ppg_ac_rms_median",
+        "ppg_derivative_rms_median",
+        "ppg_valid_seconds",
+        "ppg_derived_pulse_rate_bpm",
+        "ppg_ibi_cv",
+        "ppg_ibi_rmssd_seconds"
+      ],
+      "naive_average_precision_reference_equal_participant_weight": 0.3118960277185508,
+      "models": {
+        "logistic_regression": {
+          "metrics": {
+            "roc_auc_equal_participant_weight": 0.7586258867919988,
+            "average_precision_equal_participant_weight": 0.6127305511270859,
+            "roc_auc_pooled_windows": 0.7635685673823611,
+            "average_precision_pooled_windows": 0.6179269985719766,
+            "threshold_0_5_sensitivity_equal_participant_weight": 0.6073559173193124,
+            "threshold_0_5_specificity_equal_participant_weight": 0.8011743460819338,
+            "threshold_0_5_balanced_accuracy_pooled_windows": 0.7051716397330337
+          },
+          "folds": [
+            {
+              "fold": 1,
+              "held_out_participants": 6,
+              "windows": 5506,
+              "positive_windows": 2442,
+              "equal_participant_average_precision": 0.7191281392762825,
+              "equal_participant_roc_auc": 0.7114365707144905
+            },
+            {
+              "fold": 2,
+              "held_out_participants": 6,
+              "windows": 5357,
+              "positive_windows": 1389,
+              "equal_participant_average_precision": 0.6952908157788826,
+              "equal_participant_roc_auc": 0.8556082666267011
+            },
+            {
+              "fold": 3,
+              "held_out_participants": 6,
+              "windows": 5741,
+              "positive_windows": 813,
+              "equal_participant_average_precision": 0.3653813102506236,
+              "equal_participant_roc_auc": 0.7817049147946382
+            },
+            {
+              "fold": 4,
+              "held_out_participants": 6,
+              "windows": 5282,
+              "positive_windows": 1641,
+              "equal_participant_average_precision": 0.5438954884827075,
+              "equal_participant_roc_auc": 0.7356817527473075
+            },
+            {
+              "fold": 5,
+              "held_out_participants": 6,
+              "windows": 5741,
+              "positive_windows": 2355,
+              "equal_participant_average_precision": 0.647377246652341,
+              "equal_participant_roc_auc": 0.7593441799768222
+            }
+          ]
+        },
+        "hist_gradient_boosting": {
+          "metrics": {
+            "roc_auc_equal_participant_weight": 0.7674956909012307,
+            "average_precision_equal_participant_weight": 0.6120435683579342,
+            "roc_auc_pooled_windows": 0.7689943192125606,
+            "average_precision_pooled_windows": 0.6121905308986697,
+            "threshold_0_5_sensitivity_equal_participant_weight": 0.6309173089124372,
+            "threshold_0_5_specificity_equal_participant_weight": 0.774351349125243,
+            "threshold_0_5_balanced_accuracy_pooled_windows": 0.7012234156557411
+          },
+          "folds": [
+            {
+              "fold": 1,
+              "held_out_participants": 6,
+              "windows": 5506,
+              "positive_windows": 2442,
+              "equal_participant_average_precision": 0.6904652930773287,
+              "equal_participant_roc_auc": 0.7029345405139342
+            },
+            {
+              "fold": 2,
+              "held_out_participants": 6,
+              "windows": 5357,
+              "positive_windows": 1389,
+              "equal_participant_average_precision": 0.6230378832740575,
+              "equal_participant_roc_auc": 0.8376354849532095
+            },
+            {
+              "fold": 3,
+              "held_out_participants": 6,
+              "windows": 5741,
+              "positive_windows": 813,
+              "equal_participant_average_precision": 0.4056036175608704,
+              "equal_participant_roc_auc": 0.765183296318114
+            },
+            {
+              "fold": 4,
+              "held_out_participants": 6,
+              "windows": 5282,
+              "positive_windows": 1641,
+              "equal_participant_average_precision": 0.6169177225117883,
+              "equal_participant_roc_auc": 0.786807677925098
+            },
+            {
+              "fold": 5,
+              "held_out_participants": 6,
+              "windows": 5741,
+              "positive_windows": 2355,
+              "equal_participant_average_precision": 0.659641732719038,
+              "equal_participant_roc_auc": 0.767783687903844
+            }
+          ]
+        },
+        "extra_trees": {
+          "metrics": {
+            "roc_auc_equal_participant_weight": 0.7801345326679172,
+            "average_precision_equal_participant_weight": 0.6329241713685535,
+            "roc_auc_pooled_windows": 0.7847579374484297,
+            "average_precision_pooled_windows": 0.6377189912109933,
+            "threshold_0_5_sensitivity_equal_participant_weight": 0.6457087082195582,
+            "threshold_0_5_specificity_equal_participant_weight": 0.7807085681942927,
+            "threshold_0_5_balanced_accuracy_pooled_windows": 0.7150647573924849
+          },
+          "folds": [
+            {
+              "fold": 1,
+              "held_out_participants": 6,
+              "windows": 5506,
+              "positive_windows": 2442,
+              "equal_participant_average_precision": 0.7014400672496366,
+              "equal_participant_roc_auc": 0.7292972645783413
+            },
+            {
+              "fold": 2,
+              "held_out_participants": 6,
+              "windows": 5357,
+              "positive_windows": 1389,
+              "equal_participant_average_precision": 0.6694213835047563,
+              "equal_participant_roc_auc": 0.8425494355880176
+            },
+            {
+              "fold": 3,
+              "held_out_participants": 6,
+              "windows": 5741,
+              "positive_windows": 813,
+              "equal_participant_average_precision": 0.38969079282572616,
+              "equal_participant_roc_auc": 0.7557632062306243
+            },
+            {
+              "fold": 4,
+              "held_out_participants": 6,
+              "windows": 5282,
+              "positive_windows": 1641,
+              "equal_participant_average_precision": 0.594814891035503,
+              "equal_participant_roc_auc": 0.7702013969766511
+            },
+            {
+              "fold": 5,
+              "held_out_participants": 6,
+              "windows": 5741,
+              "positive_windows": 2355,
+              "equal_participant_average_precision": 0.7143226170296412,
+              "equal_participant_roc_auc": 0.7935497186357483
+            }
+          ]
+        }
+      }
+    },
+    "expanded_ring_like_vitals": {
+      "input_features": [
+        "spo2_coverage",
+        "spo2_mean",
+        "spo2_std",
+        "spo2_min",
+        "spo2_max",
+        "spo2_p10",
+        "spo2_p90",
+        "spo2_slope",
+        "perfusion_coverage",
+        "perfusion_mean",
+        "perfusion_std",
+        "perfusion_min",
+        "perfusion_max",
+        "perfusion_p10",
+        "perfusion_p90",
+        "perfusion_slope",
+        "reference_hr_coverage",
+        "reference_hr_mean",
+        "reference_hr_std",
+        "reference_hr_min",
+        "reference_hr_max",
+        "reference_hr_p10",
+        "reference_hr_p90",
+        "reference_hr_slope",
+        "reference_rr_coverage",
+        "reference_rr_mean",
+        "reference_rr_std",
+        "reference_rr_min",
+        "reference_rr_max",
+        "reference_rr_p10",
+        "reference_rr_p90",
+        "reference_rr_slope",
+        "ppg_amplitude_p2p_median",
+        "ppg_ac_rms_median",
+        "ppg_derivative_rms_median",
+        "ppg_valid_seconds",
+        "ppg_derived_pulse_rate_bpm",
+        "ppg_ibi_cv",
+        "ppg_ibi_rmssd_seconds"
+      ],
+      "naive_average_precision_reference_equal_participant_weight": 0.3118960277185508,
+      "models": {
+        "logistic_regression": {
+          "metrics": {
+            "roc_auc_equal_participant_weight": 0.7702383578483278,
+            "average_precision_equal_participant_weight": 0.6204194523611175,
+            "roc_auc_pooled_windows": 0.7750799889398009,
+            "average_precision_pooled_windows": 0.6274570826519046,
+            "threshold_0_5_sensitivity_equal_participant_weight": 0.6064043890363384,
+            "threshold_0_5_specificity_equal_participant_weight": 0.8037819139360759,
+            "threshold_0_5_balanced_accuracy_pooled_windows": 0.7074437901224815
+          },
+          "folds": [
+            {
+              "fold": 1,
+              "held_out_participants": 6,
+              "windows": 5506,
+              "positive_windows": 2442,
+              "equal_participant_average_precision": 0.7277544968799219,
+              "equal_participant_roc_auc": 0.7333734633848266
+            },
+            {
+              "fold": 2,
+              "held_out_participants": 6,
+              "windows": 5357,
+              "positive_windows": 1389,
+              "equal_participant_average_precision": 0.6950850614219356,
+              "equal_participant_roc_auc": 0.852830678489783
+            },
+            {
+              "fold": 3,
+              "held_out_participants": 6,
+              "windows": 5741,
+              "positive_windows": 813,
+              "equal_participant_average_precision": 0.3799868003862783,
+              "equal_participant_roc_auc": 0.7857326118023867
+            },
+            {
+              "fold": 4,
+              "held_out_participants": 6,
+              "windows": 5282,
+              "positive_windows": 1641,
+              "equal_participant_average_precision": 0.5320068028985675,
+              "equal_participant_roc_auc": 0.715032582257499
+            },
+            {
+              "fold": 5,
+              "held_out_participants": 6,
+              "windows": 5741,
+              "positive_windows": 2355,
+              "equal_participant_average_precision": 0.655364910064333,
+              "equal_participant_roc_auc": 0.7644119895701722
+            }
+          ]
+        },
+        "hist_gradient_boosting": {
+          "metrics": {
+            "roc_auc_equal_participant_weight": 0.7583416959357074,
+            "average_precision_equal_participant_weight": 0.6093291156382519,
+            "roc_auc_pooled_windows": 0.7585798500777334,
+            "average_precision_pooled_windows": 0.6082869324546818,
+            "threshold_0_5_sensitivity_equal_participant_weight": 0.6194829857096601,
+            "threshold_0_5_specificity_equal_participant_weight": 0.7822642886859209,
+            "threshold_0_5_balanced_accuracy_pooled_windows": 0.6987872550224423
+          },
+          "folds": [
+            {
+              "fold": 1,
+              "held_out_participants": 6,
+              "windows": 5506,
+              "positive_windows": 2442,
+              "equal_participant_average_precision": 0.6774466755761784,
+              "equal_participant_roc_auc": 0.6844926473173942
+            },
+            {
+              "fold": 2,
+              "held_out_participants": 6,
+              "windows": 5357,
+              "positive_windows": 1389,
+              "equal_participant_average_precision": 0.6400007902114556,
+              "equal_participant_roc_auc": 0.8372429644822926
+            },
+            {
+              "fold": 3,
+              "held_out_participants": 6,
+              "windows": 5741,
+              "positive_windows": 813,
+              "equal_participant_average_precision": 0.3715166502160298,
+              "equal_participant_roc_auc": 0.7532529265625605
+            },
+            {
+              "fold": 4,
+              "held_out_participants": 6,
+              "windows": 5282,
+              "positive_windows": 1641,
+              "equal_participant_average_precision": 0.6128906620988127,
+              "equal_participant_roc_auc": 0.7661129973598415
+            },
+            {
+              "fold": 5,
+              "held_out_participants": 6,
+              "windows": 5741,
+              "positive_windows": 2355,
+              "equal_participant_average_precision": 0.6841816793560686,
+              "equal_participant_roc_auc": 0.7754935782137684
+            }
+          ]
+        },
+        "extra_trees": {
+          "metrics": {
+            "roc_auc_equal_participant_weight": 0.7678399672804468,
+            "average_precision_equal_participant_weight": 0.616189863744148,
+            "roc_auc_pooled_windows": 0.7689236995000478,
+            "average_precision_pooled_windows": 0.6156847054169142,
+            "threshold_0_5_sensitivity_equal_participant_weight": 0.6136857960743043,
+            "threshold_0_5_specificity_equal_participant_weight": 0.7862641844359696,
+            "threshold_0_5_balanced_accuracy_pooled_windows": 0.6989331699174288
+          },
+          "folds": [
+            {
+              "fold": 1,
+              "held_out_participants": 6,
+              "windows": 5506,
+              "positive_windows": 2442,
+              "equal_participant_average_precision": 0.6922534157563296,
+              "equal_participant_roc_auc": 0.7127609071382036
+            },
+            {
+              "fold": 2,
+              "held_out_participants": 6,
+              "windows": 5357,
+              "positive_windows": 1389,
+              "equal_participant_average_precision": 0.6292501165159926,
+              "equal_participant_roc_auc": 0.8264763729309825
+            },
+            {
+              "fold": 3,
+              "held_out_participants": 6,
+              "windows": 5741,
+              "positive_windows": 813,
+              "equal_participant_average_precision": 0.31499114176329396,
+              "equal_participant_roc_auc": 0.7129475053715081
+            },
+            {
+              "fold": 4,
+              "held_out_participants": 6,
+              "windows": 5282,
+              "positive_windows": 1641,
+              "equal_participant_average_precision": 0.5948481127558537,
+              "equal_participant_roc_auc": 0.7601682028680097
+            },
+            {
+              "fold": 5,
+              "held_out_participants": 6,
+              "windows": 5741,
+              "positive_windows": 2355,
+              "equal_participant_average_precision": 0.7087155714161131,
+              "equal_participant_roc_auc": 0.7847986859703787
+            }
+          ]
+        }
+      }
+    }
+  },
+  "exploratory_gate": {
+    "criteria": "strict PPG-only candidate: equal-participant-weight average precision >= 1.25x positive prevalence and equal-participant-weight ROC-AUC >= 0.60",
+    "passed": true,
+    "patient_facing_or_diagnostic": false,
+    "selection_limitation": "The best of several baseline models is selected on the same grouped out-of-fold comparison; its reported gate is exploratory and optimistic. Independent external validation is still required."
+  },
+  "deployment_status": "not_deployed_pending_independent_external_validation",
+  "clinical_limitations": [
+    "This is event detection during overnight monitoring, not diagnosis of obstructive sleep apnea syndrome.",
+    "The 30-person cohort consists of hospitalized patients admitted for suspected cerebrovascular events; it is not representative of a community ring population.",
+    "Signals were captured by clinical finger PPG hardware, not the proposed PlumoRing device.",
+    "An exploratory grouped result does not establish clinical utility or validate a continuous ring alert.",
+    "This dataset does not support detecting COPD, asthma, pneumonia, bronchitis, infection, or daytime pulmonary disease."
+  ],
+  "reproduction": "python scripts/evaluate_osasud_ppg_events.py"
+}

@@ -2,14 +2,20 @@
 
 ## Current status
 
-There is no deployed pulmonary disease model or patient-facing score. Two different research tracks are now evaluated separately:
+There is no deployed pulmonary disease model, patient-facing score, or live ring connection. Each dataset is kept in its own research track because the sensors, participants, labels, and tasks differ:
 
-1. COPD exacerbation forecasting on TOLIFE daily indices, among people already diagnosed with COPD. Its participant-held-out comparison failed the predeclared no-skill and ROC-AUC gates.
-2. COPD-versus-control classification from public PPG segments, using the Zenodo archives with six identified people (four COPD, two controls). The script compares three classical models under leave-one-participant-out validation across six duration variants. The variants contain the same six people; results are feasibility evidence only and do not validate a disease detector.
+1. **COPD exacerbation forecasting:** TOLIFE daily indices and recorded moderate/severe exacerbations among people already diagnosed with COPD. Participant-held-out models failed the no-skill and ROC-AUC gates.
+2. **COPD versus control from PPG:** the public Zenodo archive has six people (four COPD, two controls), repeated across six window-duration variants. All three candidates produced participant-level ROC-AUC 0.000, with logistic average precision 0.525 against a 0.667 prevalence reference. This is a failed feasibility experiment, not a diagnosis model.
+3. **Asthma worsening:** AAMOS-00 MiBand3 heart-rate/activity data paired with weekly reports of systemic corticosteroid use above usual. This is retrospective classification in adults already diagnosed with asthma, not future-attack prediction or new-asthma diagnosis. Only six participants contributed positive weeks; the nested participant-held-out result fails the sensitivity gate.
+4. **Apnea/hypopnea event windows:** OSASUD finger PPG and PPG-derived measures paired with physician-reviewed overnight PSG annotations. Its best strict-PPG exploratory baseline reached equal-participant ROC-AUC 0.780 and average precision 0.633 versus 0.313 prevalence on participant-held-out folds. The best of three models was selected on that same grouped comparison, so the result is optimistic and needs nested/external validation. It does not diagnose sleep apnea syndrome or validate PlumoRing hardware. Any expanded track with hospital ECG-derived heart rate or thoracic-impedance respiratory rate is explicitly not ring-only.
+5. **Ring physiology estimation:** HealthRing has real finger-ring PPG and motion with reference vitals, but no pulmonary disease labels. It can support sensor estimation, not disease classification.
+6. **Personalized COPD trend baseline:** a training-free 14-day per-person HR/RR/SpO₂ change score was separately evaluated on the sparse TOLIFE daily records. It had equal-participant ROC-AUC 0.444 and average precision 0.0064 versus a 0.0075 no-skill reference on only 1,015 days from 36 people, with just 3 people contributing positive days. It also failed and has no alert threshold.
 
-No model weights are saved or loaded by the app. The app displays aggregate study evidence and keeps patient-facing inference disabled.
+The strongest external continuous-monitoring evidence located is a 2026 eMEUSE-SANTÉ study of 220 COPD patients monitored for six months, with 42 physician-validated exacerbations. The paper reports an AUC of 0.88 for its personalized HR/RR/SpO₂ score, but its underlying participant data are restricted due to re-identification risk and are available only through an approved research request. These published results are not PlumoRing results.
 
-The PPG feasibility result is poor: all three candidates produced participant-level ROC-AUC 0.000 on the six-person split; the logistic average precision was 0.525 versus a 0.667 prevalence baseline. The original 14-person paper's Figshare feature matrix is not used because it lacks participant IDs and its healthy-row count conflicts with the paper's table. HealthRing has actual ring PPG/IMU but no pulmonary diagnosis labels. The data sources must remain separate.
+No datasets are concatenated to manufacture a larger disease cohort. Lung-audio, radiology, hospital-code, and symptom-only datasets are not treated as ring PPG labels. The original 14-person COPD PPG study's Figshare matrix is excluded because it lacks participant IDs and its healthy-row count conflicts with the paper's participant table.
+
+The app exposes aggregate study evidence only. No model weights are saved or loaded, and no disease probability, alert, or disease-driven anatomy color is returned.
 
 ## Local app
 
@@ -18,41 +24,39 @@ The PPG feasibility result is poor: all three candidates produced participant-le
     python -m pip install -r requirements-model.txt
     python server.py
 
-Open http://127.0.0.1:5000. The Flask app binds to loopback.
+Open http://127.0.0.1:5000. Flask binds to loopback.
 
-- `GET /api/health` reports that inference is not ready, that no disease diagnosis is supported, and that the data are not ring-validated.
-- `GET /api/pulmonary/metrics` serves aggregate evaluation metrics only.
-- `GET /api/pulmonary/copd-ppg-metrics` serves aggregate COPD/PPG feasibility metrics only.
-- `GET /models/pulmonary_feasibility_metrics.json` serves the same aggregate report.
-- `GET /models/copd_ppg_screening_metrics.json` serves the separate aggregate PPG report.
-- Legacy hospital replay and score routes return HTTP 410; they are not part of the pulmonary-only app.
+- `GET /api/health` reports that inference is not ready and that the evidence is not ring-validated.
+- `GET /api/pulmonary/metrics` serves aggregate TOLIFE results.
+- `GET /api/pulmonary/copd-ppg-metrics` serves aggregate COPD/PPG feasibility results.
+- `GET /api/pulmonary/aamos-metrics` serves aggregate AAMOS-00 asthma-worsening results.
+- `GET /api/pulmonary/osasud-metrics` serves aggregate OSASUD apnea/hypopnea event results.
+- `GET /api/pulmonary/tolife-trend-metrics` serves aggregate personalized-trend baseline results.
+- Equivalent aggregate reports are served under `/models/` when available.
+- Legacy hospital replay and scoring endpoints return HTTP 410.
 
-The heart and both lung meshes remain interactive and animated. Their default motion values are illustrative. The lung surface has only a subtle non-diagnostic material texture; the app does not map readings or experimental scores to infection, inflammation, or severity colors.
+The heart and both lung meshes remain interactive and animated. Their rates are illustrative defaults. The anatomy does not display patient results or experimental disease severity.
 
-## Reproduce the TOLIFE comparison
+## Reproduce the studies
 
-Download the official [TOLIFE v2.0 index archive](https://zenodo.org/records/23263785) and place it at `data/tolife/index.zip`. The local data directory is ignored by Git. Run:
+Download the public datasets into the ignored `data/` directory, install `requirements-model.txt`, and run the matching script:
 
-    python scripts/evaluate_pulmonary_study.py
+| Track | Script | Aggregate report |
+| --- | --- | --- |
+| TOLIFE COPD flare | `python scripts/evaluate_pulmonary_study.py` | `models/pulmonary_feasibility_metrics.json` |
+| COPD PPG | `python scripts/evaluate_copd_ppg_subject_holdout.py` | `models/copd_ppg_screening_metrics.json` |
+| AAMOS-00 asthma worsening | `python scripts/evaluate_aamos_asthma_worsening.py` | `models/aamos_asthma_worsening_metrics.json` |
+| OSASUD PPG event windows | `python scripts/evaluate_osasud_ppg_events.py` | `models/osasud_ppg_event_metrics.json` |
+| TOLIFE personalized trend score | `python scripts/evaluate_tolife_personalized_trend.py` | `models/tolife_personalized_trend_metrics.json` |
 
-The evaluation uses quality-valid daily indices, a seven-day history, a future 1–7 day COPD exacerbation label, at least two observed sensor families, and five-fold participant-held-out GroupKFold. It compares logistic regression, histogram gradient boosting, and random forest. It writes only aggregate metrics; there is no saved deployment model.
+The AAMOS-00 archive is available from [Edinburgh DataShare](https://datashare.ed.ac.uk/items/8478e384-fd1b-4a37-9555-0c6e1218e90b), under CC BY 4.0. Its primary paper reports 22 adults and 2,054 patient-days. The evaluator uses only smartwatch HR/activity over the reported week, and holds out whole participants. Its target is retrospective self-reported steroid use above usual.
 
-The best average precision was 0.01694 against a no-skill prevalence reference of 0.01819; the best ROC-AUC was 0.4874. The model gate failed. These are not probabilities or evidence of disease detection.
+The OSASUD archive is available on [Figshare](https://springernature.figshare.com/articles/dataset/Main_dataset_file/19214289). It is a large pickle, so first load can take several minutes. The evaluator extracts quality-checked 30-second windows and reports PPG-only results separately from hospital ECG/impedance-derived scalar references. Raw data and participant-level outputs are not committed.
 
-## Reproduce the COPD/PPG feasibility comparison
+## Why this is not a clinical model
 
-Download all six duration archives from the official [Zenodo COPD PPG record](https://zenodo.org/records/18109876) into `data/copd_ppg_zenodo/`. Install the dependencies above and run:
+The disease-labeled cohorts remain small or mismatched to a ring. TOLIFE's COPD flare result failed; the six-person COPD PPG study failed; AAMOS-00 has only six positive participants in the watch-covered subset and misses the sensitivity gate. OSASUD is an overnight hospital event cohort of 30 stroke-unit patients. No current result supports diagnosis of asthma, COPD, pneumonia, bronchitis, respiratory infection, or sleep apnea using this ring.
 
-    python scripts/evaluate_copd_ppg_subject_holdout.py
+The current datasets do not justify the supplied high-capacity sequence architecture for deployment. A larger neural model cannot compensate for too few independent patients, labels without reliable event timing, different sensor hardware, or absent external validation. Use classical, regularized baselines for these feasibility checks; keep the patient-facing model disabled.
 
-The script verifies each filename's COPD/control label against its rows, samples up to 512 windows per person, and evaluates each archive separately with leave-one-person-out folds. It compares regularized logistic regression, an RBF support-vector machine, and Extra Trees. Scores are aggregated to one median score per held-out person before calculating metrics. No saved model or individual score is produced.
-
-Each archive has four COPD participants and two controls, and the same participants appear across all six duration variants. The subject count is still six, not 36 or the number of windows. The related 14-person paper's Figshare feature matrix is not used for validation: it has no participant IDs and its healthy-window count conflicts with the published per-person totals. The paper's random epoch split is not equivalent to holding out people.
-
-## Why a deep model is not deployed
-
-The event target is rare and positive days come from 11 participants. The dataset supplies daily indices from non-ring devices, not the raw continuous data stream of the proposed ring. The most relevant raw-ring dataset lacks pulmonary labels. A larger neural network cannot repair these label, device, and sample-size gaps; it would make an unsupported score look more precise.
-
-## Minimum evidence before integration
-
-A future disease model must use a matched cohort with the actual ring's signals and clinician-confirmed pulmonary labels. It must be split by participant and site, evaluated on a locked external cohort, and report calibration, sensitivity, specificity, precision, false-alert burden, lead time, and subgroup performance. The UI must receive a versioned model output with quality flags and uncertainty. Until then, it returns no disease result and the anatomy remains an illustration.
+Before future integration, collect a matched cohort with the actual ring's raw red/infrared PPG, movement and relevant channels; use clinician-confirmed pulmonary labels; split by participant and site before feature selection and calibration; and reserve an independent external cohort. Evaluate calibration, sensitivity, specificity, precision, false alerts per patient-time, lead time, subgroup performance, and device-specific signal quality. Only then consider a versioned inference endpoint and a carefully labeled visual response.

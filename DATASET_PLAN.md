@@ -11,6 +11,9 @@ A useful model needs matched inputs and labels: ring-compatible signals from the
 | Dataset | What it contains | Valid use here | Key limitation |
 | --- | --- | --- | --- |
 | [TOLIFE Clinical Study A v2.0](https://zenodo.org/records/23263785) | 86 people with COPD monitored across three sites; daily indices and an exacerbation register | Exploratory forecasting of a recorded moderate/severe COPD exacerbation among people already diagnosed with COPD | Multiple non-ring devices and sparse daily derived indices; not a new-disease diagnosis or ring validation |
+| [eMEUSE-SANTÉ wearable COPD study](https://journals.plos.org/digitalhealth/article?id=10.1371/journal.pdig.0001405) | Six months of HR, breathing rate, SpO₂ and activity from 220 COPD participants; 42 physician-validated exacerbations in 39 people | Strong external reference for personalized continuous COPD-exacerbation monitoring methods | Patient-level data are restricted due re-identification risk; eligible research access requires approval and a data-sharing agreement through the MARS/HP2 repository |
+| [AAMOS-00 asthma study](https://datashare.ed.ac.uk/items/8478e384-fd1b-4a37-9555-0c6e1218e90b) | 22 adults with asthma; 2,054 patient-days overall; MiBand3 heart-rate/activity and weekly asthma questionnaires | Separate exploratory recognition of a reported past-week increase in systemic corticosteroid use | Only 20 people have watch data; the outcome is retrospective and self-reported, and inputs are smartwatch summaries, not raw ring PPG |
+| [OSASUD stroke-unit study](https://springernature.figshare.com/articles/dataset/Main_dataset_file/19214289) | 30 hospitalized stroke-unit patients with one-second finger PPG, PPG-derived oxygen/perfusion, and physician-tagged PSG apnea/hypopnea events | Separate overnight apnea/hypopnea event-window detection feasibility study using strict PPG-only inputs | One small, older, hospitalized cohort; it evaluates annotated events, not a diagnosis of sleep apnea syndrome or daytime pulmonary disease |
 | [HealthRing](https://www.nature.com/articles/s41597-026-07289-x) | 54 adults; finger-ring red/infrared PPG and 3-axis motion, with reference HR, RR, SpO₂ and blood pressure | Ring-vital estimation, motion-artifact handling, and later sensor-validation work | No COPD, asthma, pneumonia, or exacerbation diagnosis labels |
 | [Ultra-Short PPG for COPD Screening](https://zenodo.org/records/18109876) | Six anonymized participant files in each of six duration archives; four COPD labels and two control labels, verified against each CSV | Separate, subject-held-out COPD-vs-control feasibility experiment using PPG waveform segments | All duration archives repeat the same six people. Window count does not increase the independent cohort. This is not a reliable diagnosis model or evidence that the proposed ring can detect COPD. |
 | [HUSM and GMicro PPG peak-detection data](https://zenodo.org/records/8280127) | 66 minutes of PPG with systolic-peak annotations, collected from healthy participants and people with cardiopulmonary conditions | PPG peak-detection and signal-processing methods | The release and accompanying paper evaluate peak detection, not a pulmonary diagnosis target with patient-level disease labels; it cannot be added as COPD training data. |
@@ -24,7 +27,46 @@ A useful model needs matched inputs and labels: ring-compatible signals from the
 - TOLIFE has COPD event labels but its channels come from smartwatch, mattress, phone/shoes, and spirometer-related measurements. Similarity to ring features is not proof of ring measurement equivalence.
 - Lung-audio datasets require a microphone, which is not part of this ring. Hospital-record, imaging, and symptom-score datasets do not become ring datasets by relabeling or concatenating them.
 
-No asthma, pneumonia, bronchitis, or pulmonary-infection diagnosis model is supported by these inputs and labels. Do not present a condition label unless a future matched cohort and independent validation support it.
+No asthma, pneumonia, bronchitis, or pulmonary-infection diagnosis model is supported by these inputs and labels. The AAMOS target is asthma worsening within a known-asthma cohort, not new asthma diagnosis. OSASUD labels apnea/hypopnea events during overnight clinical monitoring, not an OSAS diagnosis from a ring. Do not present a condition label unless a future matched cohort and independent validation support it.
+
+## AAMOS-00 asthma worsening feasibility evaluation
+
+The public [AAMOS-00 dataset](https://datashare.ed.ac.uk/items/8478e384-fd1b-4a37-9555-0c6e1218e90b) contains MiBand3 heart rate, steps, activity and questionnaire data. The paper describes 22 adults with asthma and 2,054 patient-days; the wearable data are from smartwatch hardware rather than a PlumoRing. The dataset is licensed CC BY 4.0, and attribution is required.
+
+### Target and evaluation
+
+- Target: questionnaire code `weekly_oral == 3`, which the data dictionary defines as systemic corticosteroid use **above the participant's usual amount during the past week**. Codes 1 (no increase) and 2 (yes, no more than usual) are the negative class; unsure/missing responses are excluded.
+- Inputs: only smartwatch heart-rate and activity/step summaries from the same seven-day reporting window. Symptoms, the outcome field, inhaler use, peak flow, environment, and future readings are excluded.
+- This is retrospective week-level classification, not attack forecasting. The outcome is not timestamped within the week, so the model cannot claim continuous detection or lead time.
+- A week is included only with at least three days of watch data. Evaluation uses five-fold StratifiedGroupKFold by participant. Model choice and an operating threshold are selected inside each training fold (nested participant-held-out evaluation).
+- Compared a participant-prevalence baseline, regularized logistic regression, RBF SVM, histogram gradient boosting, random forest, and Extra Trees. Preprocessing is fitted within folds.
+
+### Counts and result
+
+- 324 weekly questionnaire rows; 224 labeled weeks with at least three watch days (26 positive, 198 negative); 18 participants in this analysis, with positive weeks from 6 participants. Ninety-nine weeks were excluded for insufficient watch coverage and one for a missing outcome.
+- Nested model selection most often chose histogram gradient boosting. Equal-participant-weight ROC-AUC was **0.610**, average precision **0.189** versus a weighted no-skill reference of **0.074**.
+- At an inner-training-selected threshold targeting 90% specificity, held-out sensitivity was **0.298**, specificity **0.931**, and equal-participant-weight PPV **0.255**.
+- The predeclared research gate requires AP at least 1.25 times prevalence, AUC at least 0.60, and sensitivity at least 0.50 at the 90% specificity target. The nested result **fails** because sensitivity is too low. Six positive participants also make estimates unstable.
+
+This is not a deployable asthma model. It cannot identify asthma in an undiagnosed person, and it does not support pneumonia, infection, COPD, or an always-on ring alert. No score, probability, alert, model weight, or disease-driven lung visualization is exposed in the app.
+
+### Reproduction
+
+Download the CC BY 4.0 archive from Edinburgh DataShare into ignored `data/aamos00/aamos00.zip`, extract it to `data/aamos00/raw/`, install `requirements-model.txt`, then run:
+
+    python scripts/evaluate_aamos_asthma_worsening.py
+
+The aggregate-only report is `models/aamos_asthma_worsening_metrics.json`. Raw participant files remain in ignored `data/` and must not be committed.
+
+## OSASUD apnea/hypopnea event-window feasibility
+
+The public [OSASUD study](https://pmc.ncbi.nlm.nih.gov/articles/PMC9018698/) provides nearly one million one-second rows from 30 hospitalized stroke-unit participants. It pairs finger PPG and PPG-derived oxygen/perfusion measurements with physician-reviewed polysomnography event annotations. This is an overnight event-window task, not an outpatient sleep-apnea diagnosis, pulmonary-infection diagnosis, or ring validation.
+
+The evaluator builds quality-filtered 30-second windows and uses only finger PPG waveform summaries, PPG-derived pulse timing/variability, SpO₂ and perfusion for its strict PPG-only track. ECG waveforms, thoracic-impedance respiratory rate, airflow, effort, snoring audio, body position, and event metadata are excluded as predictors. A separate expanded-vitals comparison is reported for analysis only and is not eligible for ring inference. All model folds hold out whole participants.
+
+Across 27,627 quality-valid windows (8,640 with at least one apnea/hypopnea second), Extra Trees was the best of three strict PPG-only baselines in the same grouped out-of-fold comparison: equal-participant ROC-AUC **0.780** and average precision **0.633** versus **0.313** prevalence. Because the best model was selected using that same comparison, this is an optimistic feasibility result, not an unbiased final performance estimate. Independent nested or external validation is required. Even a sound event-window detector would not diagnose sleep apnea syndrome, and this clinical finger sensor is not PlumoRing hardware. No result is deployed.
+
+The local source archive is large (about 3.1 GB) and remains in ignored `data/`. The aggregate-only report is `models/osasud_ppg_event_metrics.json`; reproduce with `python scripts/evaluate_osasud_ppg_events.py`.
 
 ## COPD classification from PPG: small feasibility experiment
 
@@ -41,6 +83,9 @@ The reproducible run used up to 512 sampled windows per person for each archive.
 ## Larger datasets to pursue, without mixing tasks
 
 - TOLIFE is currently the strongest open longitudinal COPD cohort used here for a separate exacerbation-forecast question. It contains 86 diagnosed participants, event records, and daily data from multiple non-ring devices. The grouped baseline failed its no-skill gate.
+- The 2026 eMEUSE-SANTÉ paper is the best-matched external monitoring evidence found: 220 people with COPD wore a medical wristband for six months, with HR, breathing rate and SpO₂ and 42 physician-validated exacerbations. Its published personalized BVS³ score reported AUC 0.88, 74% sensitivity at 85% specificity, and a mean 4.4-day lead time. These are the authors' results, not PlumoRing results. The underlying data are not public because of re-identification risk; access is by research request and institutional approval. The paper directs data requests to `contact.mars@chu-grenoble.fr`.
+- A separate [2024 McGill pilot](https://www.frontiersin.org/journals/signal-processing/articles/10.3389/frsip.2024.1362754/full) collected Oura-ring and wristband data for 21 days from nine people already experiencing a severe COPD exacerbation. Only ring heart rate was near-continuous; the ring's breathing rate and oxygen readings were nightly averages. Raw patient records are not published and require an author request, and the cohort is too small for disease-model training. The study is useful for device feasibility, not validation of an alert.
+- The larger [telEPOC COPD telemonitoring study](https://pmc.ncbi.nlm.nih.gov/articles/PMC11868553/) reports 149 patients and 159,719 daily submissions, but its analyzed records are available from the corresponding author on reasonable request. Its red-alarm outcome is partly constructed from the same daily symptom/vital questionnaire fields, so a clean reading-only model needs careful target reconstruction before any use.
 - WestRo is a much better prospect for a larger COPD-stage experiment, but its data require a request to the authors. It should be acquired with participant IDs and signal/diagnosis alignment intact, then split by person and clinic before any tuning.
 - MIMIC-III-Ext-PPG is a large credentialed ICU PPG resource, but its published labels focus on heart rhythm and reference vital signs; a COPD diagnosis code is not a validated pulmonary PPG target. It is not used as a substitute COPD dataset.
 - HealthRing is reserved for ring-vital estimation because it lacks disease labels. Keep its evaluation independent from COPD classification.
@@ -80,6 +125,12 @@ The best average precision is below the no-skill reference, and every model fail
 
 The grouped folds reduce cross-participant leakage. The 79 positive days are still concentrated in only 11 people, so day-level metrics may be unstable; a larger independent cohort and participant-level uncertainty analysis are required before any clinical interpretation.
 
+### Personalized multi-vital trend baseline
+
+Alongside the supervised baselines, a training-free method was evaluated on the same public TOLIFE archive. It compares each day's HR, respiratory-rate and SpO₂ indices with that participant's previous 14 calendar days, applies the expected adverse direction (HR/RR rise, SpO₂ fall), and combines available standardized changes. It requires at least four earlier valid readings for each used channel and at least two current channels. It is an exploratory adaptation for sparse daily data, not an exact reproduction of the published BVS³ pipeline, which used much denser hourly monitoring.
+
+Only 1,015 participant-days from 36 participants met these history and channel requirements; just 3 participants contributed positive forecast days. Equal-participant-weight ROC-AUC was **0.444** and average precision was **0.0064**, below the equal-participant no-skill reference of **0.0075**. Pooled average precision was **0.0248**, also below the subset's pooled positive prevalence (**0.0276**). This method also failed; no threshold or alert is enabled. Results are in `models/tolife_personalized_trend_metrics.json`.
+
 ## Model strategy
 
 The current script compares regularized logistic regression, histogram gradient boosting, and a class-weighted random forest. This is a baseline audit, not the final deep-learning architecture. A neural sequence model is not justified by sparse daily summaries and 11 positive participants: it would add capacity without adding independent clinical evidence.
@@ -100,6 +151,10 @@ The decision gate is intentionally simple and fixed before interpreting the comp
 Download TOLIFE v2.0 `index.zip` from the official Zenodo record into the ignored path `data/tolife/index.zip`, install `requirements-model.txt`, and run:
 
     python scripts/evaluate_pulmonary_study.py
+
+Run the independent personalized-change baseline with:
+
+    python scripts/evaluate_tolife_personalized_trend.py
 
 The aggregate report is `models/pulmonary_feasibility_metrics.json`. The raw data, model weights, and any participant-level outputs must not be committed.
 

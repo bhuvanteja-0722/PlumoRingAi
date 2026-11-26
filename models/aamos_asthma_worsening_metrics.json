@@ -1,0 +1,543 @@
+{
+  "model_version": "plumoring-aamos-asthma-worsening-feasibility-0.1",
+  "dataset": "AAMOS-00 \u00b7 asthma cohort with MiBand3 smartwatch and weekly questionnaire",
+  "dataset_doi": "10.7488/ds/3775",
+  "dataset_url": "https://datashare.ed.ac.uk/items/8478e384-fd1b-4a37-9555-0c6e1218e90b",
+  "task": "retrospective classification of a past-week report of systemic corticosteroid use above usual in adults with known asthma",
+  "outcome_definition": "weekly_oral == 3: yes, more systemic corticosteroids than usual; codes 1 and 2 are negative for increased use; unsure/missing responses are excluded",
+  "input_channels": [
+    "smartwatch heart-rate summaries",
+    "smartwatch step/activity summaries"
+  ],
+  "excluded_inputs": [
+    "symptom questionnaires",
+    "weekly outcome fields",
+    "inhaler usage",
+    "peak flow",
+    "environmental fields",
+    "future readings"
+  ],
+  "limitations": [
+    "This is a retrospective week-level classification because the questionnaire asks about the past week; it is not a future attack forecast.",
+    "The label is a self-reported increase in systemic corticosteroid use, not an independently adjudicated or timestamped attack diagnosis.",
+    "The cohort is small (22 study participants overall, with fewer contributing both watch data and labeled weeks).",
+    "Inputs are MiBand3 smartwatch heart rate and activity, not raw ring PPG, ring SpO2, or PlumoRing sensor data.",
+    "This evaluates worsening in adults already known to have asthma; it cannot diagnose asthma in an undiagnosed person.",
+    "No sensor stream in this dataset supports pneumonia, infection, bronchitis, or COPD diagnosis.",
+    "Results are research-only and require a larger external cohort and clinical review before any care use."
+  ],
+  "features": [
+    "hr_mean_mean",
+    "hr_mean_std",
+    "hr_mean_max",
+    "hr_mean_slope",
+    "hr_std_mean",
+    "hr_std_std",
+    "hr_std_max",
+    "hr_std_slope",
+    "hr_p10_mean",
+    "hr_p10_std",
+    "hr_p10_max",
+    "hr_p10_slope",
+    "hr_p90_mean",
+    "hr_p90_std",
+    "hr_p90_max",
+    "hr_p90_slope",
+    "hr_valid_minutes_mean",
+    "hr_valid_minutes_std",
+    "hr_valid_minutes_max",
+    "hr_valid_minutes_slope",
+    "steps_mean",
+    "steps_std",
+    "steps_max",
+    "steps_slope",
+    "intensity_mean_mean",
+    "intensity_mean_std",
+    "intensity_mean_max",
+    "intensity_mean_slope",
+    "intensity_p90_mean",
+    "intensity_p90_std",
+    "intensity_p90_max",
+    "intensity_p90_slope",
+    "walk_minutes_mean",
+    "walk_minutes_std",
+    "walk_minutes_max",
+    "walk_minutes_slope",
+    "run_minutes_mean",
+    "run_minutes_std",
+    "run_minutes_max",
+    "run_minutes_slope",
+    "sleep_minutes_mean",
+    "sleep_minutes_std",
+    "sleep_minutes_max",
+    "sleep_minutes_slope",
+    "sedentary_minutes_mean",
+    "sedentary_minutes_std",
+    "sedentary_minutes_max",
+    "sedentary_minutes_slope",
+    "worn_minutes_mean",
+    "worn_minutes_std",
+    "worn_minutes_max",
+    "worn_minutes_slope",
+    "watch_days_with_data",
+    "valid_hr_minutes_total"
+  ],
+  "split": "5-fold StratifiedGroupKFold by participant; each participant is held out from all model fitting in their fold",
+  "counts": {
+    "weekly_questionnaire_rows": 324,
+    "eligible_labeled_weeks_with_at_least_3_watch_days": 224,
+    "positive_weeks_reported_above_usual_ocs": 26,
+    "negative_weeks_no_increase_in_ocs": 198,
+    "eligible_participants": 18,
+    "participants_with_positive_weeks": 6,
+    "excluded_unknown_or_missing_ocs_response": 1,
+    "excluded_missing_or_insufficient_watch_coverage": 99,
+    "watch_days_required_in_week": 3,
+    "watch_week_window": "survey date minus six days through survey date, inclusive; label reports past-week OCS use",
+    "watch_day_rows": 1567,
+    "watch_participants": 20,
+    "watch_day_rows_with_valid_hr": 1528
+  },
+  "equal_participant_weight_positive_prevalence": 0.07367586117586117,
+  "models": {
+    "participant_prevalence_baseline": {
+      "metrics": {
+        "roc_auc_equal_participant_weight": 0.3644354169846641,
+        "average_precision_equal_participant_weight": 0.05756886573558386,
+        "average_precision_pooled_weeks": 0.0911634392739044,
+        "threshold_0_5_sensitivity_equal_participant_weight": 0.0,
+        "threshold_0_5_specificity_equal_participant_weight": 1.0,
+        "threshold_0_5_balanced_accuracy_pooled_weeks": 0.5
+      },
+      "folds": [
+        {
+          "fold": 1,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 42,
+          "positive_weeks": 3,
+          "average_precision_equal_participant_weight": 0.07692307692307691,
+          "roc_auc_equal_participant_weight": 0.5
+        },
+        {
+          "fold": 2,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 47,
+          "positive_weeks": 8,
+          "average_precision_equal_participant_weight": 0.11111111111111113,
+          "roc_auc_equal_participant_weight": 0.5
+        },
+        {
+          "fold": 3,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 48,
+          "positive_weeks": 9,
+          "average_precision_equal_participant_weight": 0.11538461538461535,
+          "roc_auc_equal_participant_weight": 0.5
+        },
+        {
+          "fold": 4,
+          "held_out_participants": 4,
+          "held_out_positive_participants": 2,
+          "weeks": 45,
+          "positive_weeks": 4,
+          "average_precision_equal_participant_weight": 0.07272727272727282,
+          "roc_auc_equal_participant_weight": 0.5
+        },
+        {
+          "fold": 5,
+          "held_out_participants": 5,
+          "held_out_positive_participants": 1,
+          "weeks": 42,
+          "positive_weeks": 2,
+          "average_precision_equal_participant_weight": 0.025,
+          "roc_auc_equal_participant_weight": 0.5
+        }
+      ]
+    },
+    "logistic_regression": {
+      "metrics": {
+        "roc_auc_equal_participant_weight": 0.47116182386278893,
+        "average_precision_equal_participant_weight": 0.082614507268126,
+        "average_precision_pooled_weeks": 0.15270248192648203,
+        "threshold_0_5_sensitivity_equal_participant_weight": 0.32506481522169,
+        "threshold_0_5_specificity_equal_participant_weight": 0.6905721365586528,
+        "threshold_0_5_balanced_accuracy_pooled_weeks": 0.5291375291375291
+      },
+      "folds": [
+        {
+          "fold": 1,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 42,
+          "positive_weeks": 3,
+          "average_precision_equal_participant_weight": 0.1097317143139799,
+          "roc_auc_equal_participant_weight": 0.4845679012345679
+        },
+        {
+          "fold": 2,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 47,
+          "positive_weeks": 8,
+          "average_precision_equal_participant_weight": 0.3275316520396106,
+          "roc_auc_equal_participant_weight": 0.765625
+        },
+        {
+          "fold": 3,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 48,
+          "positive_weeks": 9,
+          "average_precision_equal_participant_weight": 0.08304503161693097,
+          "roc_auc_equal_participant_weight": 0.26631393298059924
+        },
+        {
+          "fold": 4,
+          "held_out_participants": 4,
+          "held_out_positive_participants": 2,
+          "weeks": 45,
+          "positive_weeks": 4,
+          "average_precision_equal_participant_weight": 0.0972090473276214,
+          "roc_auc_equal_participant_weight": 0.4899662990196074
+        },
+        {
+          "fold": 5,
+          "held_out_participants": 5,
+          "held_out_positive_participants": 1,
+          "weeks": 42,
+          "positive_weeks": 2,
+          "average_precision_equal_participant_weight": 0.06187163608234024,
+          "roc_auc_equal_participant_weight": 0.6810510002817695
+        }
+      ]
+    },
+    "rbf_support_vector_machine": {
+      "metrics": {
+        "roc_auc_equal_participant_weight": 0.4661115523353998,
+        "average_precision_equal_participant_weight": 0.07890395715434081,
+        "average_precision_pooled_weeks": 0.14568879956122238,
+        "threshold_0_5_sensitivity_equal_participant_weight": 0.0,
+        "threshold_0_5_specificity_equal_participant_weight": 1.0,
+        "threshold_0_5_balanced_accuracy_pooled_weeks": 0.5
+      },
+      "folds": [
+        {
+          "fold": 1,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 42,
+          "positive_weeks": 3,
+          "average_precision_equal_participant_weight": 0.5135106097233414,
+          "roc_auc_equal_participant_weight": 0.8587962962962963
+        },
+        {
+          "fold": 2,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 47,
+          "positive_weeks": 8,
+          "average_precision_equal_participant_weight": 0.4148356693581047,
+          "roc_auc_equal_participant_weight": 0.7356178977272727
+        },
+        {
+          "fold": 3,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 48,
+          "positive_weeks": 9,
+          "average_precision_equal_participant_weight": 0.08214038900360746,
+          "roc_auc_equal_participant_weight": 0.2537382102599489
+        },
+        {
+          "fold": 4,
+          "held_out_participants": 4,
+          "held_out_positive_participants": 2,
+          "weeks": 45,
+          "positive_weeks": 4,
+          "average_precision_equal_participant_weight": 0.11979802604802603,
+          "roc_auc_equal_participant_weight": 0.6165747549019608
+        },
+        {
+          "fold": 5,
+          "held_out_participants": 5,
+          "held_out_positive_participants": 1,
+          "weeks": 42,
+          "positive_weeks": 2,
+          "average_precision_equal_participant_weight": 0.03760727125007527,
+          "roc_auc_equal_participant_weight": 0.44584389969005345
+        }
+      ]
+    },
+    "hist_gradient_boosting": {
+      "metrics": {
+        "roc_auc_equal_participant_weight": 0.6380043366091093,
+        "average_precision_equal_participant_weight": 0.1991630479487817,
+        "average_precision_pooled_weeks": 0.2484739997534681,
+        "threshold_0_5_sensitivity_equal_participant_weight": 0.298479588697983,
+        "threshold_0_5_specificity_equal_participant_weight": 0.924095581270992,
+        "threshold_0_5_balanced_accuracy_pooled_weeks": 0.614996114996115
+      },
+      "folds": [
+        {
+          "fold": 1,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 42,
+          "positive_weeks": 3,
+          "average_precision_equal_participant_weight": 0.38927217697661765,
+          "roc_auc_equal_participant_weight": 0.8667438271604937
+        },
+        {
+          "fold": 2,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 47,
+          "positive_weeks": 8,
+          "average_precision_equal_participant_weight": 0.6358108813700919,
+          "roc_auc_equal_participant_weight": 0.9527698863636364
+        },
+        {
+          "fold": 3,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 48,
+          "positive_weeks": 9,
+          "average_precision_equal_participant_weight": 0.09538897416271183,
+          "roc_auc_equal_participant_weight": 0.36753316463461344
+        },
+        {
+          "fold": 4,
+          "held_out_participants": 4,
+          "held_out_positive_participants": 2,
+          "weeks": 45,
+          "positive_weeks": 4,
+          "average_precision_equal_participant_weight": 0.10027159462605101,
+          "roc_auc_equal_participant_weight": 0.485140931372549
+        },
+        {
+          "fold": 5,
+          "held_out_participants": 5,
+          "held_out_positive_participants": 1,
+          "weeks": 42,
+          "positive_weeks": 2,
+          "average_precision_equal_participant_weight": 0.16365572632250558,
+          "roc_auc_equal_participant_weight": 0.6633699633699633
+        }
+      ]
+    },
+    "random_forest": {
+      "metrics": {
+        "roc_auc_equal_participant_weight": 0.5872829229559311,
+        "average_precision_equal_participant_weight": 0.2213022991512914,
+        "average_precision_pooled_weeks": 0.2724105997797562,
+        "threshold_0_5_sensitivity_equal_participant_weight": 0.0628378081469438,
+        "threshold_0_5_specificity_equal_participant_weight": 0.9853908983199533,
+        "threshold_0_5_balanced_accuracy_pooled_weeks": 0.5258352758352758
+      },
+      "folds": [
+        {
+          "fold": 1,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 42,
+          "positive_weeks": 3,
+          "average_precision_equal_participant_weight": 0.5388042941202893,
+          "roc_auc_equal_participant_weight": 0.8973765432098765
+        },
+        {
+          "fold": 2,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 47,
+          "positive_weeks": 8,
+          "average_precision_equal_participant_weight": 0.5477716727716727,
+          "roc_auc_equal_participant_weight": 0.9140624999999999
+        },
+        {
+          "fold": 3,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 48,
+          "positive_weeks": 9,
+          "average_precision_equal_participant_weight": 0.0927384657488886,
+          "roc_auc_equal_participant_weight": 0.34153822559619607
+        },
+        {
+          "fold": 4,
+          "held_out_participants": 4,
+          "held_out_positive_participants": 2,
+          "weeks": 45,
+          "positive_weeks": 4,
+          "average_precision_equal_participant_weight": 0.13205923690010674,
+          "roc_auc_equal_participant_weight": 0.6578584558823529
+        },
+        {
+          "fold": 5,
+          "held_out_participants": 5,
+          "held_out_positive_participants": 1,
+          "weeks": 42,
+          "positive_weeks": 2,
+          "average_precision_equal_participant_weight": 0.10729309075612577,
+          "roc_auc_equal_participant_weight": 0.6532544378698225
+        }
+      ]
+    },
+    "extra_trees": {
+      "metrics": {
+        "roc_auc_equal_participant_weight": 0.5664414905852573,
+        "average_precision_equal_participant_weight": 0.21423486296151753,
+        "average_precision_pooled_weeks": 0.27530171661494085,
+        "threshold_0_5_sensitivity_equal_participant_weight": 0.21509865096453837,
+        "threshold_0_5_specificity_equal_participant_weight": 0.920034390803955,
+        "threshold_0_5_balanced_accuracy_pooled_weeks": 0.5926573426573427
+      },
+      "folds": [
+        {
+          "fold": 1,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 42,
+          "positive_weeks": 3,
+          "average_precision_equal_participant_weight": 0.8158119015390786,
+          "roc_auc_equal_participant_weight": 0.9807098765432098
+        },
+        {
+          "fold": 2,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 47,
+          "positive_weeks": 8,
+          "average_precision_equal_participant_weight": 0.5127801120448179,
+          "roc_auc_equal_participant_weight": 0.9140625
+        },
+        {
+          "fold": 3,
+          "held_out_participants": 3,
+          "held_out_positive_participants": 1,
+          "weeks": 48,
+          "positive_weeks": 9,
+          "average_precision_equal_participant_weight": 0.07914599598377854,
+          "roc_auc_equal_participant_weight": 0.22053523502798822
+        },
+        {
+          "fold": 4,
+          "held_out_participants": 4,
+          "held_out_positive_participants": 2,
+          "weeks": 45,
+          "positive_weeks": 4,
+          "average_precision_equal_participant_weight": 0.1691074767246642,
+          "roc_auc_equal_participant_weight": 0.6896446078431371
+        },
+        {
+          "fold": 5,
+          "held_out_participants": 5,
+          "held_out_positive_participants": 1,
+          "weeks": 42,
+          "positive_weeks": 2,
+          "average_precision_equal_participant_weight": 0.06925794103704705,
+          "roc_auc_equal_participant_weight": 0.7173429134967596
+        }
+      ]
+    }
+  },
+  "best_candidate": "Nested selection (most frequent: hist_gradient_boosting)",
+  "best_candidate_metrics": {
+    "roc_auc_equal_participant_weight": 0.6096298481795086,
+    "average_precision_equal_participant_weight": 0.1885785337730468,
+    "average_precision_pooled_weeks": 0.23465089784347648,
+    "threshold_0_5_sensitivity_equal_participant_weight": 0.298479588697983,
+    "threshold_0_5_specificity_equal_participant_weight": 0.9419742558270394,
+    "threshold_0_5_balanced_accuracy_pooled_weeks": 0.6225718725718725
+  },
+  "nested_model_selection": {
+    "selection_method": "nested participant-held-out CV: 5 outer folds; model chosen in 3-fold participant CV within each outer training set",
+    "selected_models_by_outer_fold": {
+      "hist_gradient_boosting": 3,
+      "random_forest": 1,
+      "rbf_support_vector_machine": 1
+    },
+    "metrics": {
+      "roc_auc_equal_participant_weight": 0.6096298481795086,
+      "average_precision_equal_participant_weight": 0.1885785337730468,
+      "average_precision_pooled_weeks": 0.23465089784347648,
+      "threshold_0_5_sensitivity_equal_participant_weight": 0.298479588697983,
+      "threshold_0_5_specificity_equal_participant_weight": 0.9419742558270394,
+      "threshold_0_5_balanced_accuracy_pooled_weeks": 0.6225718725718725
+    },
+    "operating_point": {
+      "threshold_selection": "weighted 90th percentile of negative inner-CV scores, refit and applied to the outer held-out participants",
+      "sensitivity_equal_participant_weight": 0.298479588697983,
+      "specificity_equal_participant_weight": 0.9307518095364582,
+      "positive_predictive_value_equal_participant_weight": 0.25529955649101704,
+      "false_positive_rate_equal_participant_weight": 0.0692481904635419
+    },
+    "folds": [
+      {
+        "outer_fold": 1,
+        "selected_model_using_inner_grouped_cv": "hist_gradient_boosting",
+        "held_out_participants": 3,
+        "held_out_positive_participants": 1,
+        "weeks": 42,
+        "positive_weeks": 3,
+        "threshold_chosen_in_inner_training_data_for_90pct_specificity": 0.4754341522514336,
+        "average_precision_equal_participant_weight": 0.26256696119709816,
+        "roc_auc_equal_participant_weight": 0.8260030864197531
+      },
+      {
+        "outer_fold": 2,
+        "selected_model_using_inner_grouped_cv": "hist_gradient_boosting",
+        "held_out_participants": 3,
+        "held_out_positive_participants": 1,
+        "weeks": 47,
+        "positive_weeks": 8,
+        "threshold_chosen_in_inner_training_data_for_90pct_specificity": 0.34761328537082625,
+        "average_precision_equal_participant_weight": 0.4776244588744588,
+        "roc_auc_equal_participant_weight": 0.919921875
+      },
+      {
+        "outer_fold": 3,
+        "selected_model_using_inner_grouped_cv": "random_forest",
+        "held_out_participants": 3,
+        "held_out_positive_participants": 1,
+        "weeks": 48,
+        "positive_weeks": 9,
+        "threshold_chosen_in_inner_training_data_for_90pct_specificity": 0.5144864971818146,
+        "average_precision_equal_participant_weight": 0.11059451720403721,
+        "roc_auc_equal_participant_weight": 0.4236638294609304
+      },
+      {
+        "outer_fold": 4,
+        "selected_model_using_inner_grouped_cv": "rbf_support_vector_machine",
+        "held_out_participants": 4,
+        "held_out_positive_participants": 2,
+        "weeks": 45,
+        "positive_weeks": 4,
+        "threshold_chosen_in_inner_training_data_for_90pct_specificity": 0.18021441403843735,
+        "average_precision_equal_participant_weight": 0.11979802604802603,
+        "roc_auc_equal_participant_weight": 0.6165747549019608
+      },
+      {
+        "outer_fold": 5,
+        "selected_model_using_inner_grouped_cv": "hist_gradient_boosting",
+        "held_out_participants": 5,
+        "held_out_positive_participants": 1,
+        "weeks": 42,
+        "positive_weeks": 2,
+        "threshold_chosen_in_inner_training_data_for_90pct_specificity": 0.5204383348209873,
+        "average_precision_equal_participant_weight": 0.16745721726190477,
+        "roc_auc_equal_participant_weight": 0.4935897435897436
+      }
+    ]
+  },
+  "exploratory_gate": {
+    "criteria": "nested equal-participant average precision >= 1.25x participant-weighted prevalence; ROC-AUC >= 0.60; sensitivity >= 0.50 at a 90% specificity target selected inside training folds",
+    "passed": false,
+    "patient_facing_or_diagnostic": false
+  },
+  "deployment_status": "research_only_not_deployed",
+  "reproduction": "python scripts/evaluate_aamos_asthma_worsening.py",
+  "license": "CC BY 4.0; cite the dataset paper and dataset DOI before reuse"
+}
