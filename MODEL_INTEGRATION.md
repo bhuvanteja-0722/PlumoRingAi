@@ -46,6 +46,7 @@ Open http://127.0.0.1:5000. Flask binds to loopback.
 - `GET /api/pulmonary/healthring-vitals-metrics` serves HealthRing RR/SpO₂ physiology estimates and partial-archive coverage.
 - `GET /api/pulmonary/bidmc-rr-metrics` serves PPG-only BIDMC respiratory-rate results and the separate cross-device HealthRing evaluation.
 - `GET /api/pulmonary/tolife-associations` serves aggregate pre-visit clinical-index association coverage.
+- `GET /api/pulmonary/research-snapshot` returns an aggregate-only summary of COPD flare, COPD PPG, asthma-worsening, apnea-event, and personalized COPD-trend evaluations. It marks pneumonia/bronchitis/infection as unavailable because no matched labeled dataset is included. The UI can save this snapshot in a separate browser-local research history; it is not personal reading history or a per-patient prediction.
 - `GET /api/models/temporal-telemetry/status` reports whether the Model 1 file and TensorFlow runtime are available.
 - `POST /api/models/temporal-telemetry/predict` runs Model 1 and its separate rule preview. Send either `{"sensors": [hr, spo2, rr, wheeze, temp_delta, imu, eda, pm25]}` for a single snapshot or `{"sequence": [[... eight values ...], ...]}` with exactly 16 rows. The response includes uncalibrated class scores and a non-probabilistic `rule_hypothesis`; neither is a diagnosis.
 - Equivalent aggregate reports are served under `/models/` when available.

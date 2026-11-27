@@ -86,7 +86,7 @@ This compares regularized logistic regression, an RBF support-vector machine, an
 
 ## Data handling and safety
 
-This is a software research prototype, not a medical device. It has no live ring connection, no validated disease inference, and no clinical alerts. Model 1 runs locally and returns five uncalibrated state-class scores; it does not diagnose disease. A separate demo rules panel is illustrative only. Each Model 1 check and chatbot conversation can be stored in this browser's local storage, with export and clear controls. Optional AI summaries/chat use the OpenAI API only when the user clicks the relevant action; chat readings are sent only when the user checks the sharing option. The API key stays on the local server in an ignored `.env` file. See [Privacy](privacy.html).
+This is a software research prototype, not a medical device. It has no live ring connection, no validated disease inference, and no clinical alerts. Model 1 runs locally and returns five uncalibrated state-class scores; it does not diagnose disease. A separate demo rules panel is illustrative only. Model 1 checks and chatbot conversations are stored in this browser with export and clear controls. Aggregate public-dataset result snapshots have their own separate research history; they are not personal readings. Optional AI summaries/chat use the OpenAI API only when the user clicks the relevant action; chat readings are sent only when the user checks the sharing option. The API key stays on the local server in an ignored `.env` file. See [Privacy](privacy.html).
 
 ### Optional AI summaries and chatbot
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import math
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
@@ -381,6 +382,106 @@ def _serve_aggregate_report(path: Path, label: str):
     except (OSError, ValueError):
         return jsonify({"error": f"The {label} aggregate report is unavailable."}), 503
     return jsonify(report)
+
+
+def _read_aggregate_report(path: Path) -> dict[str, Any]:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {}
+    except (OSError, ValueError):
+        return {}
+    return value if isinstance(value, dict) else {}
+
+
+@app.get("/api/pulmonary/research-snapshot")
+def pulmonary_research_snapshot():
+    copd = _read_aggregate_report(METRICS_PATH)
+    ppg = _read_aggregate_report(COPD_PPG_METRICS_PATH)
+    asthma = _read_aggregate_report(AAMOS_METRICS_PATH)
+    apnea = _read_aggregate_report(OSASUD_METRICS_PATH)
+    trend = _read_aggregate_report(TOLIFE_TREND_METRICS_PATH)
+
+    rf = copd.get("models", {}).get("random_forest", {})
+    prevalence = copd.get("naive_average_precision_reference")
+    ppg_logistic = ppg.get("duration_variants", {}).get("2s", {}).get("models", {}).get("regularized_logistic", {})
+    asthma_result = asthma.get("nested_model_selection", {}).get("metrics", {})
+    asthma_operating = asthma.get("nested_model_selection", {}).get("operating_point", {})
+    apnea_result = apnea.get("best_candidate_metrics", {})
+    trend_result = trend.get("metrics", {})
+    trend_prevalence = trend.get("no_skill_average_precision_reference_equal_participant_weight")
+
+    tracks = [
+        {
+            "id": "copd-flare",
+            "condition": "COPD exacerbation forecast",
+            "dataset": "TOLIFE · 68 eligible participants (86 with reading files)",
+            "status": "research gate failed",
+            "target": "Moderate/severe flare within seven days among people already diagnosed with COPD.",
+            "roc_auc": rf.get("grouped_oof_roc_auc"),
+            "average_precision": rf.get("grouped_oof_average_precision"),
+            "reference_average_precision": prevalence,
+            "note": "Grouped daily-data study on non-ring devices; no patient-facing model.",
+        },
+        {
+            "id": "copd-ppg",
+            "condition": "COPD vs control from PPG",
+            "dataset": "Public COPD PPG · 6 independent people (4 COPD, 2 controls)",
+            "status": "research gate failed",
+            "target": "Participant-held-out COPD/control feasibility comparison.",
+            "roc_auc": ppg_logistic.get("participant_level_roc_auc"),
+            "average_precision": ppg_logistic.get("participant_level_average_precision"),
+            "reference_average_precision": ppg.get("no_skill_average_precision_reference"),
+            "note": "The 2-second logistic result is one of six durations on the same six people; not a diagnostic test.",
+        },
+        {
+            "id": "asthma-worsening",
+            "condition": "Asthma treatment-worsening week",
+            "dataset": "AAMOS-00 · smartwatch summaries and weekly questionnaire",
+            "status": "research gate failed",
+            "target": "Past-week steroid use above usual among adults already diagnosed with asthma.",
+            "roc_auc": asthma_result.get("roc_auc_equal_participant_weight"),
+            "average_precision": asthma_result.get("average_precision_equal_participant_weight"),
+            "sensitivity": asthma_operating.get("sensitivity_equal_participant_weight"),
+            "participants": asthma.get("counts", {}).get("eligible_participants"),
+            "note": "Retrospective weekly worsening label, not asthma diagnosis or future-attack detection.",
+        },
+        {
+            "id": "apnea-events",
+            "condition": "Apnea/hypopnea event windows",
+            "dataset": "OSASUD · overnight hospital finger PPG + PSG labels",
+            "status": "exploratory; external validation needed",
+            "target": "Annotated apnea/hypopnea events in 30-second hospital windows.",
+            "roc_auc": apnea_result.get("roc_auc_equal_participant_weight"),
+            "average_precision": apnea_result.get("average_precision_equal_participant_weight"),
+            "reference_average_precision": apnea.get("naive_average_precision_reference_equal_participant_weight"),
+            "participants": apnea.get("counts", {}).get("source_participants"),
+            "note": "Event-window screening is not sleep-apnea diagnosis and does not validate the proposed ring.",
+        },
+        {
+            "id": "copd-personal-trend",
+            "condition": "Personalized COPD flare trend",
+            "dataset": "TOLIFE · sparse daily readings",
+            "status": "research baseline failed",
+            "target": "Seven-day flare-window ranking using a personal 14-day baseline.",
+            "roc_auc": trend_result.get("roc_auc_equal_participant_weight"),
+            "average_precision": trend_result.get("average_precision_equal_participant_weight"),
+            "reference_average_precision": trend_prevalence,
+            "participants": trend.get("counts", {}).get("participants"),
+            "note": "Training-free research baseline; it did not beat its no-skill reference.",
+        },
+        {
+            "id": "infection-no-match",
+            "condition": "Pneumonia / bronchitis / respiratory infection",
+            "dataset": "No matched dataset in this project",
+            "status": "not testable with available labels",
+            "target": "No ring-compatible, clinically labeled infection cohort is available here.",
+            "note": "No test result or disease prediction was created for these conditions.",
+        },
+    ]
+    return jsonify({
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "scope": "Aggregate dataset evaluation summaries only; no personal readings or patient-level predictions.",
+        "tracks": tracks,
+    })
 
 
 @app.get("/api/pulmonary/healthring-vitals-metrics")
