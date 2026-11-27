@@ -386,6 +386,15 @@
     .chat-speak{min-height:25px;padding:0 8px;font-size:6px}
     @media(max-width:760px){.chat-compose{grid-template-columns:1fr 1fr}.chat-compose textarea{grid-column:1/-1}.chat-compose #chat-mic,.chat-compose #chat-send{justify-self:stretch;min-height:38px}}
   </style>
+  <style>
+    .organ-viewport:before{background:radial-gradient(ellipse at 50% 48%,#ffffff04,transparent 68%)}
+    .organ-callout{padding:5px 7px;border:1px solid #d8eee315;border-radius:5px;background:#08110ddd;box-shadow:0 4px 16px #0003;backdrop-filter:blur(8px)}
+    .organ-callout:before,.organ-callout:after{content:none!important;display:none!important}
+    .heart-callout{top:58%;left:6%}
+    .left-lung-callout{top:34%;left:6%}
+    .right-lung-callout{top:34%;right:6%}
+    @media(max-width:760px){.heart-callout{top:57%;left:3%}.left-lung-callout{top:32%;left:3%}.right-lung-callout{top:32%;right:3%}.heart-callout:after,.left-lung-callout:after,.right-lung-callout:before{width:16px}}
+  </style>
 </head>
 <body>
   <main class="page">
@@ -1537,7 +1546,7 @@
         chatRecognition=new SpeechRecognitionAPI();chatRecognition.continuous=false;chatRecognition.interimResults=false;chatRecognition.maxAlternatives=1;chatRecognition.lang=chatLanguage.value;
         chatRecognition.onstart=()=>{chatListening=true;chatMic.textContent='LISTENING…';chatMic.setAttribute('aria-pressed','true');chatMic.disabled=true;chatStatus.textContent='Listening in the selected language. Your speech will fill the text box; press Send when ready.'};
         chatRecognition.onresult=event=>{const transcript=event.results?.[0]?.[0]?.transcript?.trim();if(transcript){chatInput.value=transcript;chatInput.focus();chatStatus.textContent='Voice text added. Review it, then press Send to submit.'}};
-        chatRecognition.onerror=event=>{const messages={not-allowed:'Microphone permission was denied. Allow microphone access or type your question.','service-not-allowed':'This browser speech service is unavailable. Type your question instead.','language-not-supported':'Voice recognition does not support this language on this device. Choose another language or type your question.',network:'The browser speech service could not be reached. Type your question instead.'};chatStatus.textContent=messages[event.error]||'Voice input stopped. You can type your question.'};
+        chatRecognition.onerror=event=>{const messages={'not-allowed':'Microphone permission was denied. Allow microphone access or type your question.','service-not-allowed':'This browser speech service is unavailable. Type your question instead.','language-not-supported':'Voice recognition does not support this language on this device. Choose another language or type your question.',network:'The browser speech service could not be reached. Type your question instead.'};chatStatus.textContent=messages[event.error]||'Voice input stopped. You can type your question.'};
         chatRecognition.onend=()=>{chatListening=false;chatMic.textContent='MIC';chatMic.setAttribute('aria-pressed','false');chatMic.disabled=false};
       }catch{chatRecognition=null;chatMic.disabled=true;chatMic.title='Voice input is not available in this browser. You can type your question.'}
     }
