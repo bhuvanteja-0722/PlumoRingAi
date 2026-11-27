@@ -69,7 +69,18 @@ ASSET_ALLOWLIST = {"anatomical-heart.glb", "visible-human-lungs.glb"}
 app = Flask(__name__, static_folder=None)
 app.config["MAX_CONTENT_LENGTH"] = 128 * 1024
 
-ASSISTANT_MODEL = os.environ.get("OPENAI_MODEL", "gpt-6.2-astra")
+ASSISTANT_PROVIDER = os.environ.get("AI_PROVIDER", "auto").strip().lower()
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-6.2-astra")
+NVIDIA_MODEL = os.environ.get("NVIDIA_MODEL", "qwen/qwen3-next-80b-a3b-instruct")
+NVIDIA_CHAT_URL = os.environ.get("NVIDIA_CHAT_URL", "https://integrate.api.nvidia.com/v1/chat/completions")
+CHAT_LANGUAGES = {
+    "en-IN": "English (India)", "hi-IN": "Hindi", "bn-IN": "Bengali", "te-IN": "Telugu",
+    "mr-IN": "Marathi", "ta-IN": "Tamil", "ur-IN": "Urdu", "gu-IN": "Gujarati",
+    "kn-IN": "Kannada", "or-IN": "Odia", "ml-IN": "Malayalam", "pa-IN": "Punjabi",
+    "as-IN": "Assamese", "ks-IN": "Kashmiri", "ne-IN": "Nepali", "sd-IN": "Sindhi",
+    "kok-IN": "Konkani", "doi-IN": "Dogri", "mni-IN": "Manipuri (Meitei)", "brx-IN": "Bodo",
+    "sa-IN": "Sanskrit", "mai-IN": "Maithili", "sat-IN": "Santali",
+}
 PULMONARY_CHAT_SOURCES = {
     "asthma": {"title": "CDC · Asthma symptoms", "url": "https://www.cdc.gov/asthma/about/index.html"},
     "copd": {"title": "CDC · COPD symptoms", "url": "https://www.cdc.gov/copd/about/index.html"},
@@ -157,62 +168,102 @@ def _validated_readings(value: Any, *, limit: int = 12) -> list[dict[str, float]
     return cleaned
 
 
-def _openai_api_key() -> str | None:
-    value = os.environ.get("OPENAI_API_KEY", "").strip()
+def _configured_api_key(variable: str) -> str | None:
+    value = os.environ.get(variable, "").strip()
     if not value or value.lower().startswith(("replace-with-", "your-api-key")):
         return None
     return value
 
 
-def _openai_text(instructions: str, input_value: Any, *, max_output_tokens: int = 360) -> str:
-    api_key = _openai_api_key()
-    if not api_key:
-        raise RuntimeError("AI features are not configured. Add OPENAI_API_KEY to the local .env file and restart the app.")
-    body = json.dumps({
-        "model": ASSISTANT_MODEL,
-        "instructions": instructions,
-        "input": input_value,
-        "max_output_tokens": max_output_tokens,
-        "store": False,
-    }).encode("utf-8")
-    req = Request(
-        "https://api.openai.com/v1/responses",
-        data=body,
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-        method="POST",
-    )
+def _assistant_config() -> dict[str, str] | None:
+    nvidia_key = _configured_api_key("NVIDIA_API_KEY")
+    openai_key = _configured_api_key("OPENAI_API_KEY")
+    provider = ASSISTANT_PROVIDER
+    if provider == "auto":
+        provider = "nvidia" if nvidia_key else "openai" if openai_key else ""
+    if provider == "nvidia" and nvidia_key:
+        return {"provider": "nvidia", "key": nvidia_key, "model": NVIDIA_MODEL, "url": NVIDIA_CHAT_URL}
+    if provider == "openai" and openai_key:
+        return {"provider": "openai", "key": openai_key, "model": OPENAI_MODEL, "url": "https://api.openai.com/v1/responses"}
+    return None
+
+
+def _chat_language(value: Any) -> str:
+    language = value if isinstance(value, str) else "en-IN"
+    return language if language in CHAT_LANGUAGES else "en-IN"
+
+
+def _language_instruction(language: str) -> str:
+    name = CHAT_LANGUAGES.get(language, CHAT_LANGUAGES["en-IN"])
+    return f"Reply entirely in {name} ({language}). Use clear, natural wording and preserve medical terms accurately. Do not switch to English unless the user asks. If you cannot express a point safely in that language, say so plainly."
+
+
+def _assistant_text(instructions: str, input_value: Any, *, max_output_tokens: int = 360) -> str:
+    config = _assistant_config()
+    if not config:
+        raise RuntimeError("AI features are not configured. Add NVIDIA_API_KEY or OPENAI_API_KEY to the local .env file and restart the app.")
+    provider = config["provider"]
+    if provider == "nvidia":
+        messages = [{"role": "system", "content": instructions}]
+        if isinstance(input_value, list):
+            messages.extend(input_value)
+        else:
+            messages.append({"role": "user", "content": str(input_value)})
+        body_value = {"model": config["model"], "messages": messages, "max_tokens": max_output_tokens, "temperature": 0.2, "stream": False}
+    else:
+        body_value = {"model": config["model"], "instructions": instructions, "input": input_value, "max_output_tokens": max_output_tokens, "store": False}
+    req = Request(config["url"], data=json.dumps(body_value).encode("utf-8"), headers={
+        "Authorization": f"Bearer {config['key']}", "Content-Type": "application/json",
+    }, method="POST")
     try:
         with urlopen(req, timeout=35) as response:
             result = json.loads(response.read().decode("utf-8"))
     except HTTPError as exc:
+        provider_name = "NVIDIA" if provider == "nvidia" else "OpenAI"
         if exc.code in {401, 403}:
-            raise RuntimeError("The OpenAI API key was not accepted. Check the key and its project access.") from None
+            raise RuntimeError(f"The {provider_name} API key was not accepted. Check the key and its model access.") from None
         if exc.code == 429:
-            raise RuntimeError("The OpenAI API rate limit or account quota was reached. Check the API project billing and limits.") from None
-        raise RuntimeError(f"The OpenAI API could not complete this request (HTTP {exc.code}).") from None
+            raise RuntimeError(f"The {provider_name} API rate limit or account quota was reached. Check the API project limits.") from None
+        raise RuntimeError(f"The {provider_name} API could not complete this request (HTTP {exc.code}).") from None
     except (URLError, TimeoutError):
-        raise RuntimeError("Could not reach the OpenAI API. Check the internet connection and try again.") from None
+        provider_name = "NVIDIA" if provider == "nvidia" else "OpenAI"
+        raise RuntimeError(f"Could not reach the {provider_name} API. Check the internet connection and try again.") from None
     except (UnicodeDecodeError, json.JSONDecodeError):
-        raise RuntimeError("The OpenAI API returned an unreadable response.") from None
-    output: list[str] = []
-    for item in result.get("output", []) if isinstance(result, dict) else []:
-        if item.get("type") == "message":
-            output.extend(part.get("text", "") for part in item.get("content", []) if part.get("type") == "output_text")
-    answer = "\n".join(part for part in output if part).strip()
+        raise RuntimeError("The AI provider returned an unreadable response.") from None
+    if provider == "nvidia":
+        choices = result.get("choices", []) if isinstance(result, dict) else []
+        message = choices[0].get("message", {}) if choices else {}
+        content = message.get("content", "") if isinstance(message, dict) else ""
+        if isinstance(content, list):
+            answer = "\n".join(item.get("text", "") for item in content if isinstance(item, dict))
+        else:
+            answer = content if isinstance(content, str) else ""
+    else:
+        output: list[str] = []
+        for item in result.get("output", []) if isinstance(result, dict) else []:
+            if item.get("type") == "message":
+                output.extend(part.get("text", "") for part in item.get("content", []) if part.get("type") == "output_text")
+        answer = "\n".join(part for part in output if part)
+    answer = answer.strip()
     if not answer:
-        raise RuntimeError("The OpenAI API did not return a text answer. Please try again.")
+        raise RuntimeError("The AI provider did not return a text answer. Please try again.")
     return answer[:5000]
 
 
 @app.get("/api/assistant/status")
 def assistant_status():
-    configured = _openai_api_key() is not None
+    config = _assistant_config()
+    configured = config is not None
+    provider = config["provider"] if config else "local-reference"
     return jsonify({
-        "provider": "OpenAI API" if configured else "Local pulmonary reference",
+        "provider": {"nvidia": "NVIDIA NIM", "openai": "OpenAI", "local-reference": "Local pulmonary reference"}[provider],
         "configured": configured,
         "chat_available": True,
-        "mode": "openai" if configured else "local-reference",
-        "model": ASSISTANT_MODEL if configured else None,
+        "mode": provider,
+        "model": config["model"] if configured else None,
+        "supported_languages": CHAT_LANGUAGES,
+        "speech_input": "browser",
+        "speech_output": "browser",
         "topics": ["Asthma", "COPD", "Bronchitis", "Pneumonia", "Sleep apnea", "Project and model questions"],
     })
 
@@ -302,16 +353,18 @@ def assistant_insights():
     try:
         readings = _validated_readings(payload.get("readings"))
         context = json.dumps(readings, separators=(",", ":"))
-        answer = _openai_text(
-            "You are an educational assistant inside a pulmonary research prototype. Summarize only observable changes in the supplied numeric readings. Do not diagnose, name a likely disease, give probabilities, classify severity, or recommend treatment or medication. These are manually entered demo snapshots, not validated ring data, and the model has no pulmonary disease labels. Give a brief neutral trend summary and general low-risk lung-health habits; say that persistent or concerning symptoms merit a clinician check-up. If the data are too sparse, say so. Do not infer age, sex, height, weight, or identity.",
+        language = _chat_language(payload.get("language"))
+        answer = _assistant_text(
+            _language_instruction(language) + " You are an educational assistant inside a pulmonary research prototype. Summarize only observable changes in the supplied numeric readings. Do not diagnose, name a likely disease, give probabilities, classify severity, or recommend treatment or medication. These are manually entered demo snapshots, not validated ring data, and the model has no pulmonary disease labels. Give a brief neutral trend summary and general low-risk lung-health habits; say that persistent or concerning symptoms merit a clinician check-up. If the data are too sparse, say so. Do not infer age, sex, height, weight, or identity.",
             "Summarize these recent readings as a short, plain-language research preview.\n" + context,
             max_output_tokens=300,
         )
-        return jsonify({"answer": answer, "model": ASSISTANT_MODEL})
+        config = _assistant_config()
+        return jsonify({"answer": answer, "model": config["model"] if config else None, "provider": config["provider"] if config else None, "language": language})
     except ValueError as exc:
         return jsonify({"error": str(exc)}), 400
     except RuntimeError as exc:
-        code = 503 if _openai_api_key() is None else 502
+        code = 503 if _assistant_config() is None else 502
         return jsonify({"error": str(exc)}), code
 
 
@@ -324,6 +377,7 @@ def assistant_chat():
     if not isinstance(messages, list) or not messages or len(messages) > 12:
         return jsonify({"error": "Send between 1 and 12 recent chat messages."}), 400
     include_history = bool(payload.get("include_readings"))
+    language = _chat_language(payload.get("language"))
     message_limit = 4000 if include_history else 1200
     cleaned_messages: list[dict[str, str]] = []
     total_chars = 0
@@ -334,15 +388,23 @@ def assistant_chat():
         if not isinstance(content, str) or not content.strip() or len(content) > message_limit:
             return jsonify({"error": f"Each chat message must contain 1 to {message_limit:,} characters."}), 400
         total_chars += len(content)
-        cleaned_messages.append({"role": message["role"], "content": content.strip()})
+        role = message["role"]
+        if not cleaned_messages and role == "assistant":
+            continue
+        if cleaned_messages and cleaned_messages[-1]["role"] == role:
+            cleaned_messages[-1]["content"] += "\n" + content.strip()
+        else:
+            cleaned_messages.append({"role": role, "content": content.strip()})
     if total_chars > 6000:
         return jsonify({"error": "The recent chat is too long. Clear the chat or shorten the messages."}), 400
-    if _openai_api_key() is None:
+    if not any(message["role"] == "user" for message in cleaned_messages):
+        return jsonify({"error": "Add a user message before asking the chatbot."}), 400
+    if _assistant_config() is None:
         question = next((message["content"] for message in reversed(cleaned_messages) if message["role"] == "user"), "")
         if not question:
             return jsonify({"error": "Add a user message before asking the local reference chat."}), 400
         answer, sources = _local_chat_answer(question)
-        return jsonify({"answer": answer, "mode": "local-reference", "sources": sources})
+        return jsonify({"answer": answer, "mode": "local-reference", "sources": sources, "requested_language": language, "response_language": "en-IN"})
     readings_context = ""
     if include_history:
         try:
@@ -355,14 +417,15 @@ def assistant_chat():
                 message["content"] += readings_context
                 break
     try:
-        answer = _openai_text(
-            "You are PlumoRing AI's educational pulmonary-research chatbot. Answer questions about the project, respiratory health concepts, and general wellness in concise, accessible language. Never diagnose, tell someone they may have a specific disease based on these inputs, estimate disease probability, provide treatment/medication instructions, or say the prototype detected a condition. Model 1 returns uncalibrated telemetry-state classes and is not a pulmonary disease model. The app's demo rule labels are unvalidated and cannot establish disease. If asked about personal symptoms, explain this limitation and suggest speaking with a qualified clinician for persistent or concerning symptoms. For severe breathing difficulty, blue/grey lips, fainting, or other emergency symptoms, advise contacting local emergency services now. Do not infer age, sex, height, weight, or identity. No medical tools are available.",
+        answer = _assistant_text(
+            _language_instruction(language) + " You are PlumoRing AI's educational pulmonary-research chatbot. Answer questions about the project, respiratory health concepts, and general wellness in concise, accessible language. Never diagnose, tell someone they may have a specific disease based on these inputs, estimate disease probability, provide treatment/medication instructions, or say the prototype detected a condition. Model 1 returns uncalibrated telemetry-state classes and is not a pulmonary disease model. The app's demo rule labels are unvalidated and cannot establish disease. If asked about personal symptoms, explain this limitation and suggest speaking with a qualified clinician for persistent or concerning symptoms. For severe breathing difficulty, blue/grey lips, fainting, or other emergency symptoms, advise contacting local emergency services now. Do not infer age, sex, height, weight, or identity. No medical tools are available.",
             cleaned_messages,
             max_output_tokens=450,
         )
-        return jsonify({"answer": answer, "model": ASSISTANT_MODEL})
+        config = _assistant_config()
+        return jsonify({"answer": answer, "mode": config["provider"] if config else "local-reference", "provider": config["provider"] if config else None, "model": config["model"] if config else None, "requested_language": language, "response_language": language})
     except RuntimeError as exc:
-        code = 503 if _openai_api_key() is None else 502
+        code = 503 if _assistant_config() is None else 502
         return jsonify({"error": str(exc)}), code
 
 

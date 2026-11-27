@@ -377,6 +377,15 @@
     .model-result-state{min-height:350px}
     @media(max-width:760px){.pulmonary-signal-list{gap:6px}.pulmonary-signal-list article{min-height:53px}.model-result-state{min-height:0}.pulmonary-cohort-stats span{font-size:6px}}
   </style>
+  <style>
+    .chat-language-control{display:flex;align-items:center;gap:9px;margin:9px 0;color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.06em}
+    .chat-language-control select{max-width:100%;min-height:31px;padding:0 26px 0 9px;border:1px solid var(--dashboard-line);border-radius:4px;background:#101613;color:var(--dashboard-text);font:7px var(--mono)}
+    .chat-compose{grid-template-columns:minmax(0,1fr) auto auto}
+    .chat-compose textarea{grid-column:1/-1}
+    .chat-message-tools{display:flex;justify-content:flex-end;margin-top:6px}
+    .chat-speak{min-height:25px;padding:0 8px;font-size:6px}
+    @media(max-width:760px){.chat-compose{grid-template-columns:1fr 1fr}.chat-compose textarea{grid-column:1/-1}.chat-compose #chat-mic,.chat-compose #chat-send{justify-self:stretch;min-height:38px}}
+  </style>
 </head>
 <body>
   <main class="page">
@@ -633,12 +642,17 @@
               <button class="chat-topic" type="button" data-chat-question="What symptoms are common with sleep apnea?">SLEEP APNEA</button>
               <button class="chat-topic" type="button" data-chat-question="What does my PlumoRing model result mean?">MODEL RESULTS</button>
             </div>
+            <label class="chat-language-control" for="chat-language">CHAT LANGUAGE
+              <select id="chat-language" aria-label="Choose the chatbot response language">
+                <option value="en-IN">English (India)</option><option value="hi-IN">हिन्दी · Hindi</option><option value="bn-IN">বাংলা · Bengali</option><option value="te-IN">తెలుగు · Telugu</option><option value="mr-IN">मराठी · Marathi</option><option value="ta-IN">தமிழ் · Tamil</option><option value="ur-IN">اردو · Urdu</option><option value="gu-IN">ગુજરાતી · Gujarati</option><option value="kn-IN">ಕನ್ನಡ · Kannada</option><option value="or-IN">ଓଡ଼ିଆ · Odia</option><option value="ml-IN">മലയാളം · Malayalam</option><option value="pa-IN">ਪੰਜਾਬੀ · Punjabi</option><option value="as-IN">অসমীয়া · Assamese</option><option value="ks-IN">کٲشُر · Kashmiri</option><option value="ne-IN">नेपाली · Nepali</option><option value="sd-IN">سنڌي · Sindhi</option><option value="kok-IN">कोंकणी · Konkani</option><option value="doi-IN">डोगरी · Dogri</option><option value="mni-IN">মেইতেই · Manipuri (Meitei)</option><option value="brx-IN">बड़ो · Bodo</option><option value="sa-IN">संस्कृतम् · Sanskrit</option><option value="mai-IN">मैथिली · Maithili</option><option value="sat-IN">ᱥᱟᱱᱛᱟᱲᱤ · Santali</option>
+              </select>
+            </label>
             <div class="chat-log" id="chat-log" role="log" aria-live="polite" aria-relevant="additions text"><p class="chat-empty">Your conversation is saved in this browser. Start with a question below.</p></div>
             <form id="chat-form">
-              <div class="chat-compose"><textarea id="chat-input" maxlength="1200" placeholder="Ask a question…" aria-label="Message for pulmonary research chatbot" required></textarea><button class="personal-tool-button primary" id="chat-send" type="submit" disabled>SEND</button></div>
+              <div class="chat-compose"><textarea id="chat-input" maxlength="1200" placeholder="Ask a question…" aria-label="Message for pulmonary research chatbot" required></textarea><button class="personal-tool-button" id="chat-mic" type="button" aria-label="Record a question by voice">MIC</button><button class="personal-tool-button primary" id="chat-send" type="submit" disabled>SEND</button></div>
               <div class="chat-options"><label><input id="chat-include-readings" type="checkbox"> Include my latest saved readings</label><button class="personal-tool-button" id="clear-chat" type="button">CLEAR CHAT</button></div>
             </form>
-            <p class="chat-disclosure">Without an API key, selected reference replies run locally and are not sent to OpenAI. With a key, your message is sent only after Send; saved readings are included only if you check the box. <a href="privacy.html">Privacy details</a>.</p>
+            <p class="chat-disclosure">Choose from 22 Indian languages and English. When an AI key is configured, chat replies are requested in your selected language; quality varies by model and language. Without a key, local reference replies are English only. MIC uses your browser’s speech recognition; it fills the message and never sends it until you press Send. Replies can be read aloud with your browser’s available voices. <a href="privacy.html">Privacy details</a>.</p>
             <p class="personal-tool-status" id="chat-status" aria-live="polite"></p>
           </section>
           <section class="personal-tool research-history-tool" aria-labelledby="research-history-title">
@@ -1369,6 +1383,16 @@
     const chatSend=document.querySelector('#chat-send');
     const chatStatus=document.querySelector('#chat-status');
     const includeReadings=document.querySelector('#chat-include-readings');
+    const chatLanguage=document.querySelector('#chat-language');
+    const chatMic=document.querySelector('#chat-mic');
+    const chatLanguageStorageKey='plumoring-chat-language-v1';
+    const allowedChatLanguages=new Set(Array.from(chatLanguage.options,option=>option.value));
+    try{const storedLanguage=localStorage.getItem(chatLanguageStorageKey);if(allowedChatLanguages.has(storedLanguage))chatLanguage.value=storedLanguage}catch{}
+    const SpeechRecognitionAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
+    let chatRecognition=null;
+    let chatListening=false;
+    const browserSpeechOutput=Boolean(window.speechSynthesis&&window.SpeechSynthesisUtterance);
+    if(!SpeechRecognitionAPI){chatMic.disabled=true;chatMic.title='Voice input is not available in this browser. You can type your question.'}
     const researchHistoryHost=document.querySelector('#research-history-list');
     const researchHistoryCount=document.querySelector('#research-history-count');
     const researchHistoryStatus=document.querySelector('#research-history-status');
@@ -1397,6 +1421,11 @@
       chatMessages.slice(-30).forEach(message=>{
         const bubble=document.createElement('div');bubble.className=`chat-message ${message.role}`;
         const copy=document.createElement('span');copy.className='chat-message-copy';copy.textContent=message.content;bubble.append(copy);
+        if(message.role==='assistant'&&browserSpeechOutput){
+          const tools=document.createElement('div');tools.className='chat-message-tools';
+          const speak=document.createElement('button');speak.type='button';speak.className='personal-tool-button chat-speak';speak.textContent='READ ALOUD';speak.setAttribute('aria-label','Read this assistant reply aloud');
+          speak.addEventListener('click',()=>speakChatMessage(message,speak));tools.append(speak);bubble.append(tools);
+        }
         if(message.role==='assistant'&&Array.isArray(message.sources)&&message.sources.length){
           const sources=document.createElement('div');sources.className='chat-sources';sources.setAttribute('aria-label','Health information sources');
           message.sources.forEach(source=>{
@@ -1410,6 +1439,17 @@
         chatLog.append(bubble);
       });
       chatLog.scrollTop=chatLog.scrollHeight;
+    }
+    function speakChatMessage(message,button){
+      if(!browserSpeechOutput)return;
+      if(window.speechSynthesis.speaking){window.speechSynthesis.cancel();document.querySelectorAll('.chat-speak').forEach(item=>item.textContent='READ ALOUD');return}
+      const language=message.response_language||message.language||'en-IN';
+      const voices=window.speechSynthesis.getVoices();
+      const voice=voices.find(item=>item.lang.toLowerCase()===language.toLowerCase())||voices.find(item=>item.lang.toLowerCase().startsWith(language.split('-')[0].toLowerCase()+'-'));
+      if(!voice){chatStatus.textContent=`No ${language} speech voice is installed in this browser/device. Enable a voice pack or choose another language.`;return}
+      const utterance=new SpeechSynthesisUtterance(message.content);utterance.lang=language;utterance.voice=voice;
+      utterance.onend=utterance.onerror=()=>{button.textContent='READ ALOUD'};
+      document.querySelectorAll('.chat-speak').forEach(item=>item.textContent='READ ALOUD');button.textContent='STOP AUDIO';window.speechSynthesis.speak(utterance);
     }
     function persistResearchHistory(){try{localStorage.setItem(researchStorageKey,JSON.stringify(researchHistory.slice(0,20)));return true}catch{researchHistoryStatus.textContent='Browser storage is full or unavailable. Export or clear older research snapshots.';return false}}
     function formatResearchMetric(value){return value!==null&&value!==undefined&&value!==''&&Number.isFinite(Number(value))?Number(value).toFixed(3):'not reported'}
@@ -1458,8 +1498,8 @@
         const response=await fetch('/api/assistant/status');const status=await readModelOneJson(response);
         assistantReady=Boolean(status.configured);
         chatReady=Boolean(status.chat_available);
-        if(assistantReady){historyStatus.textContent=`OPENAI API KEY FOUND · ${status.model} · REQUESTS ARE SENT ONLY WHEN YOU ASK`;chatStatus.textContent='OpenAI chat is ready. Your key stays on this local server.'}
-        else{historyStatus.textContent='OpenAI summaries are off. Personal reading history still works here.';chatStatus.textContent='LOCAL REFERENCE CHAT READY · selected topics stay on this server and are not sent to OpenAI.'}
+        if(assistantReady){historyStatus.textContent=`${status.provider.toUpperCase()} READY · ${status.model} · REQUESTS ARE SENT ONLY WHEN YOU ASK`;chatStatus.textContent=`${status.provider} chat is ready. The API key stays on this local server.`}
+        else{historyStatus.textContent='AI summaries are off. Personal reading history still works here.';chatStatus.textContent='LOCAL REFERENCE CHAT READY · replies are English only and stay on this server.'}
         chatSend.disabled=!chatReady;
       }catch{assistantReady=false;chatReady=false;historyStatus.textContent='AI setup unavailable. Reading history remains saved in this browser.';chatStatus.textContent='Could not check the local assistant. Restart the app and reload.';chatSend.disabled=true}
       renderReadingHistory();
@@ -1476,7 +1516,7 @@
       if(!assistantReady||!readingHistory.length)return;
       historyInsightButton.disabled=true;historyInsightButton.textContent='PREPARING SUMMARY…';historyStatus.textContent='Sending the latest saved readings for an educational summary…';
       try{
-        const data=await assistantPost('/api/assistant/insights',{readings:readingHistory.slice(0,12).map(item=>({readings:item.readings}))});
+        const data=await assistantPost('/api/assistant/insights',{readings:readingHistory.slice(0,12).map(item=>({readings:item.readings})),language:chatLanguage.value});
         insightOutput.textContent=data.answer;insightOutput.hidden=false;
         if(readingHistory.length){readingHistory[0].ai_insight=data.answer;persistReadingHistory()}
         historyStatus.textContent='Summary ready. This is general education, not a diagnosis.';
@@ -1486,6 +1526,26 @@
     document.querySelector('#clear-chat').addEventListener('click',()=>{
       if(!chatMessages.length||!confirm('Clear this chat from the current browser?'))return;
       chatMessages=[];persistChat();renderChat();chatStatus.textContent='Local chat history cleared.';
+    });
+    chatLanguage.addEventListener('change',()=>{
+      try{localStorage.setItem(chatLanguageStorageKey,chatLanguage.value)}catch{}
+      if(chatRecognition)chatRecognition.lang=chatLanguage.value;
+      if(!assistantReady&&chatLanguage.value!=='en-IN')chatStatus.textContent='Local reference replies are English only. Add an AI API key for replies in the selected language.';
+    });
+    if(SpeechRecognitionAPI){
+      try{
+        chatRecognition=new SpeechRecognitionAPI();chatRecognition.continuous=false;chatRecognition.interimResults=false;chatRecognition.maxAlternatives=1;chatRecognition.lang=chatLanguage.value;
+        chatRecognition.onstart=()=>{chatListening=true;chatMic.textContent='LISTENING…';chatMic.setAttribute('aria-pressed','true');chatMic.disabled=true;chatStatus.textContent='Listening in the selected language. Your speech will fill the text box; press Send when ready.'};
+        chatRecognition.onresult=event=>{const transcript=event.results?.[0]?.[0]?.transcript?.trim();if(transcript){chatInput.value=transcript;chatInput.focus();chatStatus.textContent='Voice text added. Review it, then press Send to submit.'}};
+        chatRecognition.onerror=event=>{const messages={not-allowed:'Microphone permission was denied. Allow microphone access or type your question.','service-not-allowed':'This browser speech service is unavailable. Type your question instead.','language-not-supported':'Voice recognition does not support this language on this device. Choose another language or type your question.',network:'The browser speech service could not be reached. Type your question instead.'};chatStatus.textContent=messages[event.error]||'Voice input stopped. You can type your question.'};
+        chatRecognition.onend=()=>{chatListening=false;chatMic.textContent='MIC';chatMic.setAttribute('aria-pressed','false');chatMic.disabled=false};
+      }catch{chatRecognition=null;chatMic.disabled=true;chatMic.title='Voice input is not available in this browser. You can type your question.'}
+    }
+    chatMic.addEventListener('click',()=>{
+      if(!chatRecognition)return;
+      if(chatListening){chatRecognition.stop();return}
+      chatRecognition.lang=chatLanguage.value;
+      try{chatRecognition.start()}catch{chatStatus.textContent='Voice input is already starting. Wait a moment and try again.'}
     });
     document.querySelectorAll('[data-chat-question]').forEach(button=>button.addEventListener('click',()=>{
       chatInput.value=button.dataset.chatQuestion||'';chatInput.focus();
@@ -1514,11 +1574,11 @@
       event.preventDefault();const content=chatInput.value.trim();if(!content||!chatReady)return;
       chatMessages=[...chatMessages,{role:'user',content,created_at:new Date().toISOString()}].slice(-50);persistChat();renderChat();chatInput.value='';chatSend.disabled=true;chatStatus.textContent='Thinking…';
       const sharing=includeReadings.checked&&readingHistory.length>0;
-      const payload={messages:chatMessages.slice(-12).map(({role,content})=>({role,content})),include_readings:sharing};
+      const payload={messages:chatMessages.slice(-12).map(({role,content})=>({role,content})),include_readings:sharing,language:chatLanguage.value};
       if(sharing)payload.readings=readingHistory.slice(0,12).map(item=>({readings:item.readings}));
       try{
         const data=await assistantPost('/api/assistant/chat',payload);
-        chatMessages=[...chatMessages,{role:'assistant',content:data.answer,sources:Array.isArray(data.sources)?data.sources:[],created_at:new Date().toISOString()}].slice(-50);persistChat();renderChat();chatStatus.textContent=data.mode==='local-reference'?'LOCAL REFERENCE REPLY · educational only, not a diagnosis.':'Reply ready. Ask a clinician about personal symptoms or concerns.';
+        chatMessages=[...chatMessages,{role:'assistant',content:data.answer,sources:Array.isArray(data.sources)?data.sources:[],response_language:data.response_language||chatLanguage.value,created_at:new Date().toISOString()}].slice(-50);persistChat();renderChat();chatStatus.textContent=data.mode==='local-reference'?(chatLanguage.value==='en-IN'?'LOCAL REFERENCE REPLY · educational only, not a diagnosis.':'LOCAL REFERENCE REPLY IS ENGLISH ONLY · add an AI key for selected-language replies.'):'Reply ready. Ask a clinician about personal symptoms or concerns.';
       }catch(error){chatStatus.textContent=error.message}
       finally{chatSend.disabled=!chatReady;chatInput.focus()}
     });
