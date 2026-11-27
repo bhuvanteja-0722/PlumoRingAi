@@ -229,22 +229,23 @@
     .model-class-row b{color:var(--dashboard-text);font-weight:400;font-variant-numeric:tabular-nums}
     .model-class-row i{grid-column:1/-1;height:3px;overflow:hidden;border-radius:4px;background:#ffffff14}
     .model-class-row i span{display:block;height:100%;border-radius:inherit;background:var(--chart)}
-    .friend-model-shell{margin-top:20px;padding:clamp(18px,2.5vw,30px);border:1px solid #ffffff18;border-radius:22px;background:linear-gradient(145deg,#ffffff0a,#ffffff03 62%,color-mix(in srgb,var(--accent) 7%,transparent));box-shadow:0 18px 55px #0002;backdrop-filter:blur(20px)}
-    .friend-model-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:22px;margin-bottom:21px}.friend-model-heading h3{margin:8px 0 6px;color:var(--dashboard-text);font-size:clamp(20px,2.2vw,28px);letter-spacing:-.04em}.friend-model-heading p{max-width:680px;margin:0;color:var(--dashboard-muted);font-size:10px;line-height:1.7}
-    .friend-model-badge{flex:none;padding:8px 10px;border:1px solid #bd9a5d55;border-radius:4px;color:#d7bd88;background:#bd9a5d0c;font:7px var(--mono);letter-spacing:.09em;text-align:center}
-    .friend-model-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:14px;align-items:stretch}
-    .friend-input-panel,.friend-result-panel{min-width:0;padding:17px;border:1px solid var(--dashboard-line);border-radius:8px;background:#101613a8}
-    .friend-panel-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.1em}.friend-panel-heading b{color:var(--dashboard-text);font-weight:500}
-    .friend-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-    .friend-input{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 10px;align-items:center;min-width:0;padding:10px;border:1px solid var(--dashboard-line);border-radius:5px;background:var(--dashboard-raised)}
-    .friend-input label{min-width:0;color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.055em}.friend-input output{color:#87dbd2;font:600 12px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}.friend-input output small{color:#a1bcb2;font-size:7px}
-    .friend-input input{grid-column:1/-1;width:100%;height:3px;margin:1px 0 0;appearance:none;background:linear-gradient(90deg,var(--accent) var(--fill,25%),#424a44 var(--fill,25%));border-radius:4px;cursor:pointer}.friend-input input::-webkit-slider-thumb{appearance:none;width:10px;height:10px;border-radius:50%;background:#e5efdb;border:2px solid var(--accent)}.friend-input input::-moz-range-thumb{width:8px;height:8px;border-radius:50%;background:#e5efdb;border:2px solid var(--accent)}
-    .friend-model-run{margin-top:12px}.friend-result-panel{display:flex;flex-direction:column}.friend-output-state{color:#d4b477;font:7px var(--mono);letter-spacing:.1em}.friend-output-title{margin:9px 0 5px;color:var(--dashboard-text);font-size:clamp(17px,2vw,22px);line-height:1.2;letter-spacing:-.035em;overflow-wrap:anywhere}.friend-output-note{margin:0;color:var(--dashboard-muted);font-size:8px;line-height:1.65}.friend-output-score{display:flex;justify-content:space-between;gap:12px;margin-top:13px;padding-top:11px;border-top:1px solid var(--dashboard-line);color:var(--dashboard-muted);font:7px var(--mono)}.friend-output-score b{color:var(--dashboard-text);font-weight:500;text-align:right}
-    .friend-class-scores{display:grid;gap:10px;margin-top:14px}.friend-class-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 9px;color:var(--dashboard-muted);font:7px/1.45 var(--mono);letter-spacing:.025em}.friend-class-row b{color:var(--dashboard-text);font-weight:400;font-variant-numeric:tabular-nums}.friend-class-row i{grid-column:1/-1;height:4px;overflow:hidden;border-radius:4px;background:#ffffff14}.friend-class-row i span{display:block;height:100%;border-radius:inherit;background:var(--chart)}
-    .friend-disease-boundary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 16px;margin-top:14px;padding:12px;border:1px solid color-mix(in srgb,var(--accent) 25%,var(--dashboard-line));border-radius:6px;background:color-mix(in srgb,var(--accent) 5%,transparent)}.friend-disease-boundary>div{display:grid;gap:5px}.friend-disease-boundary>div span{color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.08em}.friend-disease-boundary>div b{color:var(--dashboard-text);font-size:10px;font-weight:600}.friend-disease-boundary p{grid-column:1/-1;margin:0;color:var(--dashboard-muted);font-size:8px;line-height:1.6}.friend-disease-boundary a{align-self:center;color:var(--accent);font:7px var(--mono);text-decoration:none;white-space:nowrap}.friend-disease-boundary a:hover{text-decoration:underline;text-underline-offset:3px}
-    .friend-model-caveat{margin:13px 0 0;padding:10px 11px;border:1px solid #bd9a5d35;border-radius:5px;background:#bd9a5d0b;color:#c5ba9f;font-size:8px;line-height:1.65}.friend-model-caveat strong{color:#e1c990;font-weight:600}.friend-model-footnote{margin:12px 1px 0;color:#919b93;font:7px/1.65 var(--mono);letter-spacing:.015em}
+    .model-one-model-shell{margin-top:20px;padding:clamp(18px,2.5vw,30px);border:1px solid #ffffff18;border-radius:22px;background:linear-gradient(145deg,#ffffff0a,#ffffff03 62%,color-mix(in srgb,var(--accent) 7%,transparent));box-shadow:0 18px 55px #0002;backdrop-filter:blur(20px)}
+    .model-one-model-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:22px;margin-bottom:21px}.model-one-model-heading h3{margin:8px 0 6px;color:var(--dashboard-text);font-size:clamp(20px,2.2vw,28px);letter-spacing:-.04em}.model-one-model-heading p{max-width:680px;margin:0;color:var(--dashboard-muted);font-size:10px;line-height:1.7}
+    .model-one-model-badge{flex:none;padding:8px 10px;border:1px solid #bd9a5d55;border-radius:4px;color:#d7bd88;background:#bd9a5d0c;font:7px var(--mono);letter-spacing:.09em;text-align:center}
+    .model-one-model-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:14px;align-items:stretch}
+    .model-one-input-panel,.model-one-result-panel{min-width:0;padding:17px;border:1px solid var(--dashboard-line);border-radius:8px;background:#101613a8}
+    .model-one-panel-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.1em}.model-one-panel-heading b{color:var(--dashboard-text);font-weight:500}
+    .model-one-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .model-one-input{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 10px;align-items:center;min-width:0;padding:10px;border:1px solid var(--dashboard-line);border-radius:5px;background:var(--dashboard-raised)}
+    .model-one-input label{min-width:0;color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.055em}.model-one-input output{color:#87dbd2;font:600 12px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}.model-one-input output small{color:#a1bcb2;font-size:7px}
+    .model-one-input input{grid-column:1/-1;width:100%;height:3px;margin:1px 0 0;appearance:none;background:linear-gradient(90deg,var(--accent) var(--fill,25%),#424a44 var(--fill,25%));border-radius:4px;cursor:pointer}.model-one-input input::-webkit-slider-thumb{appearance:none;width:10px;height:10px;border-radius:50%;background:#e5efdb;border:2px solid var(--accent)}.model-one-input input::-moz-range-thumb{width:8px;height:8px;border-radius:50%;background:#e5efdb;border:2px solid var(--accent)}
+    .model-one-model-run{margin-top:12px}.model-one-result-panel{display:flex;flex-direction:column}.model-one-output-state{color:#d4b477;font:7px var(--mono);letter-spacing:.1em}.model-one-output-title{margin:9px 0 5px;color:var(--dashboard-text);font-size:clamp(17px,2vw,22px);line-height:1.2;letter-spacing:-.035em;overflow-wrap:anywhere}.model-one-output-note{margin:0;color:var(--dashboard-muted);font-size:8px;line-height:1.65}.model-one-output-score{display:flex;justify-content:space-between;gap:12px;margin-top:13px;padding-top:11px;border-top:1px solid var(--dashboard-line);color:var(--dashboard-muted);font:7px var(--mono)}.model-one-output-score b{color:var(--dashboard-text);font-weight:500;text-align:right}
+    .model-one-class-scores{display:grid;gap:10px;margin-top:14px}.model-one-class-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 9px;color:var(--dashboard-muted);font:7px/1.45 var(--mono);letter-spacing:.025em}.model-one-class-row b{color:var(--dashboard-text);font-weight:400;font-variant-numeric:tabular-nums}.model-one-class-row i{grid-column:1/-1;height:4px;overflow:hidden;border-radius:4px;background:#ffffff14}.model-one-class-row i span{display:block;height:100%;border-radius:inherit;background:var(--chart)}
+    .model-one-rule-hypothesis{margin-top:15px;padding:13px;border:1px solid #d2b47655;border-radius:7px;background:linear-gradient(145deg,#d2b47612,#10161380)}.model-one-rule-head{display:flex;justify-content:space-between;gap:12px;color:#d8c18e;font:7px var(--mono);letter-spacing:.08em}.model-one-rule-head span:last-child{color:var(--dashboard-muted);text-align:right}.model-one-rule-hypothesis h5{margin:10px 0 5px;color:var(--dashboard-text);font-size:17px;line-height:1.25;font-weight:600;letter-spacing:-.025em}.model-one-rule-hypothesis p{margin:0;color:var(--dashboard-muted);font-size:8px;line-height:1.6}.model-one-rule-observations{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}.model-one-rule-observations span{padding:5px 7px;border:1px solid var(--dashboard-line);border-radius:3px;color:var(--dashboard-muted);font:6px/1.4 var(--mono)}.model-one-rule-foot{display:block;margin-top:10px;color:#c5ba9f;font:7px/1.55 var(--mono)}
+    .model-one-disease-boundary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 16px;margin-top:14px;padding:12px;border:1px solid color-mix(in srgb,var(--accent) 25%,var(--dashboard-line));border-radius:6px;background:color-mix(in srgb,var(--accent) 5%,transparent)}.model-one-disease-boundary>div{display:grid;gap:5px}.model-one-disease-boundary>div span{color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.08em}.model-one-disease-boundary>div b{color:var(--dashboard-text);font-size:10px;font-weight:600}.model-one-disease-boundary p{grid-column:1/-1;margin:0;color:var(--dashboard-muted);font-size:8px;line-height:1.6}.model-one-disease-boundary a{align-self:center;color:var(--accent);font:7px var(--mono);text-decoration:none;white-space:nowrap}.model-one-disease-boundary a:hover{text-decoration:underline;text-underline-offset:3px}
+    .model-one-model-caveat{margin:13px 0 0;padding:10px 11px;border:1px solid #bd9a5d35;border-radius:5px;background:#bd9a5d0b;color:#c5ba9f;font-size:8px;line-height:1.65}.model-one-model-caveat strong{color:#e1c990;font-weight:600}.model-one-model-footnote{margin:12px 1px 0;color:#919b93;font:7px/1.65 var(--mono);letter-spacing:.015em}
     @media(max-width:1180px){.dashboard-main{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);grid-template-areas:"telemetry inference" "anatomy anatomy"}.analysis-anatomy{border-inline:0;border-top:1px solid var(--dashboard-line);padding:22px}.organ-viewport{height:clamp(400px,52vw,560px);max-height:560px}.anatomy-console{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.motion-readout,.anatomy-actions,.anatomy-credit{grid-column:1/-1}}
-    @media(max-width:760px){.dashboard-main{grid-template-columns:minmax(0,1fr);grid-template-areas:"telemetry" "anatomy" "inference"}.analysis-anatomy{padding:19px 13px;border-inline:0;border-top:1px solid var(--dashboard-line)}.organ-viewport{height:clamp(370px,112vw,520px);min-height:370px;max-height:520px}.organ-hud-top{top:13px;left:12px}.organ-hud-right{top:13px;right:12px}.organ-callout{font-size:6px}.heart-callout{top:57%;left:3%}.left-lung-callout{top:28%;left:3%}.right-lung-callout{top:28%;right:3%}.heart-callout:after,.left-lung-callout:after,.right-lung-callout:before{width:20px}.organ-response-hud{left:12px;bottom:43px}.anatomy-console{display:block;padding-top:13px}.motion-readout{margin-bottom:15px}.anatomy-actions{align-items:flex-start;flex-direction:column}.organ-buttons{align-self:stretch}.organ-buttons .spatial-button{flex:1}.anatomy-live{max-width:50%;font-size:5px}.anatomy-intro{font-size:8px}.friend-model-heading{display:block}.friend-model-badge{display:inline-block;margin-top:12px}.friend-model-grid{grid-template-columns:minmax(0,1fr)}.friend-model-shell{padding:16px;border-radius:17px}.friend-input-panel,.friend-result-panel{padding:12px}.friend-input-grid{gap:6px}.friend-input{padding:8px;gap:6px}.friend-input label{font-size:6px}.friend-input output{font-size:11px}.friend-model-heading p{font-size:9px}}
+    @media(max-width:760px){.dashboard-main{grid-template-columns:minmax(0,1fr);grid-template-areas:"telemetry" "anatomy" "inference"}.analysis-anatomy{padding:19px 13px;border-inline:0;border-top:1px solid var(--dashboard-line)}.organ-viewport{height:clamp(370px,112vw,520px);min-height:370px;max-height:520px}.organ-hud-top{top:13px;left:12px}.organ-hud-right{top:13px;right:12px}.organ-callout{font-size:6px}.heart-callout{top:57%;left:3%}.left-lung-callout{top:28%;left:3%}.right-lung-callout{top:28%;right:3%}.heart-callout:after,.left-lung-callout:after,.right-lung-callout:before{width:20px}.organ-response-hud{left:12px;bottom:43px}.anatomy-console{display:block;padding-top:13px}.motion-readout{margin-bottom:15px}.anatomy-actions{align-items:flex-start;flex-direction:column}.organ-buttons{align-self:stretch}.organ-buttons .spatial-button{flex:1}.anatomy-live{max-width:50%;font-size:5px}.anatomy-intro{font-size:8px}.model-one-model-heading{display:block}.model-one-model-badge{display:inline-block;margin-top:12px}.model-one-model-grid{grid-template-columns:minmax(0,1fr)}.model-one-model-shell{padding:16px;border-radius:17px}.model-one-input-panel,.model-one-result-panel{padding:12px}.model-one-input-grid{gap:6px}.model-one-input{padding:8px;gap:6px}.model-one-input label{font-size:6px}.model-one-input output{font-size:11px}.model-one-model-heading p{font-size:9px}}
     @media(max-width:390px){.organ-viewport{height:390px;min-height:390px}.organ-callout{font-size:6px}.organ-callout small{font-size:5px}.organ-bottom-hud{font-size:5px}.organ-response-hud{font-size:5px}.anatomy-panel-head h3{font-size:15px}.anatomy-live{font-size:5px}}
     @media(prefers-reduced-motion:reduce){.organ-viewport,.spatial-range{scroll-behavior:auto}}
   </style>
@@ -563,41 +564,48 @@
         </div>
         <div class="dashboard-footer"><span>PUBLIC DAILY INDICES&nbsp; / &nbsp;NO LIVE RING STREAM</span><span>PLUMORING AI&nbsp; · &nbsp;RESEARCH PROTOTYPE</span></div>
       </div>
-      <section class="friend-model-shell" aria-labelledby="friend-model-title">
-        <div class="friend-model-heading">
-          <div><span class="dash-overline">MODEL 02&nbsp; / &nbsp;SUPPLIED SE-RESNET · BIGRU · ATTENTION</span><h3 id="friend-model-title">Run the saved telemetry model.</h3><p>This keeps your friend’s neural network alongside our public-dataset research tracks. Enter the eight channels, run the saved weights, and inspect the model’s five class scores.</p></div>
-          <span class="friend-model-badge" id="friend-model-runtime" aria-live="polite">CHECKING MODEL FILE</span>
+      <section class="model-one-model-shell" aria-labelledby="model-one-model-title">
+        <div class="model-one-model-heading">
+          <div><span class="dash-overline">MODEL 1&nbsp; / &nbsp;SE-RESNET · BIGRU · ATTENTION</span><h3 id="model-one-model-title">Temporal telemetry-state model.</h3><p>Enter the eight channels to run Model 1 and inspect its five state-class scores. The separate pulmonary pattern panel below uses the bundle’s demo rules; it is not a disease output from the neural network.</p></div>
+          <span class="model-one-model-badge" id="model-one-model-runtime" aria-live="polite">CHECKING MODEL FILE</span>
         </div>
-        <div class="friend-model-grid">
-          <div class="friend-input-panel">
-            <div class="friend-panel-heading"><b>DEMO TELEMETRY INPUTS</b><span>ONE SNAPSHOT</span></div>
-            <div class="friend-input-grid">
-              <div class="friend-input"><label for="friend-hr">HEART RATE · HR</label><output id="friend-hr-value">72 <small>bpm</small></output><input id="friend-hr" data-friend-sensor="hr" type="range" min="40" max="190" step="1" value="72" aria-label="Heart rate in beats per minute"></div>
-              <div class="friend-input"><label for="friend-spo2">OXYGEN SATURATION · SpO₂</label><output id="friend-spo2-value">98 <small>%</small></output><input id="friend-spo2" data-friend-sensor="spo2" type="range" min="70" max="100" step="0.5" value="98" aria-label="Oxygen saturation percent"></div>
-              <div class="friend-input"><label for="friend-rr">RESPIRATION RATE · RR</label><output id="friend-rr-value">15 <small>br/min</small></output><input id="friend-rr" data-friend-sensor="rr" type="range" min="8" max="40" step="1" value="15" aria-label="Respiration rate per minute"></div>
-              <div class="friend-input"><label for="friend-wheeze">ACOUSTIC WHEEZE · COMPANION</label><output id="friend-wheeze-value">0.3 <small>/ 10</small></output><input id="friend-wheeze" data-friend-sensor="wheeze" type="range" min="0" max="10" step="0.1" value="0.3" aria-label="Acoustic wheeze companion index"></div>
-              <div class="friend-input"><label for="friend-temp">SKIN TEMPERATURE DELTA</label><output id="friend-temp-value">+0.20 <small>°C</small></output><input id="friend-temp" data-friend-sensor="temp" type="range" min="0" max="2.5" step="0.05" value="0.2" aria-label="Skin temperature change in degrees Celsius"></div>
-              <div class="friend-input"><label for="friend-imu">IMU MOTION · ACC</label><output id="friend-imu-value">0.05 <small>g</small></output><input id="friend-imu" data-friend-sensor="imu" type="range" min="-3" max="3" step="0.05" value="0.05" aria-label="Motion acceleration in g"></div>
-              <div class="friend-input"><label for="friend-eda">SKIN CONDUCTANCE · EDA</label><output id="friend-eda-value">0.12 <small>index</small></output><input id="friend-eda" data-friend-sensor="eda" type="range" min="0" max="1" step="0.02" value="0.12" aria-label="Electrodermal activity index"></div>
-              <div class="friend-input"><label for="friend-pm25">AMBIENT PARTICLES · CONTEXT</label><output id="friend-pm25-value">18 <small>µg/m³</small></output><input id="friend-pm25" data-friend-sensor="pm25" type="range" min="0" max="250" step="1" value="18" aria-label="Ambient PM2.5 concentration"></div>
+        <div class="model-one-model-grid">
+          <div class="model-one-input-panel">
+            <div class="model-one-panel-heading"><b>DEMO TELEMETRY INPUTS</b><span>ONE SNAPSHOT</span></div>
+            <div class="model-one-input-grid">
+              <div class="model-one-input"><label for="model-one-hr">HEART RATE · HR</label><output id="model-one-hr-value">72 <small>bpm</small></output><input id="model-one-hr" data-model-one-sensor="hr" type="range" min="40" max="190" step="1" value="72" aria-label="Heart rate in beats per minute"></div>
+              <div class="model-one-input"><label for="model-one-spo2">OXYGEN SATURATION · SpO₂</label><output id="model-one-spo2-value">98 <small>%</small></output><input id="model-one-spo2" data-model-one-sensor="spo2" type="range" min="70" max="100" step="0.5" value="98" aria-label="Oxygen saturation percent"></div>
+              <div class="model-one-input"><label for="model-one-rr">RESPIRATION RATE · RR</label><output id="model-one-rr-value">15 <small>br/min</small></output><input id="model-one-rr" data-model-one-sensor="rr" type="range" min="8" max="40" step="1" value="15" aria-label="Respiration rate per minute"></div>
+              <div class="model-one-input"><label for="model-one-wheeze">ACOUSTIC WHEEZE · COMPANION</label><output id="model-one-wheeze-value">0.3 <small>/ 10</small></output><input id="model-one-wheeze" data-model-one-sensor="wheeze" type="range" min="0" max="10" step="0.1" value="0.3" aria-label="Acoustic wheeze companion index"></div>
+              <div class="model-one-input"><label for="model-one-temp">SKIN TEMPERATURE DELTA</label><output id="model-one-temp-value">+0.20 <small>°C</small></output><input id="model-one-temp" data-model-one-sensor="temp" type="range" min="0" max="2.5" step="0.05" value="0.2" aria-label="Skin temperature change in degrees Celsius"></div>
+              <div class="model-one-input"><label for="model-one-imu">IMU MOTION · ACC</label><output id="model-one-imu-value">0.05 <small>g</small></output><input id="model-one-imu" data-model-one-sensor="imu" type="range" min="-3" max="3" step="0.05" value="0.05" aria-label="Motion acceleration in g"></div>
+              <div class="model-one-input"><label for="model-one-eda">SKIN CONDUCTANCE · EDA</label><output id="model-one-eda-value">0.12 <small>index</small></output><input id="model-one-eda" data-model-one-sensor="eda" type="range" min="0" max="1" step="0.02" value="0.12" aria-label="Electrodermal activity index"></div>
+              <div class="model-one-input"><label for="model-one-pm25">AMBIENT PARTICLES · CONTEXT</label><output id="model-one-pm25-value">18 <small>µg/m³</small></output><input id="model-one-pm25" data-model-one-sensor="pm25" type="range" min="0" max="250" step="1" value="18" aria-label="Ambient PM2.5 concentration"></div>
             </div>
-            <button class="model-run friend-model-run" id="friend-model-run" type="button">RUN SUPPLIED MODEL</button>
+            <button class="model-run model-one-model-run" id="model-one-model-run" type="button">RUN MODEL 1</button>
           </div>
-          <aside class="friend-result-panel" aria-labelledby="friend-result-heading">
-            <div class="friend-panel-heading"><b id="friend-result-heading">NETWORK CLASS OUTPUT</b><span id="friend-output-state" aria-live="polite">WAITING FOR INPUT</span></div>
-            <h4 class="friend-output-title" id="friend-top-class">Ready for a model run</h4>
-            <p class="friend-output-note" id="friend-output-note">The model output will appear here as a telemetry-state class, not a diagnosis.</p>
-            <div class="friend-output-score"><span>TOP CLASS SCORE · UNCALIBRATED</span><b id="friend-top-score">—</b></div>
-            <div class="friend-class-scores" id="friend-class-scores" aria-label="Five uncalibrated model class scores displayed as percentages"></div>
-            <div class="friend-disease-boundary">
-              <div><span>PULMONARY DISEASE OUTPUT</span><b>No validated personal disease probability</b></div>
+          <aside class="model-one-result-panel" aria-labelledby="model-one-result-heading">
+            <div class="model-one-panel-heading"><b id="model-one-result-heading">NETWORK CLASS OUTPUT</b><span id="model-one-output-state" aria-live="polite">WAITING FOR INPUT</span></div>
+            <h4 class="model-one-output-title" id="model-one-top-class">Ready for a model run</h4>
+            <p class="model-one-output-note" id="model-one-output-note">The model output will appear here as a telemetry-state class, not a diagnosis.</p>
+            <div class="model-one-output-score"><span>TOP CLASS SCORE · UNCALIBRATED</span><b id="model-one-top-score">—</b></div>
+            <div class="model-one-class-scores" id="model-one-class-scores" aria-label="Five uncalibrated model class scores displayed as percentages"></div>
+            <div class="model-one-rule-hypothesis" aria-live="polite">
+              <div class="model-one-rule-head"><span>EXPERIMENTAL PULMONARY PATTERN · DEMO RULES</span><span id="model-one-rule-state">WAITING FOR MODEL RUN</span></div>
+              <h5 id="model-one-rule-label">No pattern evaluated</h5>
+              <p id="model-one-rule-note">Run Model 1 to see the supplied rules’ separate pattern label. It is not a trained disease prediction.</p>
+              <div class="model-one-rule-observations" id="model-one-rule-observations"></div>
+              <small class="model-one-rule-foot">No disease probability is produced. Acoustic wheeze and PM2.5 are companion/context inputs, not sensors inside the ring.</small>
+            </div>
+            <div class="model-one-disease-boundary">
+              <div><span>PLUMORING PULMONARY RESEARCH</span><b>No validated personal disease probability</b></div>
               <a href="#deep-learning">See lung research ↓</a>
               <p>Our work focuses on pulmonary conditions. Current public datasets support separate COPD-flare, asthma-worsening, and apnea-event studies; they do not yet support a dependable diagnosis from ring readings.</p>
             </div>
-            <p class="friend-model-caveat"><strong>Research preview only.</strong> The model file’s training dataset and held-out validation report were not included. The displayed percentages are uncalibrated class scores, not disease probabilities; its “lung infection” label is not a disease finding.</p>
+            <p class="model-one-model-caveat"><strong>Research preview only.</strong> Model 1’s training dataset and held-out validation report were not included. The displayed percentages are uncalibrated class scores, not disease probabilities; its “lung infection” class label is not a disease finding.</p>
           </aside>
         </div>
-        <p class="friend-model-footnote">INPUT PREPARATION&nbsp; / &nbsp;The supplied app repeats one reading across its 16 time steps. This panel mirrors that method for a single-snapshot demo. The API also accepts a genuine 16 × 8 history when available; neither mode turns these scores into a diagnosis.</p>
+        <p class="model-one-model-footnote">INPUT PREPARATION&nbsp; / &nbsp;A single demo reading is repeated across 16 time steps to match the supplied model interface. The API also accepts a real 16 × 8 history; the rule preview evaluates its latest row only. Neither output is a diagnosis.</p>
       </section>
       <div class="intelligence-note"><span>PULMONARY-ONLY SCOPE</span><p>The strongest public wearable-like pulmonary outcome located is COPD exacerbation among people already diagnosed with COPD. Its readings are sparse daily summaries, and the held-out comparison failed; there is no validated ring-based disease detector.</p></div>
     </section>
@@ -1186,46 +1194,52 @@
       organViewport.style.setProperty('--breath-cycle',(60/breathsPerMinute).toFixed(3)+'s');
     }
 
-    const friendSensorIds=['friend-hr','friend-spo2','friend-rr','friend-wheeze','friend-temp','friend-imu','friend-eda','friend-pm25'];
-    const friendUnits=['bpm','%','br/min','/ 10','°C','g','index','µg/m³'];
-    const friendOutputIds=['friend-hr-value','friend-spo2-value','friend-rr-value','friend-wheeze-value','friend-temp-value','friend-imu-value','friend-eda-value','friend-pm25-value'];
-    const friendModelStatus=document.querySelector('#friend-model-runtime');
-    const friendModelButton=document.querySelector('#friend-model-run');
-    function updateFriendInput(index){
-      const input=document.getElementById(friendSensorIds[index]);
-      const output=document.getElementById(friendOutputIds[index]);
+    const modelOneSensorIds=['model-one-hr','model-one-spo2','model-one-rr','model-one-wheeze','model-one-temp','model-one-imu','model-one-eda','model-one-pm25'];
+    const modelOneUnits=['bpm','%','br/min','/ 10','°C','g','index','µg/m³'];
+    const modelOneOutputIds=['model-one-hr-value','model-one-spo2-value','model-one-rr-value','model-one-wheeze-value','model-one-temp-value','model-one-imu-value','model-one-eda-value','model-one-pm25-value'];
+    const modelOneStatus=document.querySelector('#model-one-model-runtime');
+    const modelOneButton=document.querySelector('#model-one-model-run');
+    async function readModelOneJson(response){
+      try{return await response.json()}catch{
+        const type=response.headers.get('content-type')||'';
+        throw new Error(type.includes('application/json')?'The model API returned invalid JSON. Restart the local app and reload this page.':'The model API returned a web page instead of data. Reload the page; if this continues, restart the local app.');
+      }
+    }
+    function updateModelOneInput(index){
+      const input=document.getElementById(modelOneSensorIds[index]);
+      const output=document.getElementById(modelOneOutputIds[index]);
       const value=Number(input.value);
       const range=Number(input.max)-Number(input.min);
       input.style.setProperty('--fill',`${range?((value-Number(input.min))/range)*100:0}%`);
       const shown=index===4?`${value>=0?'+':''}${value.toFixed(2)}`:index===3||index===5||index===6?value.toFixed(2).replace(/0+$/,'').replace(/\.$/,''):String(value);
       output.textContent='';output.append(document.createTextNode(shown+' '));
-      const unit=document.createElement('small');unit.textContent=friendUnits[index];output.append(unit);
+      const unit=document.createElement('small');unit.textContent=modelOneUnits[index];output.append(unit);
     }
-    friendSensorIds.forEach((id,index)=>{
+    modelOneSensorIds.forEach((id,index)=>{
       const input=document.getElementById(id);
-      input.addEventListener('input',()=>updateFriendInput(index));
-      updateFriendInput(index);
+      input.addEventListener('input',()=>updateModelOneInput(index));
+      updateModelOneInput(index);
     });
-    async function loadFriendModelStatus(){
+    async function loadModelOneStatus(){
       try{
-        const response=await fetch('/api/models/friend-state/status');
-        const status=await response.json();
+        const response=await fetch('/api/models/temporal-telemetry/status');
+        const status=await readModelOneJson(response);
         if(status.ready_for_research_preview){
-          friendModelStatus.textContent='MODEL FILE + TENSORFLOW READY · UNVALIDATED';
+          modelOneStatus.textContent='MODEL FILE + TENSORFLOW READY · UNVALIDATED';
         }else if(!status.model_file_present){
-          friendModelStatus.textContent='SAVED MODEL FILE MISSING';
+          modelOneStatus.textContent='SAVED MODEL FILE MISSING';
         }else{
-          friendModelStatus.textContent='TENSORFLOW REQUIRED · SEE SETUP NOTES';
+          modelOneStatus.textContent='TENSORFLOW REQUIRED · SEE SETUP NOTES';
         }
       }catch{
-        friendModelStatus.textContent='MODEL STATUS UNAVAILABLE';
+        modelOneStatus.textContent='MODEL STATUS UNAVAILABLE';
       }
     }
-    function renderFriendScores(scores){
-      const host=document.querySelector('#friend-class-scores');
+    function renderModelOneScores(scores){
+      const host=document.querySelector('#model-one-class-scores');
       host.replaceChildren();
       scores.forEach(item=>{
-        const row=document.createElement('div');row.className='friend-class-row';
+        const row=document.createElement('div');row.className='model-one-class-row';
         const label=document.createElement('span');label.textContent=item.label;
         const score=document.createElement('b');score.textContent=`${(Number(item.raw_score)*100).toFixed(2)}%`;
         const track=document.createElement('i');const fill=document.createElement('span');
@@ -1233,33 +1247,58 @@
         track.append(fill);row.append(label,score,track);host.append(row);
       });
     }
-    friendModelButton.addEventListener('click',async()=>{
-      friendModelButton.disabled=true;
-      document.querySelector('#friend-output-state').textContent='RUNNING MODEL';
-      document.querySelector('#friend-top-class').textContent='Loading saved network…';
-      document.querySelector('#friend-output-note').textContent='The saved model is loaded on demand in the local Python environment.';
-      document.querySelector('#friend-top-score').textContent='—';
-      document.querySelector('#friend-class-scores').replaceChildren();
+    function renderModelOneRuleHypothesis(hypothesis){
+      const state=document.querySelector('#model-one-rule-state');
+      const label=document.querySelector('#model-one-rule-label');
+      const note=document.querySelector('#model-one-rule-note');
+      const observations=document.querySelector('#model-one-rule-observations');
+      observations.replaceChildren();
+      if(!hypothesis){
+        state.textContent='RULE OUTPUT UNAVAILABLE';
+        label.textContent='No rule result available';
+        note.textContent='The neural network can still return its five telemetry-state classes.';
+        return;
+      }
+      state.textContent='RULE-BASED · NOT VALIDATED';
+      label.textContent=hypothesis.label;
+      note.textContent=hypothesis.detail;
+      (hypothesis.observations||[]).forEach(item=>{
+        const chip=document.createElement('span');chip.textContent=item;observations.append(chip);
+      });
+    }
+    modelOneButton.addEventListener('click',async()=>{
+      modelOneButton.disabled=true;
+      document.querySelector('#model-one-output-state').textContent='RUNNING MODEL';
+      document.querySelector('#model-one-top-class').textContent='Loading saved network…';
+      document.querySelector('#model-one-output-note').textContent='The saved model is loaded on demand in the local Python environment.';
+      document.querySelector('#model-one-top-score').textContent='—';
+      document.querySelector('#model-one-class-scores').replaceChildren();
+      document.querySelector('#model-one-rule-state').textContent='CALCULATING RULE PREVIEW';
+      document.querySelector('#model-one-rule-label').textContent='Evaluating supplied demo rules…';
+      document.querySelector('#model-one-rule-note').textContent='This separate output is not a disease probability.';
+      document.querySelector('#model-one-rule-observations').replaceChildren();
       try{
-        const sensors=friendSensorIds.map(id=>Number(document.getElementById(id).value));
-        const response=await fetch('/api/models/friend-state/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sensors})});
-        const result=await response.json();
+        const sensors=modelOneSensorIds.map(id=>Number(document.getElementById(id).value));
+        const response=await fetch('/api/models/temporal-telemetry/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sensors})});
+        const result=await readModelOneJson(response);
         if(!response.ok)throw new Error(result.error||'The saved model could not run.');
-        document.querySelector('#friend-output-state').textContent='EXPERIMENTAL NETWORK OUTPUT';
-        document.querySelector('#friend-top-class').textContent=result.top_class_label;
-        document.querySelector('#friend-top-score').textContent=`${(Number(result.top_class_raw_score)*100).toFixed(2)}%`;
-        document.querySelector('#friend-output-note').textContent=`${result.input_mode}. This is the network's top-ranked state label; its score is uncalibrated.`;
-        renderFriendScores(result.class_scores||[]);
-        friendModelStatus.textContent='MODEL RAN · OUTPUT NOT CLINICALLY VALIDATED';
+        document.querySelector('#model-one-output-state').textContent='EXPERIMENTAL NETWORK OUTPUT';
+        document.querySelector('#model-one-top-class').textContent=result.top_class_label;
+        document.querySelector('#model-one-top-score').textContent=`${(Number(result.top_class_raw_score)*100).toFixed(2)}%`;
+        document.querySelector('#model-one-output-note').textContent=`${result.input_mode}. This is the network's top-ranked state label; its score is uncalibrated.`;
+        renderModelOneScores(result.class_scores||[]);
+        renderModelOneRuleHypothesis(result.rule_hypothesis);
+        modelOneStatus.textContent='MODEL RAN · OUTPUT NOT CLINICALLY VALIDATED';
       }catch(error){
-        document.querySelector('#friend-output-state').textContent='MODEL UNAVAILABLE';
-        document.querySelector('#friend-top-class').textContent='Could not run the saved model';
-        document.querySelector('#friend-output-note').textContent=error.message;
+        document.querySelector('#model-one-output-state').textContent='MODEL UNAVAILABLE';
+        document.querySelector('#model-one-top-class').textContent='Could not run the saved model';
+        document.querySelector('#model-one-output-note').textContent=error.message;
+        renderModelOneRuleHypothesis(null);
       }finally{
-        friendModelButton.disabled=false;
+        modelOneButton.disabled=false;
       }
     });
-    loadFriendModelStatus();
+    loadModelOneStatus();
 
     motionButton.setAttribute('aria-pressed',String(organMotion));
     organViewport.classList.toggle('motion-paused',!organMotion);

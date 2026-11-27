@@ -8,7 +8,7 @@ from typing import Any
 
 from flask import Flask, abort, jsonify, request, send_from_directory
 
-from friend_model import ModelUnavailable, predict_state, runtime_status
+from telemetry_state_model import ModelUnavailable, predict_state, runtime_status
 
 
 ROOT = Path(__file__).resolve().parent
@@ -34,6 +34,15 @@ WEB_PAGES = {"favicon.svg", "responsive.css", "pages.css", "privacy.html", "sett
 ASSET_ALLOWLIST = {"anatomical-heart.glb", "visible-human-lungs.glb"}
 
 app = Flask(__name__, static_folder=None)
+
+
+@app.after_request
+def prevent_stale_html(response):
+    if response.mimetype == "text/html":
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
 
 
 @app.get("/")
@@ -78,7 +87,7 @@ def _metrics() -> dict[str, Any]:
 @app.get("/api/health")
 def health():
     report = _metrics()
-    friend_status = runtime_status()
+    model_1_status = runtime_status()
     return jsonify({
         "ready": False,
         "model_version": report.get("model_version", "pulmonary-evidence-pending"),
@@ -89,7 +98,7 @@ def health():
         "deployment_status": "not_ready",
         "ring_validated": False,
         "continuous_ring_stream": False,
-        "friend_model_research_preview": friend_status,
+        "model_1_research_preview": model_1_status,
         "notices": [
             "No pulmonary disease diagnosis or patient-facing risk score is available.",
             "HealthRing provides partial-subset ring-vital estimation only; it has no pulmonary disease labels.",
@@ -105,16 +114,20 @@ def health():
     })
 
 
+@app.get("/api/models/temporal-telemetry/status")
+# Preserve API paths used by pages that were already open before this rename.
 @app.get("/api/models/friend-state/status")
-def friend_model_status():
+def temporal_telemetry_status():
     status = runtime_status()
-    status["model_id"] = "friend-se-resnet-bidirectional-gru-attention"
+    status["model_id"] = "plumoring-temporal-se-resnet-bigru-attention"
     status["model_output_type"] = "five-class telemetry-state pattern"
     return jsonify(status)
 
 
+@app.post("/api/models/temporal-telemetry/predict")
+# Preserve API paths used by pages that were already open before this rename.
 @app.post("/api/models/friend-state/predict")
-def friend_model_predict():
+def temporal_telemetry_predict():
     payload = request.get_json(silent=True)
     if not isinstance(payload, dict):
         return jsonify({"error": "Request body must be a JSON object."}), 400

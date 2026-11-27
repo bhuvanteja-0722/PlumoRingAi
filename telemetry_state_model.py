@@ -11,7 +11,7 @@ import numpy as np
 
 
 ROOT = Path(__file__).resolve().parent
-MODEL_PATH = ROOT / "models" / "friend_telemetry_state_classifier.keras"
+MODEL_PATH = ROOT / "models" / "temporal_telemetry_state_classifier.keras"
 MODEL_LABELS = (
     "NORMAL RESTING BASELINE",
     "DAILY ACTIVITY / EXERCISE IMPACT",
@@ -93,7 +93,7 @@ def _load_model():
     return _model
 
 
-def _validated_inputs(payload: dict[str, Any]) -> tuple[np.ndarray, str]:
+def _validated_inputs(payload: dict[str, Any]) -> tuple[np.ndarray, str, np.ndarray]:
     if "sequence" in payload:
         try:
             values = np.asarray(payload["sequence"], dtype=np.float32)
@@ -132,13 +132,86 @@ def _validated_inputs(payload: dict[str, Any]) -> tuple[np.ndarray, str]:
     normalized[:, 5] = (values[:, 5] + 3.0) / 6.0
     normalized[:, 6] = values[:, 6] / 1.0
     normalized[:, 7] = values[:, 7] / 250.0
-    return normalized[np.newaxis, ...], mode
+    return normalized[np.newaxis, ...], mode, values
+
+
+def _rule_hypothesis(values: np.ndarray, model_index: int) -> dict[str, Any]:
+    """Expose the supplied app's heuristic label as a separate, non-probabilistic demo."""
+    hr, spo2, rr, wheeze, temp, imu, eda, pm25 = (float(value) for value in values)
+    observations = []
+    if spo2 < 95:
+        observations.append(f"SpO₂ input {spo2:.1f}%")
+    if hr > 100:
+        observations.append(f"heart-rate input {hr:.0f} bpm")
+    if rr > 22:
+        observations.append(f"breathing-rate input {rr:.0f}/min")
+    if wheeze >= 3:
+        observations.append(f"companion wheeze index {wheeze:.1f}/10")
+    if temp >= 1:
+        observations.append(f"skin-temperature delta {temp:+.2f} °C")
+    if abs(imu) >= 1:
+        observations.append(f"motion input {imu:.2f} g")
+    if eda >= 0.7:
+        observations.append(f"EDA input {eda:.2f}")
+    if pm25 >= 50:
+        observations.append(f"context PM2.5 input {pm25:.0f} µg/m³")
+
+    moving = abs(imu) >= 1.0
+    still = abs(imu) < 0.6
+    label = "No supplied rule pattern triggered"
+    detail = "This does not rule out a pulmonary condition."
+
+    # These branches mirror the rule concepts in the supplied app.py, without
+    # importing its medication, diet, severity, or care-advice content.
+    if (abs(imu) > 2.2 and spo2 < 82 and temp < 0.15) or (
+        model_index == 4 and abs(imu) > 1.5 and wheeze < 1.5 and temp < 0.3
+    ):
+        label = "Possible sensor-contact artifact pattern"
+        detail = "The supplied rules classify this combination as a possible reading-quality issue."
+    elif temp >= 1.2 or (model_index == 3 and temp >= 0.8):
+        if wheeze >= 3.5 or rr >= 22 or spo2 < 93:
+            label = "Pneumonia / infection pattern · rule output"
+            detail = "Pneumonia is a label in the supplied rules; these inputs cannot establish an infection."
+        else:
+            label = "Bronchitis pattern · rule output"
+            detail = "Bronchitis is a label in the supplied rules; these inputs cannot establish that condition."
+    elif (wheeze >= 4.0 and spo2 < 94) or (
+        model_index == 2 and still and (wheeze >= 3.0 or spo2 < 93)
+    ):
+        if pm25 >= 80:
+            label = "Asthma + pollution pattern · rule output"
+            detail = "This is a supplied-rule hypothesis, not an asthma diagnosis."
+        elif spo2 < 91 and rr >= 22 and wheeze < 5.0:
+            label = "Possible COPD-flare pattern"
+            detail = "The supplied-rule output assumes no known-condition history was provided."
+        else:
+            label = "Asthma / bronchospasm pattern · rule output"
+            detail = "This is a supplied-rule hypothesis, not an asthma diagnosis."
+    elif moving or (model_index == 1 and abs(imu) >= 0.6):
+        if wheeze >= 3.5 or spo2 < 91:
+            label = "Exercise-induced airway pattern · rule output"
+            detail = "Exercise-induced bronchoconstriction is a supplied-rule label, not a confirmed condition."
+        else:
+            label = "Activity / exertion pattern"
+            detail = "An activity label is not a pulmonary disease result."
+    elif spo2 < 95 or wheeze >= 3.5 or rr > 24:
+        label = "Respiratory-signal deviation · cause not identified"
+        detail = "The supplied rules flag a reading pattern but do not identify a specific disease."
+
+    return {
+        "label": label,
+        "detail": detail,
+        "observations": observations or ["No supplied-rule threshold crossed"],
+        "source": "Unvalidated threshold rules adapted from the supplied app.py",
+        "probability": None,
+        "is_diagnosis": False,
+    }
 
 
 def predict_state(payload: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError("Request body must be a JSON object.")
-    model_input, input_mode = _validated_inputs(payload)
+    model_input, input_mode, raw_values = _validated_inputs(payload)
     model = _load_model()
     try:
         raw_scores = model(model_input, training=False)
@@ -150,13 +223,14 @@ def predict_state(payload: dict[str, Any]) -> dict[str, Any]:
 
     top_index = int(np.argmax(scores))
     return {
-        "model_id": "friend-se-resnet-bidirectional-gru-attention",
+        "model_id": "plumoring-temporal-se-resnet-bigru-attention",
         "model_output_type": "five-class telemetry-state pattern",
         "input_mode": input_mode,
         "top_class_index": top_index,
         "top_class_label": MODEL_LABELS[top_index],
         "top_class_raw_score": round(float(scores[top_index]), 6),
         "scores_are_calibrated_probabilities": False,
+        "rule_hypothesis": _rule_hypothesis(raw_values[-1], top_index),
         "class_scores": [
             {"index": index, "label": label, "raw_score": round(float(scores[index]), 6)}
             for index, label in enumerate(MODEL_LABELS)
