@@ -240,7 +240,8 @@
     .friend-input label{min-width:0;color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.055em}.friend-input output{color:#87dbd2;font:600 12px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}.friend-input output small{color:#a1bcb2;font-size:7px}
     .friend-input input{grid-column:1/-1;width:100%;height:3px;margin:1px 0 0;appearance:none;background:linear-gradient(90deg,var(--accent) var(--fill,25%),#424a44 var(--fill,25%));border-radius:4px;cursor:pointer}.friend-input input::-webkit-slider-thumb{appearance:none;width:10px;height:10px;border-radius:50%;background:#e5efdb;border:2px solid var(--accent)}.friend-input input::-moz-range-thumb{width:8px;height:8px;border-radius:50%;background:#e5efdb;border:2px solid var(--accent)}
     .friend-model-run{margin-top:12px}.friend-result-panel{display:flex;flex-direction:column}.friend-output-state{color:#d4b477;font:7px var(--mono);letter-spacing:.1em}.friend-output-title{margin:9px 0 5px;color:var(--dashboard-text);font-size:clamp(17px,2vw,22px);line-height:1.2;letter-spacing:-.035em;overflow-wrap:anywhere}.friend-output-note{margin:0;color:var(--dashboard-muted);font-size:8px;line-height:1.65}.friend-output-score{display:flex;justify-content:space-between;gap:12px;margin-top:13px;padding-top:11px;border-top:1px solid var(--dashboard-line);color:var(--dashboard-muted);font:7px var(--mono)}.friend-output-score b{color:var(--dashboard-text);font-weight:500;text-align:right}
-    .friend-class-scores{display:grid;gap:10px;margin-top:14px}.friend-class-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 9px;color:var(--dashboard-muted);font:6px var(--mono);letter-spacing:.025em}.friend-class-row b{color:var(--dashboard-text);font-weight:400;font-variant-numeric:tabular-nums}.friend-class-row i{grid-column:1/-1;height:3px;overflow:hidden;border-radius:4px;background:#ffffff14}.friend-class-row i span{display:block;height:100%;border-radius:inherit;background:var(--chart)}
+    .friend-class-scores{display:grid;gap:10px;margin-top:14px}.friend-class-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 9px;color:var(--dashboard-muted);font:7px/1.45 var(--mono);letter-spacing:.025em}.friend-class-row b{color:var(--dashboard-text);font-weight:400;font-variant-numeric:tabular-nums}.friend-class-row i{grid-column:1/-1;height:4px;overflow:hidden;border-radius:4px;background:#ffffff14}.friend-class-row i span{display:block;height:100%;border-radius:inherit;background:var(--chart)}
+    .friend-disease-boundary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 16px;margin-top:14px;padding:12px;border:1px solid color-mix(in srgb,var(--accent) 25%,var(--dashboard-line));border-radius:6px;background:color-mix(in srgb,var(--accent) 5%,transparent)}.friend-disease-boundary>div{display:grid;gap:5px}.friend-disease-boundary>div span{color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.08em}.friend-disease-boundary>div b{color:var(--dashboard-text);font-size:10px;font-weight:600}.friend-disease-boundary p{grid-column:1/-1;margin:0;color:var(--dashboard-muted);font-size:8px;line-height:1.6}.friend-disease-boundary a{align-self:center;color:var(--accent);font:7px var(--mono);text-decoration:none;white-space:nowrap}.friend-disease-boundary a:hover{text-decoration:underline;text-underline-offset:3px}
     .friend-model-caveat{margin:13px 0 0;padding:10px 11px;border:1px solid #bd9a5d35;border-radius:5px;background:#bd9a5d0b;color:#c5ba9f;font-size:8px;line-height:1.65}.friend-model-caveat strong{color:#e1c990;font-weight:600}.friend-model-footnote{margin:12px 1px 0;color:#919b93;font:7px/1.65 var(--mono);letter-spacing:.015em}
     @media(max-width:1180px){.dashboard-main{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);grid-template-areas:"telemetry inference" "anatomy anatomy"}.analysis-anatomy{border-inline:0;border-top:1px solid var(--dashboard-line);padding:22px}.organ-viewport{height:clamp(400px,52vw,560px);max-height:560px}.anatomy-console{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.motion-readout,.anatomy-actions,.anatomy-credit{grid-column:1/-1}}
     @media(max-width:760px){.dashboard-main{grid-template-columns:minmax(0,1fr);grid-template-areas:"telemetry" "anatomy" "inference"}.analysis-anatomy{padding:19px 13px;border-inline:0;border-top:1px solid var(--dashboard-line)}.organ-viewport{height:clamp(370px,112vw,520px);min-height:370px;max-height:520px}.organ-hud-top{top:13px;left:12px}.organ-hud-right{top:13px;right:12px}.organ-callout{font-size:6px}.heart-callout{top:57%;left:3%}.left-lung-callout{top:28%;left:3%}.right-lung-callout{top:28%;right:3%}.heart-callout:after,.left-lung-callout:after,.right-lung-callout:before{width:20px}.organ-response-hud{left:12px;bottom:43px}.anatomy-console{display:block;padding-top:13px}.motion-readout{margin-bottom:15px}.anatomy-actions{align-items:flex-start;flex-direction:column}.organ-buttons{align-self:stretch}.organ-buttons .spatial-button{flex:1}.anatomy-live{max-width:50%;font-size:5px}.anatomy-intro{font-size:8px}.friend-model-heading{display:block}.friend-model-badge{display:inline-block;margin-top:12px}.friend-model-grid{grid-template-columns:minmax(0,1fr)}.friend-model-shell{padding:16px;border-radius:17px}.friend-input-panel,.friend-result-panel{padding:12px}.friend-input-grid{gap:6px}.friend-input{padding:8px;gap:6px}.friend-input label{font-size:6px}.friend-input output{font-size:11px}.friend-model-heading p{font-size:9px}}
@@ -314,17 +315,20 @@
     .glass-study-top{padding-bottom:18px;border-bottom:1px solid #ffffff20}
     .glass-study-top span:last-child{color:var(--accent)}
     .glass-shards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:24px 0 21px;transform-style:preserve-3d}
-    .glass-shard{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;min-height:210px;padding:20px 18px;overflow:hidden;border:1px solid #dae7ef2c;border-radius:12px;color:#f1f2ed;text-align:left;background:linear-gradient(145deg,#34483f,#1b2822 70%,#18211d);appearance:none;backdrop-filter:blur(18px) saturate(138%);box-shadow:inset 0 1px #ffffff20,0 13px 34px #0005;transition:transform .35s cubic-bezier(.2,.75,.2,1),border-color .25s,background .25s,box-shadow .25s;transform:translateZ(0);cursor:pointer}
+    .glass-shard{position:relative;display:flex;width:100%;min-width:0;flex-direction:column;align-items:flex-start;justify-content:space-between;min-height:195px;padding:20px 18px;overflow:hidden;border:1px solid #dae7ef2c;border-radius:12px;color:#f1f2ed;text-align:left;font:inherit;background:linear-gradient(145deg,#263a31,#17221d 72%,#141c18);appearance:none;backdrop-filter:blur(18px) saturate(138%);box-shadow:inset 0 1px #ffffff20,0 13px 34px #0005;transition:transform .3s cubic-bezier(.2,.75,.2,1),border-color .25s,background .25s,box-shadow .25s;transform:translateZ(0);cursor:pointer;clip-path:none}
     .glass-shard:before{content:"";position:absolute;inset:0;background:linear-gradient(145deg,#ffffff18,transparent 42%),radial-gradient(ellipse at 80% 0,#8cb9e420,transparent 50%);pointer-events:none}
     .glass-shard:after{content:"";position:absolute;right:-36px;bottom:-57px;width:145px;height:145px;border:1px solid #e9f1f533;border-radius:50%;box-shadow:0 0 0 13px #e9f1f50a,0 0 0 28px #e9f1f506;pointer-events:none}
-    .glass-shard:nth-child(1){clip-path:polygon(0 0,100% 0,92% 100%,0 93%);background:linear-gradient(145deg,#c4b06f36,#71847b20 64%,#dde2e81b)}
-    .glass-shard:nth-child(2){clip-path:polygon(8% 0,100% 7%,100% 100%,0 100%);background:linear-gradient(145deg,#c1d0d834,#657e9124 58%,#f3ffff12)}
-    .glass-shard:nth-child(3){clip-path:polygon(0 8%,92% 0,100% 93%,6% 100%);background:linear-gradient(145deg,#a9c0a62d,#89949e20 60%,#fcffff13)}
-    .glass-shard>span{position:relative;z-index:1;color:#d0d8d5;font:7px var(--mono);letter-spacing:.1em}
-    .glass-shard strong{position:relative;z-index:1;font-size:clamp(18px,2.5vw,28px);font-weight:500;line-height:1.04;letter-spacing:-.06em}
-    .glass-shard>i{position:relative;z-index:1;color:#c4cec9;font:normal 8px/1.5 var(--mono)}
+    .glass-shard:nth-child(1){background:linear-gradient(145deg,#625b3d50,#26372e 60%,#17211c)}
+    .glass-shard:nth-child(2){background:linear-gradient(145deg,#465b6250,#23332f 60%,#17211c)}
+    .glass-shard:nth-child(3){background:linear-gradient(145deg,#4b604850,#26372e 60%,#17211c)}
+    .glass-shard:nth-child(4){background:linear-gradient(145deg,#59474750,#30332d 60%,#19221d)}
+    .glass-shard:nth-child(5){background:linear-gradient(145deg,#4e5b4a50,#26372e 60%,#17211c)}
+    .glass-shard:nth-child(6){background:linear-gradient(145deg,#46565c50,#23332f 60%,#17211c)}
+    .glass-shard>span{position:relative;z-index:1;color:#d0d8d5;font:8px/1.5 var(--mono);letter-spacing:.09em}
+    .glass-shard strong{position:relative;z-index:1;font-size:clamp(20px,2.25vw,27px);font-weight:500;line-height:1.08;letter-spacing:-.045em}
+    .glass-shard>i{position:relative;z-index:1;color:#c4cec9;font:normal 9px/1.5 var(--mono)}
     .glass-shard>b{position:absolute;z-index:1;right:16px;top:15px;color:#eef1e8;font-size:15px;font-weight:400}
-    .glass-shard:hover,.glass-shard:focus-visible{z-index:2;transform:translateY(-8px) translateZ(22px) rotateX(-1.3deg);border-color:#e8f5fd77;box-shadow:inset 0 1px #ffffff4a,0 22px 45px #0007,0 0 28px #a3c4dd16}
+    .glass-shard:hover,.glass-shard:focus-visible{z-index:2;transform:translateY(-5px) translateZ(10px);border-color:#e8f5fd77;box-shadow:inset 0 1px #ffffff4a,0 22px 45px #0007,0 0 28px #a3c4dd16}
     .glass-shard.active{border-color:color-mix(in srgb,var(--accent) 72%,#ffffff);box-shadow:inset 0 1px #ffffff45,0 14px 42px #0007,0 0 26px color-mix(in srgb,var(--accent) 15%,transparent)}
     .glass-study-bottom{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.75fr);gap:34px;padding-top:20px;border-top:1px solid #ffffff20}
     .study-detail h3{margin:9px 0;font-size:clamp(22px,3vw,35px);font-weight:500;letter-spacing:-.05em;color:#eff0e9}
@@ -338,7 +342,7 @@
     .study-disclaimer{max-width:820px;margin:13px 0 0;color:var(--muted);font-size:8px;line-height:1.65}.study-disclaimer a{color:var(--accent);text-underline-offset:3px}
     @media(max-width:1180px){.explorer{grid-template-columns:1fr}.detail{grid-template-columns:minmax(0,1.1fr) minmax(250px,.9fr)}}
     @media(max-width:1050px){.study-section{padding:58px 0 50px}.glass-study-bottom{grid-template-columns:1fr;gap:18px}.evidence-stats{max-width:550px}}
-    @media(max-width:1180px){.glass-shards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:1050px){.glass-shards{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:760px){
       .detail{grid-template-columns:1fr;gap:12px}.component-viewer{min-height:250px}.component-view-stage{min-height:220px}
       .replay-readings{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -346,7 +350,7 @@
       .trend-chart{height:92px}.trend-legend{gap:7px}
       .risk-card{min-height:0}
       .study-section{padding:48px 0 42px}.study-intro{display:block}.study-intro h2{font-size:42px;margin-top:15px}.study-intro>p{margin-top:13px;font-size:10px}
-      .glass-study{padding:15px;border-radius:13px}.glass-shards{grid-template-columns:1fr;gap:9px;padding:15px 0}.glass-shard{min-height:150px;padding:15px 14px}.glass-shard strong{font-size:25px}.glass-shard>span,.glass-shard>i{font-size:7px}
+      .glass-study{padding:15px;border-radius:13px}.glass-shards{grid-template-columns:1fr;gap:9px;padding:15px 0}.glass-shard{min-height:138px;padding:16px 15px}.glass-shard strong{font-size:25px}.glass-shard>span{font-size:8px}.glass-shard>i{font-size:8px}
       .glass-study-bottom{gap:14px}.study-detail h3{font-size:25px}.study-detail p{font-size:9px}
       .evidence-stats{gap:5px}.evidence-stats div{padding:10px 7px}.evidence-stats b{font-size:12px}.evidence-stats span{font-size:5px}
       .glass-study-top,.study-foot{font-size:6px;line-height:1.5}
@@ -583,9 +587,14 @@
             <div class="friend-panel-heading"><b id="friend-result-heading">NETWORK CLASS OUTPUT</b><span id="friend-output-state" aria-live="polite">WAITING FOR INPUT</span></div>
             <h4 class="friend-output-title" id="friend-top-class">Ready for a model run</h4>
             <p class="friend-output-note" id="friend-output-note">The model output will appear here as a telemetry-state class, not a diagnosis.</p>
-            <div class="friend-output-score"><span>TOP RAW SOFTMAX SCORE</span><b id="friend-top-score">—</b></div>
-            <div class="friend-class-scores" id="friend-class-scores" aria-label="All five raw model class scores"></div>
-            <p class="friend-model-caveat"><strong>Research preview only.</strong> The model file’s training dataset and held-out validation report were not included. Its raw softmax scores are not calibrated probabilities; its “lung infection” class label is not a disease finding.</p>
+            <div class="friend-output-score"><span>TOP CLASS SCORE · UNCALIBRATED</span><b id="friend-top-score">—</b></div>
+            <div class="friend-class-scores" id="friend-class-scores" aria-label="Five uncalibrated model class scores displayed as percentages"></div>
+            <div class="friend-disease-boundary">
+              <div><span>PULMONARY DISEASE OUTPUT</span><b>No validated personal disease probability</b></div>
+              <a href="#deep-learning">See lung research ↓</a>
+              <p>Our work focuses on pulmonary conditions. Current public datasets support separate COPD-flare, asthma-worsening, and apnea-event studies; they do not yet support a dependable diagnosis from ring readings.</p>
+            </div>
+            <p class="friend-model-caveat"><strong>Research preview only.</strong> The model file’s training dataset and held-out validation report were not included. The displayed percentages are uncalibrated class scores, not disease probabilities; its “lung infection” label is not a disease finding.</p>
           </aside>
         </div>
         <p class="friend-model-footnote">INPUT PREPARATION&nbsp; / &nbsp;The supplied app repeats one reading across its 16 time steps. This panel mirrors that method for a single-snapshot demo. The API also accepts a genuine 16 × 8 history when available; neither mode turns these scores into a diagnosis.</p>
@@ -1218,7 +1227,7 @@
       scores.forEach(item=>{
         const row=document.createElement('div');row.className='friend-class-row';
         const label=document.createElement('span');label.textContent=item.label;
-        const score=document.createElement('b');score.textContent=Number(item.raw_score).toFixed(4);
+        const score=document.createElement('b');score.textContent=`${(Number(item.raw_score)*100).toFixed(2)}%`;
         const track=document.createElement('i');const fill=document.createElement('span');
         fill.style.width=`${Math.max(0,Math.min(100,Number(item.raw_score)*100))}%`;
         track.append(fill);row.append(label,score,track);host.append(row);
@@ -1238,7 +1247,7 @@
         if(!response.ok)throw new Error(result.error||'The saved model could not run.');
         document.querySelector('#friend-output-state').textContent='EXPERIMENTAL NETWORK OUTPUT';
         document.querySelector('#friend-top-class').textContent=result.top_class_label;
-        document.querySelector('#friend-top-score').textContent=Number(result.top_class_raw_score).toFixed(4);
+        document.querySelector('#friend-top-score').textContent=`${(Number(result.top_class_raw_score)*100).toFixed(2)}%`;
         document.querySelector('#friend-output-note').textContent=`${result.input_mode}. This is the network's top-ranked state label; its score is uncalibrated.`;
         renderFriendScores(result.class_scores||[]);
         friendModelStatus.textContent='MODEL RAN · OUTPUT NOT CLINICALLY VALIDATED';
