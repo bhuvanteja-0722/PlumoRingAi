@@ -169,21 +169,21 @@ def _rule_hypothesis(values: np.ndarray) -> dict[str, Any]:
             "validated signal-quality assessment."
         )
     elif temp >= 1.2 and (wheeze >= 3.5 or rr >= 22 or spo2 < 93):
-        label = "Possible respiratory-infection pattern · demo rules"
+        label = "Readings may resemble a respiratory-infection pattern"
         detail = (
-            "Several readings cross the supplied demo thresholds. Skin-temperature change and "
-            "these sensor values cannot confirm pneumonia, bronchitis, or another infection."
+            "This experimental screen cannot confirm pneumonia, bronchitis, or another infection. "
+            "If breathing symptoms persist or concern you, consider a clinician check-up."
         )
     elif wheeze >= 4.0 and spo2 < 94:
         if pm25 >= 80:
             label = "Airway-symptom pattern · high PM2.5 context"
-            detail = "The readings overlap with an airway-irritation pattern; PM2.5 is context, not a ring measurement."
+            detail = "The readings overlap with an airway-irritation pattern; PM2.5 is context, not a ring measurement. Consider a check-up if symptoms persist."
         elif spo2 < 91 and rr >= 22 and wheeze < 5.0:
-            label = "Possible COPD-like breathing pattern · demo rules"
-            detail = "These inputs cannot distinguish COPD from asthma or other causes of low oxygen and wheeze."
+            label = "Readings may resemble a COPD-like pattern"
+            detail = "This screen cannot distinguish COPD from asthma or other causes. If breathing symptoms persist or concern you, consider a clinician check-up."
         else:
-            label = "Possible asthma-like wheeze pattern · demo rules"
-            detail = "This is a hand-written pattern label, not an asthma diagnosis; COPD and other causes can overlap."
+            label = "Readings may resemble an asthma-like wheeze pattern"
+            detail = "This is not an asthma diagnosis; COPD and other causes can overlap. If breathing symptoms persist or concern you, consider a clinician check-up."
     elif spo2 < 92 and rr >= 22:
         label = "Low-oxygen + rapid-breathing pattern · cause unclear"
         detail = "This flags a reading combination only; the readings do not identify a pulmonary disease."
