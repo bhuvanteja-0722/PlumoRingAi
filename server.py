@@ -70,6 +70,14 @@ app = Flask(__name__, static_folder=None)
 app.config["MAX_CONTENT_LENGTH"] = 128 * 1024
 
 ASSISTANT_MODEL = os.environ.get("OPENAI_MODEL", "gpt-6.2-astra")
+PULMONARY_CHAT_SOURCES = {
+    "asthma": {"title": "CDC · Asthma symptoms", "url": "https://www.cdc.gov/asthma/about/index.html"},
+    "copd": {"title": "CDC · COPD symptoms", "url": "https://www.cdc.gov/copd/about/index.html"},
+    "pneumonia": {"title": "NHS · Pneumonia", "url": "https://www.nhs.uk/conditions/pneumonia/"},
+    "bronchitis": {"title": "NHS · Bronchitis", "url": "https://www.nhs.uk/conditions/bronchitis/"},
+    "sleep apnea": {"title": "NHLBI · Sleep apnea symptoms", "url": "https://www.nhlbi.nih.gov/health/sleep-apnea/symptoms"},
+    "breathing": {"title": "NHS · Shortness of breath", "url": "https://www.nhs.uk/symptoms/shortness-of-breath/"},
+}
 CHANNEL_RANGES = {
     "hr": (40, 190), "spo2": (70, 100), "rr": (8, 40), "wheeze": (0, 10),
     "temp": (0, 2.5), "imu": (-3, 3), "eda": (0, 1), "pm25": (0, 250),
@@ -198,7 +206,92 @@ def _openai_text(instructions: str, input_value: Any, *, max_output_tokens: int 
 
 @app.get("/api/assistant/status")
 def assistant_status():
-    return jsonify({"provider": "OpenAI API", "configured": _openai_api_key() is not None, "model": ASSISTANT_MODEL})
+    configured = _openai_api_key() is not None
+    return jsonify({
+        "provider": "OpenAI API" if configured else "Local pulmonary reference",
+        "configured": configured,
+        "chat_available": True,
+        "mode": "openai" if configured else "local-reference",
+        "model": ASSISTANT_MODEL if configured else None,
+        "topics": ["Asthma", "COPD", "Bronchitis", "Pneumonia", "Sleep apnea", "Project and model questions"],
+    })
+
+
+def _local_chat_answer(question: str) -> tuple[str, list[dict[str, str]]]:
+    """Answer a small, cited set of general questions without a remote AI key."""
+    text = " ".join(question.lower().replace("’", "'").split())
+    symptom_question = any(word in text for word in ("symptom", "simptom", "sign", "feel"))
+    emergency = any(phrase in text for phrase in (
+        "can't breathe", "cannot breathe", "can't talk", "gasping", "blue lips", "grey lips", "gray lips",
+        "coughing blood", "cough up blood", "fainting", "confused suddenly",
+    ))
+    sources: list[dict[str, str]] = []
+    if emergency:
+        answer = (
+            "Severe breathing difficulty, gasping or being unable to speak, blue/grey lips, coughing blood, fainting, "
+            "or sudden confusion can be an emergency. Contact your local emergency service now. This chat and the "
+            "ring prototype cannot assess or manage an emergency."
+        )
+        sources.append(PULMONARY_CHAT_SOURCES["breathing"])
+    elif any(term in text for term in ("detect", "diagnos", "predict my", "do i have", "probability", "disease from", "model output")):
+        answer = (
+            "PlumoRing AI does not have a validated model that diagnoses pulmonary disease from these readings. "
+            "The displayed telemetry classes and rule labels are experimental previews, not disease findings. "
+            "The research topics are COPD flare forecasting, COPD-versus-control PPG, asthma worsening, and "
+            "apnea/hypopnea event windows; none is a patient-facing diagnosis. Pneumonia, bronchitis, and "
+            "respiratory infection are not testable from the available labeled datasets."
+        )
+    elif "asthma" in text:
+        answer = (
+            "Asthma symptoms can include coughing, wheezing, chest tightness, and trouble breathing; they can vary "
+            "over time. These symptoms have other possible causes, and this prototype cannot diagnose asthma. "
+            "A clinician can assess persistent or concerning symptoms."
+        )
+        sources.append(PULMONARY_CHAT_SOURCES["asthma"])
+    elif "copd" in text or "emphysema" in text:
+        answer = (
+            "Common COPD symptoms include frequent cough or wheeze, shortness of breath during everyday activities, "
+            "trouble taking deep breaths, and extra mucus. Symptoms alone do not confirm COPD; clinical assessment "
+            "is needed, and this prototype cannot diagnose it."
+        )
+        sources.append(PULMONARY_CHAT_SOURCES["copd"])
+    elif any(term in text for term in ("sleep apnea", "sleep apnoea", "apnea", "apnoea")):
+        answer = (
+            "Sleep-apnea symptoms can include breathing pauses during sleep, loud snoring, gasping for air, and "
+            "daytime sleepiness or tiredness. A healthcare professional may recommend a sleep study; this ring "
+            "prototype cannot diagnose sleep apnea."
+        )
+        sources.append(PULMONARY_CHAT_SOURCES["sleep apnea"])
+    elif "bronchitis" in text:
+        answer = (
+            "Bronchitis can cause a cough (sometimes with mucus), shortness of breath, chest discomfort when "
+            "coughing, sore throat, runny nose, or fever. Similar symptoms occur with other conditions, so this "
+            "prototype cannot confirm bronchitis. Seek medical advice if symptoms persist or worsen."
+        )
+        sources.append(PULMONARY_CHAT_SOURCES["bronchitis"])
+    elif "pneumonia" in text or "infection" in text or symptom_question:
+        answer = (
+            "If you mean the demo's respiratory-infection label, it is only an illustrative rule label; it does not "
+            "mean you have an infection. Chest infections such as pneumonia can involve cough, shortness of breath, "
+            "fever, chest pain, body aches, or fatigue. These symptoms overlap across conditions, so a clinician "
+            "must assess them. Arrange a check-up for persistent or worsening symptoms."
+        )
+        sources.extend((PULMONARY_CHAT_SOURCES["pneumonia"], PULMONARY_CHAT_SOURCES["bronchitis"]))
+    elif any(term in text for term in ("project", "dataset", "research", "history", "score", "model", "ring")):
+        answer = (
+            "This is a software research prototype. Model 1 returns uncalibrated telemetry-state scores, not "
+            "pulmonary disease probabilities. Dataset studies are separate retrospective research tasks, and their "
+            "results do not validate a disease detector for this ring. You can ask about asthma, COPD, bronchitis, "
+            "pneumonia, or sleep-apnea symptoms for general education."
+        )
+    else:
+        answer = (
+            "I can answer a limited set of general pulmonary-health and project questions locally. Try asking about "
+            "symptoms of asthma, COPD, bronchitis, pneumonia, sleep apnea, or how PlumoRing's research results work. "
+            "I cannot diagnose a condition from readings."
+        )
+    answer += "\n\nThis is general information, not a diagnosis or treatment plan."
+    return answer, sources
 
 
 @app.post("/api/assistant/insights")
@@ -244,6 +337,12 @@ def assistant_chat():
         cleaned_messages.append({"role": message["role"], "content": content.strip()})
     if total_chars > 6000:
         return jsonify({"error": "The recent chat is too long. Clear the chat or shorten the messages."}), 400
+    if _openai_api_key() is None:
+        question = next((message["content"] for message in reversed(cleaned_messages) if message["role"] == "user"), "")
+        if not question:
+            return jsonify({"error": "Add a user message before asking the local reference chat."}), 400
+        answer, sources = _local_chat_answer(question)
+        return jsonify({"answer": answer, "mode": "local-reference", "sources": sources})
     readings_context = ""
     if include_history:
         try:
