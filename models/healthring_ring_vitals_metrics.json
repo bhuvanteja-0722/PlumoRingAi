@@ -1,0 +1,1692 @@
+{
+  "model_version": "plumoring-healthring-ring-vitals-0.1",
+  "dataset": "HealthRing RingDatasetV2.1",
+  "dataset_doi": "10.5281/zenodo.18426864",
+  "license": "CC BY 4.0",
+  "input_policy": "Ring-only inputs: red/infrared ring PPG, ring accelerometer and ring-derived transforms. No smartwatch, chest ECG, oximeter waveform, respiration band, reference HR/SpO2/RR, or clinical labels are predictors.",
+  "targets": {
+    "rr": "Respiratory-rate reference from synchronized respiratory instrumentation (or chest ECG-derived RR in the separate treadmill cohort).",
+    "spo2": "Synchronized reference SpO2; this is measurement estimation, not a disease diagnosis."
+  },
+  "split": "Five-fold GroupKFold by participant; all windows from a participant remain in one held-out fold. Ring types are evaluated separately.",
+  "counts": {
+    "windows": 3497,
+    "participants": 29,
+    "rings": {
+      "ring1": 28,
+      "ring2": 28
+    },
+    "cohorts": {
+      "controlled_daily": {
+        "windows": 3497,
+        "participants": 29
+      }
+    },
+    "ring_quality_nonmissing": {
+      "ir_quality": 1.0,
+      "red_quality": 1.0
+    }
+  },
+  "archive_extraction": {
+    "archive_filename": "RingDatasetV2.1_repaired.zip",
+    "recovered_table_files_found": 57,
+    "table_files_loaded": 56,
+    "empty_or_unreadable_table_files_skipped": 1,
+    "source_integrity_note": "The Zenodo file checksum matches its record, but the source archive is missing its ZIP directory. This evaluation uses only the per-person tables recoverable by local ZIP repair and is therefore partial."
+  },
+  "grouped_subject_held_out_results": {
+    "ring1_rr": {
+      "status": "evaluated",
+      "task": "rr",
+      "ring": "ring1",
+      "cohort": "controlled_daily",
+      "features": [
+        "ir_mean",
+        "ir_std",
+        "ir_range",
+        "ir_median_abs_dev",
+        "ir_pulse_ac_rms",
+        "ir_peak_hz",
+        "ir_peak_rate",
+        "ir_peak_power_fraction",
+        "ir_band_power",
+        "ir_spectral_entropy",
+        "ir_band_1_fraction",
+        "ir_band_2_fraction",
+        "ir_band_3_fraction",
+        "ir_slow_peak_hz",
+        "ir_slow_peak_rate",
+        "ir_slow_peak_power_fraction",
+        "ir_slow_band_power",
+        "ir_slow_spectral_entropy",
+        "ir_slow_band_1_fraction",
+        "ir_slow_band_2_fraction",
+        "ir_slow_band_3_fraction",
+        "red_mean",
+        "red_std",
+        "red_range",
+        "red_median_abs_dev",
+        "red_pulse_ac_rms",
+        "red_peak_hz",
+        "red_peak_rate",
+        "red_peak_power_fraction",
+        "red_band_power",
+        "red_spectral_entropy",
+        "red_band_1_fraction",
+        "red_band_2_fraction",
+        "red_band_3_fraction",
+        "red_slow_peak_hz",
+        "red_slow_peak_rate",
+        "red_slow_peak_power_fraction",
+        "red_slow_band_power",
+        "red_slow_spectral_entropy",
+        "red_slow_band_1_fraction",
+        "red_slow_band_2_fraction",
+        "red_slow_band_3_fraction",
+        "ir_rr_mean",
+        "ir_rr_std",
+        "ir_rr_range",
+        "ir_rr_median_abs_dev",
+        "ir_rr_pulse_ac_rms",
+        "ir_rr_peak_hz",
+        "ir_rr_peak_rate",
+        "ir_rr_peak_power_fraction",
+        "ir_rr_band_power",
+        "ir_rr_spectral_entropy",
+        "ir_rr_band_1_fraction",
+        "ir_rr_band_2_fraction",
+        "ir_rr_band_3_fraction",
+        "red_rr_mean",
+        "red_rr_std",
+        "red_rr_range",
+        "red_rr_median_abs_dev",
+        "red_rr_pulse_ac_rms",
+        "red_rr_peak_hz",
+        "red_rr_peak_rate",
+        "red_rr_peak_power_fraction",
+        "red_rr_band_power",
+        "red_rr_spectral_entropy",
+        "red_rr_band_1_fraction",
+        "red_rr_band_2_fraction",
+        "red_rr_band_3_fraction",
+        "ax_std",
+        "ax_range",
+        "ax_peak_hz",
+        "ax_peak_rate",
+        "ax_peak_power_fraction",
+        "ax_band_power",
+        "ax_spectral_entropy",
+        "ax_band_1_fraction",
+        "ax_band_2_fraction",
+        "ax_band_3_fraction",
+        "ay_std",
+        "ay_range",
+        "ay_peak_hz",
+        "ay_peak_rate",
+        "ay_peak_power_fraction",
+        "ay_band_power",
+        "ay_spectral_entropy",
+        "ay_band_1_fraction",
+        "ay_band_2_fraction",
+        "ay_band_3_fraction",
+        "az_std",
+        "az_range",
+        "az_peak_hz",
+        "az_peak_rate",
+        "az_peak_power_fraction",
+        "az_band_power",
+        "az_spectral_entropy",
+        "az_band_1_fraction",
+        "az_band_2_fraction",
+        "az_band_3_fraction",
+        "acc_magnitude_std",
+        "acc_magnitude_peak_hz",
+        "acc_magnitude_peak_rate",
+        "acc_magnitude_peak_power_fraction",
+        "acc_magnitude_band_power",
+        "acc_magnitude_spectral_entropy",
+        "acc_magnitude_band_1_fraction",
+        "acc_magnitude_band_2_fraction",
+        "acc_magnitude_band_3_fraction",
+        "red_ir_modulation_ratio",
+        "ir_ac_dc",
+        "red_ac_dc",
+        "ir_quality",
+        "red_quality"
+      ],
+      "models": {
+        "direct_ring_ppg_spectral_peak": {
+          "n_windows": 1752,
+          "n_participants": 27,
+          "mae": 7.010151027247305,
+          "participant_macro_mae": 7.451700294287682,
+          "participant_macro_mae_95_ci": [
+            6.522139391017346,
+            8.361968667064383
+          ],
+          "rmse": 8.712157919393308,
+          "r2": -2.649385098960593,
+          "pearson_r": 0.16957255732492177,
+          "spearman_r": 0.10655837554961096
+        },
+        "training_mean": {
+          "n_windows": 1752,
+          "n_participants": 27,
+          "mae": 3.546776753692704,
+          "participant_macro_mae": 3.572848264347974,
+          "participant_macro_mae_95_ci": [
+            3.0924762675448223,
+            4.0713649439203765
+          ],
+          "rmse": 4.5667631227891885,
+          "r2": -0.0027327216656571895,
+          "pearson_r": -0.06978097247775636,
+          "spearman_r": -0.08715828335079437,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 352
+            },
+            {
+              "fold": 2,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 367
+            },
+            {
+              "fold": 3,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 355
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 334
+            },
+            {
+              "fold": 5,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 344
+            }
+          ]
+        },
+        "ridge": {
+          "n_windows": 1752,
+          "n_participants": 27,
+          "mae": 3.4284042639108687,
+          "participant_macro_mae": 3.471155701334927,
+          "participant_macro_mae_95_ci": [
+            2.9735153373113663,
+            4.011515150394234
+          ],
+          "rmse": 4.616717040529867,
+          "r2": -0.024789651571083704,
+          "pearson_r": 0.36393250826258294,
+          "spearman_r": 0.41012940701002065,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 352
+            },
+            {
+              "fold": 2,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 367
+            },
+            {
+              "fold": 3,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 355
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 334
+            },
+            {
+              "fold": 5,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 344
+            }
+          ]
+        },
+        "extra_trees": {
+          "n_windows": 1752,
+          "n_participants": 27,
+          "mae": 2.9597217554878323,
+          "participant_macro_mae": 2.989310890788557,
+          "participant_macro_mae_95_ci": [
+            2.635916643967601,
+            3.398802258125532
+          ],
+          "rmse": 3.9566142126480015,
+          "r2": 0.24731089483738056,
+          "pearson_r": 0.49788322862996215,
+          "spearman_r": 0.49512073301197806,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 352
+            },
+            {
+              "fold": 2,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 367
+            },
+            {
+              "fold": 3,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 355
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 334
+            },
+            {
+              "fold": 5,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 344
+            }
+          ]
+        },
+        "random_forest": {
+          "n_windows": 1752,
+          "n_participants": 27,
+          "mae": 3.1871223647686664,
+          "participant_macro_mae": 3.186520691317759,
+          "participant_macro_mae_95_ci": [
+            2.8025631649309015,
+            3.6247697793899145
+          ],
+          "rmse": 4.167200055687946,
+          "r2": 0.16505682909876607,
+          "pearson_r": 0.4206544254604385,
+          "spearman_r": 0.4062053033537592,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 352
+            },
+            {
+              "fold": 2,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 367
+            },
+            {
+              "fold": 3,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 355
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 334
+            },
+            {
+              "fold": 5,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 344
+            }
+          ]
+        },
+        "hist_gradient_boosting": {
+          "n_windows": 1752,
+          "n_participants": 27,
+          "mae": 3.203805544779713,
+          "participant_macro_mae": 3.216685352790932,
+          "participant_macro_mae_95_ci": [
+            2.834392240496014,
+            3.641807157569882
+          ],
+          "rmse": 4.155512081542826,
+          "r2": 0.1697338825407565,
+          "pearson_r": 0.43339633751195994,
+          "spearman_r": 0.413330882413747,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 352
+            },
+            {
+              "fold": 2,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 367
+            },
+            {
+              "fold": 3,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 355
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 334
+            },
+            {
+              "fold": 5,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 344
+            }
+          ]
+        }
+      },
+      "n_windows": 1752,
+      "n_participants": 27,
+      "target_range": {
+        "min": 6.039162035785263,
+        "max": 29.13004361989116,
+        "median": 16.86143376519675
+      }
+    },
+    "ring1_spo2": {
+      "status": "evaluated",
+      "task": "spo2",
+      "ring": "ring1",
+      "cohort": "controlled_daily",
+      "features": [
+        "ir_mean",
+        "ir_std",
+        "ir_range",
+        "ir_median_abs_dev",
+        "ir_pulse_ac_rms",
+        "ir_peak_hz",
+        "ir_peak_rate",
+        "ir_peak_power_fraction",
+        "ir_band_power",
+        "ir_spectral_entropy",
+        "ir_band_1_fraction",
+        "ir_band_2_fraction",
+        "ir_band_3_fraction",
+        "ir_slow_peak_hz",
+        "ir_slow_peak_rate",
+        "ir_slow_peak_power_fraction",
+        "ir_slow_band_power",
+        "ir_slow_spectral_entropy",
+        "ir_slow_band_1_fraction",
+        "ir_slow_band_2_fraction",
+        "ir_slow_band_3_fraction",
+        "red_mean",
+        "red_std",
+        "red_range",
+        "red_median_abs_dev",
+        "red_pulse_ac_rms",
+        "red_peak_hz",
+        "red_peak_rate",
+        "red_peak_power_fraction",
+        "red_band_power",
+        "red_spectral_entropy",
+        "red_band_1_fraction",
+        "red_band_2_fraction",
+        "red_band_3_fraction",
+        "red_slow_peak_hz",
+        "red_slow_peak_rate",
+        "red_slow_peak_power_fraction",
+        "red_slow_band_power",
+        "red_slow_spectral_entropy",
+        "red_slow_band_1_fraction",
+        "red_slow_band_2_fraction",
+        "red_slow_band_3_fraction",
+        "ir_rr_mean",
+        "ir_rr_std",
+        "ir_rr_range",
+        "ir_rr_median_abs_dev",
+        "ir_rr_pulse_ac_rms",
+        "ir_rr_peak_hz",
+        "ir_rr_peak_rate",
+        "ir_rr_peak_power_fraction",
+        "ir_rr_band_power",
+        "ir_rr_spectral_entropy",
+        "ir_rr_band_1_fraction",
+        "ir_rr_band_2_fraction",
+        "ir_rr_band_3_fraction",
+        "red_rr_mean",
+        "red_rr_std",
+        "red_rr_range",
+        "red_rr_median_abs_dev",
+        "red_rr_pulse_ac_rms",
+        "red_rr_peak_hz",
+        "red_rr_peak_rate",
+        "red_rr_peak_power_fraction",
+        "red_rr_band_power",
+        "red_rr_spectral_entropy",
+        "red_rr_band_1_fraction",
+        "red_rr_band_2_fraction",
+        "red_rr_band_3_fraction",
+        "ax_std",
+        "ax_range",
+        "ax_peak_hz",
+        "ax_peak_rate",
+        "ax_peak_power_fraction",
+        "ax_band_power",
+        "ax_spectral_entropy",
+        "ax_band_1_fraction",
+        "ax_band_2_fraction",
+        "ax_band_3_fraction",
+        "ay_std",
+        "ay_range",
+        "ay_peak_hz",
+        "ay_peak_rate",
+        "ay_peak_power_fraction",
+        "ay_band_power",
+        "ay_spectral_entropy",
+        "ay_band_1_fraction",
+        "ay_band_2_fraction",
+        "ay_band_3_fraction",
+        "az_std",
+        "az_range",
+        "az_peak_hz",
+        "az_peak_rate",
+        "az_peak_power_fraction",
+        "az_band_power",
+        "az_spectral_entropy",
+        "az_band_1_fraction",
+        "az_band_2_fraction",
+        "az_band_3_fraction",
+        "acc_magnitude_std",
+        "acc_magnitude_peak_hz",
+        "acc_magnitude_peak_rate",
+        "acc_magnitude_peak_power_fraction",
+        "acc_magnitude_band_power",
+        "acc_magnitude_spectral_entropy",
+        "acc_magnitude_band_1_fraction",
+        "acc_magnitude_band_2_fraction",
+        "acc_magnitude_band_3_fraction",
+        "red_ir_modulation_ratio",
+        "ir_ac_dc",
+        "red_ac_dc",
+        "ir_quality",
+        "red_quality"
+      ],
+      "models": {
+        "training_mean": {
+          "n_windows": 1718,
+          "n_participants": 28,
+          "mae": 1.8551424401994705,
+          "participant_macro_mae": 1.9831180176286687,
+          "participant_macro_mae_95_ci": [
+            1.7016391314960613,
+            2.2879071613201702
+          ],
+          "rmse": 2.8270422979102348,
+          "r2": -0.009396526657237336,
+          "pearson_r": -0.1289023339369612,
+          "spearman_r": -0.17750161051474972,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 348
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 342
+            },
+            {
+              "fold": 3,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 350
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 347
+            },
+            {
+              "fold": 5,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 331
+            }
+          ]
+        },
+        "ridge": {
+          "n_windows": 1718,
+          "n_participants": 28,
+          "mae": 2.6459801090683337,
+          "participant_macro_mae": 3.0291014448812517,
+          "participant_macro_mae_95_ci": [
+            1.8786984978279977,
+            5.081982244074454
+          ],
+          "rmse": 8.978750601415655,
+          "r2": -9.18190428742639,
+          "pearson_r": 0.10122542309580945,
+          "spearman_r": 0.18827367156919608,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 348
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 342
+            },
+            {
+              "fold": 3,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 350
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 347
+            },
+            {
+              "fold": 5,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 331
+            }
+          ]
+        },
+        "extra_trees": {
+          "n_windows": 1718,
+          "n_participants": 28,
+          "mae": 1.821511026879559,
+          "participant_macro_mae": 1.9963520507145973,
+          "participant_macro_mae_95_ci": [
+            1.7067471535803307,
+            2.2992967651262983
+          ],
+          "rmse": 2.688330900723955,
+          "r2": 0.08722730236837384,
+          "pearson_r": 0.305353223018745,
+          "spearman_r": 0.2530775995871591,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 348
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 342
+            },
+            {
+              "fold": 3,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 350
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 347
+            },
+            {
+              "fold": 5,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 331
+            }
+          ]
+        },
+        "random_forest": {
+          "n_windows": 1718,
+          "n_participants": 28,
+          "mae": 1.8005939859552904,
+          "participant_macro_mae": 2.047159839027237,
+          "participant_macro_mae_95_ci": [
+            1.714287961696357,
+            2.3982636154478523
+          ],
+          "rmse": 2.682654847238578,
+          "r2": 0.09107762987838108,
+          "pearson_r": 0.336202327267637,
+          "spearman_r": 0.2975559420588656,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 348
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 342
+            },
+            {
+              "fold": 3,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 350
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 347
+            },
+            {
+              "fold": 5,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 331
+            }
+          ]
+        },
+        "hist_gradient_boosting": {
+          "n_windows": 1718,
+          "n_participants": 28,
+          "mae": 1.7657793929907872,
+          "participant_macro_mae": 1.9774601606273745,
+          "participant_macro_mae_95_ci": [
+            1.66286023859634,
+            2.2863638637375527
+          ],
+          "rmse": 2.6482510569964917,
+          "r2": 0.11424114691153364,
+          "pearson_r": 0.38220363435570526,
+          "spearman_r": 0.3357497098647664,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 348
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 342
+            },
+            {
+              "fold": 3,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 350
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 347
+            },
+            {
+              "fold": 5,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 331
+            }
+          ]
+        }
+      },
+      "n_windows": 1718,
+      "n_participants": 28,
+      "target_range": {
+        "min": 78.96666666666667,
+        "max": 99.0,
+        "median": 97.0
+      },
+      "controlled_low_oxygen_windows": 93,
+      "controlled_low_oxygen_participants": 21,
+      "low_oxygen_task_note": "The <90% subset is controlled hypoxia in volunteers, not a pulmonary disease cohort."
+    },
+    "ring2_rr": {
+      "status": "evaluated",
+      "task": "rr",
+      "ring": "ring2",
+      "cohort": "controlled_daily",
+      "features": [
+        "ir_mean",
+        "ir_std",
+        "ir_range",
+        "ir_median_abs_dev",
+        "ir_pulse_ac_rms",
+        "ir_peak_hz",
+        "ir_peak_rate",
+        "ir_peak_power_fraction",
+        "ir_band_power",
+        "ir_spectral_entropy",
+        "ir_band_1_fraction",
+        "ir_band_2_fraction",
+        "ir_band_3_fraction",
+        "ir_slow_peak_hz",
+        "ir_slow_peak_rate",
+        "ir_slow_peak_power_fraction",
+        "ir_slow_band_power",
+        "ir_slow_spectral_entropy",
+        "ir_slow_band_1_fraction",
+        "ir_slow_band_2_fraction",
+        "ir_slow_band_3_fraction",
+        "red_mean",
+        "red_std",
+        "red_range",
+        "red_median_abs_dev",
+        "red_pulse_ac_rms",
+        "red_peak_hz",
+        "red_peak_rate",
+        "red_peak_power_fraction",
+        "red_band_power",
+        "red_spectral_entropy",
+        "red_band_1_fraction",
+        "red_band_2_fraction",
+        "red_band_3_fraction",
+        "red_slow_peak_hz",
+        "red_slow_peak_rate",
+        "red_slow_peak_power_fraction",
+        "red_slow_band_power",
+        "red_slow_spectral_entropy",
+        "red_slow_band_1_fraction",
+        "red_slow_band_2_fraction",
+        "red_slow_band_3_fraction",
+        "ir_rr_mean",
+        "ir_rr_std",
+        "ir_rr_range",
+        "ir_rr_median_abs_dev",
+        "ir_rr_pulse_ac_rms",
+        "ir_rr_peak_hz",
+        "ir_rr_peak_rate",
+        "ir_rr_peak_power_fraction",
+        "ir_rr_band_power",
+        "ir_rr_spectral_entropy",
+        "ir_rr_band_1_fraction",
+        "ir_rr_band_2_fraction",
+        "ir_rr_band_3_fraction",
+        "red_rr_mean",
+        "red_rr_std",
+        "red_rr_range",
+        "red_rr_median_abs_dev",
+        "red_rr_pulse_ac_rms",
+        "red_rr_peak_hz",
+        "red_rr_peak_rate",
+        "red_rr_peak_power_fraction",
+        "red_rr_band_power",
+        "red_rr_spectral_entropy",
+        "red_rr_band_1_fraction",
+        "red_rr_band_2_fraction",
+        "red_rr_band_3_fraction",
+        "ax_std",
+        "ax_range",
+        "ax_peak_hz",
+        "ax_peak_rate",
+        "ax_peak_power_fraction",
+        "ax_band_power",
+        "ax_spectral_entropy",
+        "ax_band_1_fraction",
+        "ax_band_2_fraction",
+        "ax_band_3_fraction",
+        "ay_std",
+        "ay_range",
+        "ay_peak_hz",
+        "ay_peak_rate",
+        "ay_peak_power_fraction",
+        "ay_band_power",
+        "ay_spectral_entropy",
+        "ay_band_1_fraction",
+        "ay_band_2_fraction",
+        "ay_band_3_fraction",
+        "az_std",
+        "az_range",
+        "az_peak_hz",
+        "az_peak_rate",
+        "az_peak_power_fraction",
+        "az_band_power",
+        "az_spectral_entropy",
+        "az_band_1_fraction",
+        "az_band_2_fraction",
+        "az_band_3_fraction",
+        "acc_magnitude_std",
+        "acc_magnitude_peak_hz",
+        "acc_magnitude_peak_rate",
+        "acc_magnitude_peak_power_fraction",
+        "acc_magnitude_band_power",
+        "acc_magnitude_spectral_entropy",
+        "acc_magnitude_band_1_fraction",
+        "acc_magnitude_band_2_fraction",
+        "acc_magnitude_band_3_fraction",
+        "red_ir_modulation_ratio",
+        "ir_ac_dc",
+        "red_ac_dc",
+        "ir_quality",
+        "red_quality"
+      ],
+      "models": {
+        "direct_ring_ppg_spectral_peak": {
+          "n_windows": 1653,
+          "n_participants": 27,
+          "mae": 7.595100022000624,
+          "participant_macro_mae": 7.59847797181337,
+          "participant_macro_mae_95_ci": [
+            6.661766214001888,
+            8.486732930381216
+          ],
+          "rmse": 9.183475470609372,
+          "r2": -3.1165725701750313,
+          "pearson_r": 0.1456233515118931,
+          "spearman_r": 0.0870709837395149
+        },
+        "training_mean": {
+          "n_windows": 1670,
+          "n_participants": 27,
+          "mae": 3.5898511186268687,
+          "participant_macro_mae": 3.6186592607348085,
+          "participant_macro_mae_95_ci": [
+            3.079013786572811,
+            4.1848531418027335
+          ],
+          "rmse": 4.6085633482034,
+          "r2": -0.03991350667560889,
+          "pearson_r": -0.266170682177905,
+          "spearman_r": -0.2802549660062681,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 333
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 330
+            },
+            {
+              "fold": 3,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 339
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 333
+            },
+            {
+              "fold": 5,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 335
+            }
+          ]
+        },
+        "ridge": {
+          "n_windows": 1670,
+          "n_participants": 27,
+          "mae": 3.8414275741722093,
+          "participant_macro_mae": 4.264237196273265,
+          "participant_macro_mae_95_ci": [
+            3.197284286560327,
+            5.919241065137004
+          ],
+          "rmse": 5.296099959406134,
+          "r2": -0.37334118012353645,
+          "pearson_r": 0.2207082107042681,
+          "spearman_r": 0.13483186601143504,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 333
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 330
+            },
+            {
+              "fold": 3,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 339
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 333
+            },
+            {
+              "fold": 5,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 335
+            }
+          ]
+        },
+        "extra_trees": {
+          "n_windows": 1670,
+          "n_participants": 27,
+          "mae": 3.6023375484811737,
+          "participant_macro_mae": 3.470626175577576,
+          "participant_macro_mae_95_ci": [
+            2.972906261555999,
+            3.969338859555332
+          ],
+          "rmse": 4.544546735196575,
+          "r2": -0.011223709751354116,
+          "pearson_r": 0.18535267640667902,
+          "spearman_r": 0.1132874758618769,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 333
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 330
+            },
+            {
+              "fold": 3,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 339
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 333
+            },
+            {
+              "fold": 5,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 335
+            }
+          ]
+        },
+        "random_forest": {
+          "n_windows": 1670,
+          "n_participants": 27,
+          "mae": 3.7043964556879945,
+          "participant_macro_mae": 3.5579270297849295,
+          "participant_macro_mae_95_ci": [
+            3.0637568299573967,
+            4.086050959644111
+          ],
+          "rmse": 4.634187322538668,
+          "r2": -0.051509656671695936,
+          "pearson_r": 0.1709671014131527,
+          "spearman_r": 0.10121618723133877,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 333
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 330
+            },
+            {
+              "fold": 3,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 339
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 333
+            },
+            {
+              "fold": 5,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 335
+            }
+          ]
+        },
+        "hist_gradient_boosting": {
+          "n_windows": 1670,
+          "n_participants": 27,
+          "mae": 3.7684226300348063,
+          "participant_macro_mae": 3.678351670975568,
+          "participant_macro_mae_95_ci": [
+            3.1806061487002224,
+            4.194407893725846
+          ],
+          "rmse": 4.72300588125164,
+          "r2": -0.09220225429102435,
+          "pearson_r": 0.16638667252244083,
+          "spearman_r": 0.11465141633285447,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 333
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 330
+            },
+            {
+              "fold": 3,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 339
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 5,
+              "test_windows": 333
+            },
+            {
+              "fold": 5,
+              "train_participants": 21,
+              "held_out_participants": 6,
+              "test_windows": 335
+            }
+          ]
+        }
+      },
+      "n_windows": 1670,
+      "n_participants": 27,
+      "target_range": {
+        "min": 6.040536499452111,
+        "max": 29.86438957519153,
+        "median": 18.309772140722906
+      }
+    },
+    "ring2_spo2": {
+      "status": "evaluated",
+      "task": "spo2",
+      "ring": "ring2",
+      "cohort": "controlled_daily",
+      "features": [
+        "ir_mean",
+        "ir_std",
+        "ir_range",
+        "ir_median_abs_dev",
+        "ir_pulse_ac_rms",
+        "ir_peak_hz",
+        "ir_peak_rate",
+        "ir_peak_power_fraction",
+        "ir_band_power",
+        "ir_spectral_entropy",
+        "ir_band_1_fraction",
+        "ir_band_2_fraction",
+        "ir_band_3_fraction",
+        "ir_slow_peak_hz",
+        "ir_slow_peak_rate",
+        "ir_slow_peak_power_fraction",
+        "ir_slow_band_power",
+        "ir_slow_spectral_entropy",
+        "ir_slow_band_1_fraction",
+        "ir_slow_band_2_fraction",
+        "ir_slow_band_3_fraction",
+        "red_mean",
+        "red_std",
+        "red_range",
+        "red_median_abs_dev",
+        "red_pulse_ac_rms",
+        "red_peak_hz",
+        "red_peak_rate",
+        "red_peak_power_fraction",
+        "red_band_power",
+        "red_spectral_entropy",
+        "red_band_1_fraction",
+        "red_band_2_fraction",
+        "red_band_3_fraction",
+        "red_slow_peak_hz",
+        "red_slow_peak_rate",
+        "red_slow_peak_power_fraction",
+        "red_slow_band_power",
+        "red_slow_spectral_entropy",
+        "red_slow_band_1_fraction",
+        "red_slow_band_2_fraction",
+        "red_slow_band_3_fraction",
+        "ir_rr_mean",
+        "ir_rr_std",
+        "ir_rr_range",
+        "ir_rr_median_abs_dev",
+        "ir_rr_pulse_ac_rms",
+        "ir_rr_peak_hz",
+        "ir_rr_peak_rate",
+        "ir_rr_peak_power_fraction",
+        "ir_rr_band_power",
+        "ir_rr_spectral_entropy",
+        "ir_rr_band_1_fraction",
+        "ir_rr_band_2_fraction",
+        "ir_rr_band_3_fraction",
+        "red_rr_mean",
+        "red_rr_std",
+        "red_rr_range",
+        "red_rr_median_abs_dev",
+        "red_rr_pulse_ac_rms",
+        "red_rr_peak_hz",
+        "red_rr_peak_rate",
+        "red_rr_peak_power_fraction",
+        "red_rr_band_power",
+        "red_rr_spectral_entropy",
+        "red_rr_band_1_fraction",
+        "red_rr_band_2_fraction",
+        "red_rr_band_3_fraction",
+        "ax_std",
+        "ax_range",
+        "ax_peak_hz",
+        "ax_peak_rate",
+        "ax_peak_power_fraction",
+        "ax_band_power",
+        "ax_spectral_entropy",
+        "ax_band_1_fraction",
+        "ax_band_2_fraction",
+        "ax_band_3_fraction",
+        "ay_std",
+        "ay_range",
+        "ay_peak_hz",
+        "ay_peak_rate",
+        "ay_peak_power_fraction",
+        "ay_band_power",
+        "ay_spectral_entropy",
+        "ay_band_1_fraction",
+        "ay_band_2_fraction",
+        "ay_band_3_fraction",
+        "az_std",
+        "az_range",
+        "az_peak_hz",
+        "az_peak_rate",
+        "az_peak_power_fraction",
+        "az_band_power",
+        "az_spectral_entropy",
+        "az_band_1_fraction",
+        "az_band_2_fraction",
+        "az_band_3_fraction",
+        "acc_magnitude_std",
+        "acc_magnitude_peak_hz",
+        "acc_magnitude_peak_rate",
+        "acc_magnitude_peak_power_fraction",
+        "acc_magnitude_band_power",
+        "acc_magnitude_spectral_entropy",
+        "acc_magnitude_band_1_fraction",
+        "acc_magnitude_band_2_fraction",
+        "acc_magnitude_band_3_fraction",
+        "red_ir_modulation_ratio",
+        "ir_ac_dc",
+        "red_ac_dc",
+        "ir_quality",
+        "red_quality"
+      ],
+      "models": {
+        "training_mean": {
+          "n_windows": 1595,
+          "n_participants": 28,
+          "mae": 1.5971156940512692,
+          "participant_macro_mae": 1.6997513906633277,
+          "participant_macro_mae_95_ci": [
+            1.374109068769632,
+            2.0559883219113027
+          ],
+          "rmse": 2.4747335513016386,
+          "r2": -0.00877080471282432,
+          "pearson_r": -0.12459203680747899,
+          "spearman_r": -0.2191424756997858,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 325
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 323
+            },
+            {
+              "fold": 3,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 313
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 322
+            },
+            {
+              "fold": 5,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 312
+            }
+          ]
+        },
+        "ridge": {
+          "n_windows": 1595,
+          "n_participants": 28,
+          "mae": 1.9288982716205578,
+          "participant_macro_mae": 2.548641752439449,
+          "participant_macro_mae_95_ci": [
+            1.6346300612907043,
+            4.024444740549373
+          ],
+          "rmse": 3.436745717080655,
+          "r2": -0.9454963135522336,
+          "pearson_r": 0.08725905173460996,
+          "spearman_r": 0.1955355609532602,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 325
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 323
+            },
+            {
+              "fold": 3,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 313
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 322
+            },
+            {
+              "fold": 5,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 312
+            }
+          ]
+        },
+        "extra_trees": {
+          "n_windows": 1595,
+          "n_participants": 28,
+          "mae": 1.4480133438697493,
+          "participant_macro_mae": 1.643977010801533,
+          "participant_macro_mae_95_ci": [
+            1.3573573371448604,
+            1.9526327489952102
+          ],
+          "rmse": 2.234428099139585,
+          "r2": 0.17762787634999366,
+          "pearson_r": 0.4240462860819145,
+          "spearman_r": 0.3618007557772468,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 325
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 323
+            },
+            {
+              "fold": 3,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 313
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 322
+            },
+            {
+              "fold": 5,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 312
+            }
+          ]
+        },
+        "random_forest": {
+          "n_windows": 1595,
+          "n_participants": 28,
+          "mae": 1.464599567627404,
+          "participant_macro_mae": 1.6563145124747014,
+          "participant_macro_mae_95_ci": [
+            1.4151308960557674,
+            1.9050935535437736
+          ],
+          "rmse": 2.1964299779241645,
+          "r2": 0.20536015628230675,
+          "pearson_r": 0.45926763647225516,
+          "spearman_r": 0.3271423186002752,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 325
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 323
+            },
+            {
+              "fold": 3,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 313
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 322
+            },
+            {
+              "fold": 5,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 312
+            }
+          ]
+        },
+        "hist_gradient_boosting": {
+          "n_windows": 1595,
+          "n_participants": 28,
+          "mae": 1.471667894725216,
+          "participant_macro_mae": 1.6789387669411542,
+          "participant_macro_mae_95_ci": [
+            1.3950897957332449,
+            1.9642092501427224
+          ],
+          "rmse": 2.2396847269329476,
+          "r2": 0.17375396417478384,
+          "pearson_r": 0.44395580742601576,
+          "spearman_r": 0.3591023560291989,
+          "folds": [
+            {
+              "fold": 1,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 325
+            },
+            {
+              "fold": 2,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 323
+            },
+            {
+              "fold": 3,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 313
+            },
+            {
+              "fold": 4,
+              "train_participants": 22,
+              "held_out_participants": 6,
+              "test_windows": 322
+            },
+            {
+              "fold": 5,
+              "train_participants": 23,
+              "held_out_participants": 5,
+              "test_windows": 312
+            }
+          ]
+        }
+      },
+      "n_windows": 1595,
+      "n_participants": 28,
+      "target_range": {
+        "min": 80.06666666666666,
+        "max": 99.0,
+        "median": 97.10344827586206
+      },
+      "controlled_low_oxygen_windows": 61,
+      "controlled_low_oxygen_participants": 15,
+      "low_oxygen_task_note": "The <90% subset is controlled hypoxia in volunteers, not a pulmonary disease cohort."
+    },
+    "ring1_treadmill_rr": {
+      "status": "insufficient_data",
+      "n_windows": 0,
+      "n_participants": 0
+    }
+  },
+  "nested_method_selection_results": {
+    "ring1_rr": {
+      "n_windows": 1752,
+      "n_participants": 27,
+      "mae": 2.9597217554878323,
+      "participant_macro_mae": 2.989310890788557,
+      "participant_macro_mae_95_ci": [
+        2.635916643967601,
+        3.398802258125532
+      ],
+      "rmse": 3.9566142126480015,
+      "r2": 0.24731089483738056,
+      "pearson_r": 0.49788322862996204,
+      "spearman_r": 0.49512073301197806,
+      "status": "evaluated",
+      "task": "rr",
+      "ring": "ring1",
+      "cohort": "controlled_daily",
+      "validation": "nested five-fold GroupKFold by participant; 3-fold inner GroupKFold selects among ridge, Extra Trees, random forest, and histogram gradient boosting; the outer participant fold is untouched until scoring",
+      "selected_models_by_outer_fold": [
+        {
+          "outer_fold": 1,
+          "selected_model_inside_training_participants": "extra_trees",
+          "inner_grouped_participant_macro_mae": {
+            "ridge": 4.4781469618534215,
+            "extra_trees": 3.2305701968758926,
+            "random_forest": 3.4345127071050303,
+            "hist_gradient_boosting": 3.4735510077038096
+          },
+          "held_out_participants": 5,
+          "held_out_windows": 352
+        },
+        {
+          "outer_fold": 2,
+          "selected_model_inside_training_participants": "extra_trees",
+          "inner_grouped_participant_macro_mae": {
+            "ridge": 3.790410503736221,
+            "extra_trees": 3.0073557907450055,
+            "random_forest": 3.1480220663345713,
+            "hist_gradient_boosting": 3.1014428176407796
+          },
+          "held_out_participants": 6,
+          "held_out_windows": 367
+        },
+        {
+          "outer_fold": 3,
+          "selected_model_inside_training_participants": "extra_trees",
+          "inner_grouped_participant_macro_mae": {
+            "ridge": 3.360056014717844,
+            "extra_trees": 3.155901698798561,
+            "random_forest": 3.32688023182777,
+            "hist_gradient_boosting": 3.3726177368835937
+          },
+          "held_out_participants": 6,
+          "held_out_windows": 355
+        },
+        {
+          "outer_fold": 4,
+          "selected_model_inside_training_participants": "extra_trees",
+          "inner_grouped_participant_macro_mae": {
+            "ridge": 3.6770426295349314,
+            "extra_trees": 3.3612047923317645,
+            "random_forest": 3.47977273281752,
+            "hist_gradient_boosting": 3.4861884917252652
+          },
+          "held_out_participants": 5,
+          "held_out_windows": 334
+        },
+        {
+          "outer_fold": 5,
+          "selected_model_inside_training_participants": "extra_trees",
+          "inner_grouped_participant_macro_mae": {
+            "ridge": 4.24458471880722,
+            "extra_trees": 3.1487797946843226,
+            "random_forest": 3.2635392928652753,
+            "hist_gradient_boosting": 3.2567701571122956
+          },
+          "held_out_participants": 5,
+          "held_out_windows": 344
+        }
+      ]
+    },
+    "ring2_rr": {
+      "n_windows": 1670,
+      "n_participants": 27,
+      "mae": 3.5795256613994493,
+      "participant_macro_mae": 3.4819335856189646,
+      "participant_macro_mae_95_ci": [
+        2.992943892240154,
+        3.9933445290753373
+      ],
+      "rmse": 4.538583523993577,
+      "r2": -0.008571659007667654,
+      "pearson_r": 0.19398598570719938,
+      "spearman_r": 0.13184615877422648,
+      "status": "evaluated",
+      "task": "rr",
+      "ring": "ring2",
+      "cohort": "controlled_daily",
+      "validation": "nested five-fold GroupKFold by participant; 3-fold inner GroupKFold selects among ridge, Extra Trees, random forest, and histogram gradient boosting; the outer participant fold is untouched until scoring",
+      "selected_models_by_outer_fold": [
+        {
+          "outer_fold": 1,
+          "selected_model_inside_training_participants": "extra_trees",
+          "inner_grouped_participant_macro_mae": {
+            "ridge": 3.656318529409499,
+            "extra_trees": 3.5989223767609375,
+            "random_forest": 3.618960966373032,
+            "hist_gradient_boosting": 3.659825017546484
+          },
+          "held_out_participants": 5,
+          "held_out_windows": 333
+        },
+        {
+          "outer_fold": 2,
+          "selected_model_inside_training_participants": "random_forest",
+          "inner_grouped_participant_macro_mae": {
+            "ridge": 5.213521922628844,
+            "extra_trees": 3.455067916189597,
+            "random_forest": 3.4482147327134016,
+            "hist_gradient_boosting": 3.4980099606582726
+          },
+          "held_out_participants": 5,
+          "held_out_windows": 330
+        },
+        {
+          "outer_fold": 3,
+          "selected_model_inside_training_participants": "extra_trees",
+          "inner_grouped_participant_macro_mae": {
+            "ridge": 4.492449100610295,
+            "extra_trees": 3.7150548614007977,
+            "random_forest": 3.805142378196077,
+            "hist_gradient_boosting": 3.9277815302365675
+          },
+          "held_out_participants": 6,
+          "held_out_windows": 339
+        },
+        {
+          "outer_fold": 4,
+          "selected_model_inside_training_participants": "extra_trees",
+          "inner_grouped_participant_macro_mae": {
+            "ridge": 3.6924519014954864,
+            "extra_trees": 3.269821395462598,
+            "random_forest": 3.277971984192877,
+            "hist_gradient_boosting": 3.3829447089472597
+          },
+          "held_out_participants": 5,
+          "held_out_windows": 333
+        },
+        {
+          "outer_fold": 5,
+          "selected_model_inside_training_participants": "extra_trees",
+          "inner_grouped_participant_macro_mae": {
+            "ridge": 5.595855490906014,
+            "extra_trees": 3.631594137798173,
+            "random_forest": 3.671653538473067,
+            "hist_gradient_boosting": 3.7729706396586087
+          },
+          "held_out_participants": 6,
+          "held_out_windows": 335
+        }
+      ]
+    }
+  },
+  "zero_shot_treadmill_transfer": {
+    "status": "insufficient_data",
+    "training_participants": 27,
+    "test_participants": 0
+  },
+  "deployment_status": "research_only_no_disease_classifier",
+  "clinical_limitations": [
+    "HealthRing contains healthy volunteers, not participants with COPD, asthma, pneumonia, or other confirmed pulmonary diagnoses.",
+    "Controlled low oxygen in volunteers is not equivalent to a pulmonary disease or a spontaneous exacerbation.",
+    "The dataset validates ring signal-to-vital estimation only; it cannot train or validate disease detection.",
+    "Performance on this custom research ring does not establish performance on an Oura, Samsung, or future PlumoRing device.",
+    "Reference measurements and participant-level uncertainty must be reviewed before any physiological estimate is shown as more than a research demonstration."
+  ],
+  "reproduction": "python scripts/evaluate_healthring_ring_vitals.py"
+}

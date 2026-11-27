@@ -300,7 +300,7 @@
     .glass-study-top,.study-foot{display:flex;justify-content:space-between;gap:12px;color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.1em}
     .glass-study-top{padding-bottom:18px;border-bottom:1px solid #ffffff20}
     .glass-study-top span:last-child{color:var(--accent)}
-    .glass-shards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:24px 0 21px;transform-style:preserve-3d}
+    .glass-shards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:24px 0 21px;transform-style:preserve-3d}
     .glass-shard{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;min-height:210px;padding:20px 18px;overflow:hidden;border:1px solid #dae7ef2c;border-radius:12px;color:#f1f2ed;text-align:left;background:linear-gradient(145deg,#34483f,#1b2822 70%,#18211d);appearance:none;backdrop-filter:blur(18px) saturate(138%);box-shadow:inset 0 1px #ffffff20,0 13px 34px #0005;transition:transform .35s cubic-bezier(.2,.75,.2,1),border-color .25s,background .25s,box-shadow .25s;transform:translateZ(0);cursor:pointer}
     .glass-shard:before{content:"";position:absolute;inset:0;background:linear-gradient(145deg,#ffffff18,transparent 42%),radial-gradient(ellipse at 80% 0,#8cb9e420,transparent 50%);pointer-events:none}
     .glass-shard:after{content:"";position:absolute;right:-36px;bottom:-57px;width:145px;height:145px;border:1px solid #e9f1f533;border-radius:50%;box-shadow:0 0 0 13px #e9f1f50a,0 0 0 28px #e9f1f506;pointer-events:none}
@@ -569,7 +569,10 @@
             <span>04&nbsp; / &nbsp;APNEA EVENTS</span><strong>Overnight PPG<br>+ PSG labels</strong><i>30 stroke-unit patients</i><b>↗</b>
           </button>
           <button class="glass-shard" type="button" data-study="ring">
-            <span>05&nbsp; / &nbsp;TRUE RING DATA</span><strong>PPG<br>+ motion</strong><i>54 people · no disease labels</i><b>↗</b>
+            <span>05&nbsp; / &nbsp;TRUE RING DATA</span><strong>PPG<br>+ motion</strong><i id="healthring-study-count">Recovered ring cohort · no disease labels</i><b>↗</b>
+          </button>
+          <button class="glass-shard" type="button" data-study="bidmc">
+            <span>06&nbsp; / &nbsp;PPG BREATHING RATE</span><strong>Pulse<br>to breath</strong><i id="bidmc-study-count">ICU PPG · two manual breath readers</i><b>↗</b>
           </button>
         </div>
         <div class="glass-study-bottom">
@@ -589,7 +592,7 @@
         <div class="glass-cursor-glow" aria-hidden="true"></div>
       </div>
       <div class="study-foot"><span>FEASIBILITY BASELINES · NO DEEP MODEL DEPLOYED</span><span id="study-model-version">TOLIFE V2.0 · 5-FOLD GROUPED EVALUATION</span></div>
-      <p class="study-disclaimer">These are separate research tasks; none is a patient-facing diagnosis or validated ring alert. AAMOS-00 is retrospective asthma-worsening classification in adults already diagnosed with asthma. OSASUD labels apnea/hypopnea events during hospital sleep monitoring, not sleep-apnea diagnosis from this ring. COPD flare forecasts and event-window detection must not be presented as new disease diagnoses. No matched ring-reading pneumonia, bronchitis, or infection cohort was found. A separate 2026 COPD wearable study reported stronger results, but its participant data are restricted and those are the authors' results, not ours. Sources: <a href="https://zenodo.org/records/23263785" target="_blank" rel="noreferrer">TOLIFE v2.0</a> · <a href="https://journals.plos.org/digitalhealth/article?id=10.1371/journal.pdig.0001405" target="_blank" rel="noreferrer">eMEUSE-SANTÉ study</a> · <a href="https://datashare.ed.ac.uk/items/8478e384-fd1b-4a37-9555-0c6e1218e90b" target="_blank" rel="noreferrer">AAMOS-00</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9018698/" target="_blank" rel="noreferrer">OSASUD paper</a> · <a href="https://www.nature.com/articles/s41597-026-07289-x" target="_blank" rel="noreferrer">HealthRing</a> · <a href="https://zenodo.org/records/18109876" target="_blank" rel="noreferrer">COPD PPG data</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10280226/" target="_blank" rel="noreferrer">Original 14-person PPG study</a>.</p>
+        <p class="study-disclaimer">These are separate research tasks; none is a patient-facing diagnosis or validated ring alert. AAMOS-00 is retrospective asthma-worsening classification in adults already diagnosed with asthma. OSASUD labels apnea/hypopnea events during hospital sleep monitoring, not sleep-apnea diagnosis from this ring. COPD flare forecasts and event-window detection must not be presented as new disease diagnoses. No matched ring-reading pneumonia, bronchitis, or infection cohort was found. A separate 2026 COPD wearable study reported stronger results, but its participant data are restricted and those are the authors' results, not ours. Sources: <a href="https://zenodo.org/records/23263785" target="_blank" rel="noreferrer">TOLIFE v2.0</a> · <a href="https://journals.plos.org/digitalhealth/article?id=10.1371/journal.pdig.0001405" target="_blank" rel="noreferrer">eMEUSE-SANTÉ study</a> · <a href="https://datashare.ed.ac.uk/items/8478e384-fd1b-4a37-9555-0c6e1218e90b" target="_blank" rel="noreferrer">AAMOS-00</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9018698/" target="_blank" rel="noreferrer">OSASUD paper</a> · <a href="https://www.nature.com/articles/s41597-026-07289-x" target="_blank" rel="noreferrer">HealthRing</a> · <a href="https://physionet.org/content/bidmc/1.0.0/" target="_blank" rel="noreferrer">BIDMC PPG and respiration</a> · <a href="https://zenodo.org/records/18109876" target="_blank" rel="noreferrer">COPD PPG data</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10280226/" target="_blank" rel="noreferrer">Original 14-person PPG study</a>.</p>
     </section>
     <section class="closing-note"><div><span class="section-kicker">DESIGNED AROUND THE HUMAN SIGNAL</span><h2>Wearable by nature.<br><em>Intelligent by design.</em></h2></div><a class="back-to-top" href="#top">Back to the top <span>↑</span></a></section>
     <footer class="caveat"><span><strong>PlumoRing AI</strong> · concept ring + software research</span><span>Recorded public data · no live sensor · no clinical use</span><nav class="site-links" aria-label="Project information"><a href="privacy.html">Privacy</a><a href="settings.html">Settings</a></nav></footer>
@@ -965,13 +968,17 @@
     const fetchAamosReport=()=>fetchResearchReport('/api/pulmonary/aamos-metrics','aamos_asthma_worsening_metrics.json');
     const fetchOsasudReport=()=>fetchResearchReport('/api/pulmonary/osasud-metrics','osasud_ppg_event_metrics.json');
     const fetchTolifeTrendReport=()=>fetchResearchReport('/api/pulmonary/tolife-trend-metrics','tolife_personalized_trend_metrics.json');
-    let pulmonaryReport=null,copdPpgReport=null,aamosReport=null,osasudReport=null,tolifeTrendReport=null,activeStudy='copd';
+    const fetchHealthRingReport=()=>fetchResearchReport('/api/pulmonary/healthring-vitals-metrics','healthring_ring_vitals_metrics.json');
+    const fetchBidmcReport=()=>fetchResearchReport('/api/pulmonary/bidmc-rr-metrics','bidmc_ppg_respiratory_rate_metrics.json');
+    const fetchTolifeAssociationReport=()=>fetchResearchReport('/api/pulmonary/tolife-associations','tolife_clinical_associations.json');
+    let pulmonaryReport=null,copdPpgReport=null,aamosReport=null,osasudReport=null,tolifeTrendReport=null,healthringReport=null,bidmcReport=null,tolifeAssociationReport=null,activeStudy='copd';
     const trackDetails={
       copd:{active:'01 · COPD FLARE FORECAST',kicker:'TOLIFE V2.0 · PARTICIPANT-HELD-OUT',title:'Forecast a COPD flare only in known COPD.',copy:'TOLIFE contains daily indices and clinically recorded moderate/severe COPD exacerbations. Supervised models using seven-day HR/HRV, breathing, movement and SpO₂-like inputs failed the no-skill gate. A separate 14-day personalized-change baseline also failed on a smaller sparse-data subset. No model is deployed.'},
       ppg:{active:'02 · COPD + PPG',kicker:'ZENODO PPG · 6 PEOPLE · LEAVE-ONE-PERSON-OUT',title:'A disease-labeled PPG feasibility run.',copy:'This public set has four COPD-labeled people and two controls. We compared regularized logistic regression, an RBF support-vector machine, and Extra Trees while holding out one whole person per fold. All three methods scored 0.000 participant-level ROC-AUC; logistic average precision was 0.525 versus a 0.667 prevalence baseline. The cohort is far too small for a dependable detector, and the data are not from this ring.'},
       aamos:{active:'03 · ASTHMA WORSENING',kicker:'AAMOS-00 · NESTED PARTICIPANT-HELD-OUT EVALUATION',title:'A small asthma-worsening signal, below the useful sensitivity gate.',copy:'AAMOS-00 links MiBand3 heart-rate/activity summaries with weekly reports of systemic corticosteroid use. The outcome is a retrospective report for adults already diagnosed with asthma, not a future attack or an asthma diagnosis. Nested held-out results did not meet the sensitivity gate; no score is deployed.'},
       osasud:{active:'04 · APNEA EVENTS',kicker:'OSASUD · OVERNIGHT FINGER PPG · PSG ANNOTATIONS',title:'An event-window signal, still a research result.',copy:'On 27,627 quality-valid 30-second windows, the best strict-PPG baseline reached equal-participant ROC-AUC 0.780 and average precision 0.633 against 0.313 prevalence across participant-held-out folds. The model was selected on this same comparison, so the result is optimistic. OSASUD cannot diagnose sleep apnea syndrome or validate a PlumoRing.'},
-      ring:{active:'05 · TRUE RING DATA',kicker:'HEALTHRING · 54 PEOPLE · NO PULMONARY DISEASE LABELS',title:'Real ring signals can estimate physiology, not disease here.',copy:'HealthRing provides finger-worn PPG and accelerometer signals with reference heart rate, respiratory rate and SpO₂. Its cohort has no COPD, asthma or pneumonia diagnosis labels, so it supports signal estimation—not pulmonary disease classification.'}
+      ring:{active:'05 · TRUE RING DATA',kicker:'HEALTHRING · RING VITAL ESTIMATION · PARTIAL RECOVERY',title:'Real ring signals estimate physiology, not disease here.',copy:'HealthRing pairs finger-worn red/infrared PPG and motion with reference vitals. Its cohort has no pulmonary diagnosis labels. A participant-held-out analysis is available for respiratory-rate and oxygen-saturation estimation; the downloaded archive is only partially recoverable.'},
+      bidmc:{active:'06 · PPG BREATHING RATE',kicker:'BIDMC · PPG ONLY · TWO MANUAL BREATH READERS',title:'Estimate breathing rate from pulse-wave changes.',copy:'The BIDMC ICU dataset provides pulse-oximeter PPG with two independent manual breath annotations. Models use only PPG, hold out whole recordings, and never use the impedance respiration waveform as an input. A separate untouched HealthRing cohort checks cross-device transfer; neither study detects pulmonary disease.'}
     };
     document.querySelectorAll('[data-study]').forEach(button=>button.addEventListener('click',()=>{
       const track=trackDetails[button.dataset.study];if(!track)return;
@@ -1022,8 +1029,10 @@
         labels[2].textContent='BOOSTED TREES · GROUPED ROC-AUC';
         labels[3].textContent='BEST AVG PRECISION · BASE '+metricText(pulmonaryReport?.naive_average_precision_reference);
         const trend=tolifeTrendReport?.metrics||{},trendCounts=tolifeTrendReport?.counts||{};
+        const assocCounts=tolifeAssociationReport?.coverage||{},assocPairs=Object.values(tolifeAssociationReport?.within_participant_associations||{}).flatMap(target=>Object.values(target||{}));
+        const associationSummary=tolifeAssociationReport?` A separate TOLIFE clinical-association audit covered ${Number(assocCounts.clinic_visits_with_sensor_directory||0)} visits from ${Number(assocCounts.participants||0)} people; ${assocPairs.filter(pair=>pair.status==='too_few_repeated_participants').length} sensor/outcome pairs lacked enough repeated visits for a stable within-person estimate.`:'';
         note.hidden=false;
-        note.textContent=tolifeTrendReport?`A separate training-free personalized trend score used a 14-day personal baseline: ${trendCounts.eligible_participant_days} days from ${trendCounts.participants} people, only ${trendCounts.participants_with_positive_windows} with positive windows. Equal-person ROC-AUC ${metricText(trend.roc_auc_equal_participant_weight)}, average precision ${metricText(trend.average_precision_equal_participant_weight)} vs no-skill ${metricText(tolifeTrendReport.no_skill_average_precision_reference_equal_participant_weight)}. It also failed; no alert is enabled.`:'Personalized trend comparison is not loaded. See Dataset plan for the evaluation details.';
+        note.textContent=(tolifeTrendReport?`A separate training-free personalized trend score used a 14-day personal baseline: ${trendCounts.eligible_participant_days} days from ${trendCounts.participants} people, only ${trendCounts.participants_with_positive_windows} with positive windows. Equal-person ROC-AUC ${metricText(trend.roc_auc_equal_participant_weight)}, average precision ${metricText(trend.average_precision_equal_participant_weight)} vs no-skill ${metricText(tolifeTrendReport.no_skill_average_precision_reference_equal_participant_weight)}. It also failed; no alert is enabled.`:'Personalized trend comparison is not loaded. See Dataset plan for the evaluation details.')+associationSummary;
         document.querySelector('#study-model-version').textContent=pulmonaryReport?pulmonaryReport.dataset+' · '+pulmonaryReport.split:'TOLIFE · GROUPED EVALUATION';
       }else if(activeStudy==='aamos'){
         const result=aamosReport?.nested_model_selection?.metrics||{},operating=aamosReport?.nested_model_selection?.operating_point||{},counts=aamosReport?.counts||{};
@@ -1046,14 +1055,31 @@
         note.textContent=osasudReport?`${counts.source_participants} hospitalized stroke-unit participants; ${counts.windows} quality-valid 30-second windows. Best strict-PPG candidate: ${candidate?.[0]||'not available'}. Model choice on these same folds makes this signal optimistic. It detects annotated windows in hospital finger-PPG data; it is not sleep-apnea diagnosis or ring validation.`:'OSASUD results are not loaded. Run the documented grouped PPG event evaluation.';
         document.querySelector('#study-model-version').textContent='OSASUD · STRICT PPG-ONLY · OVERNIGHT EVENT WINDOWS';
       }else if(activeStudy==='ring'){
-        values[0].textContent='54';values[1].textContent='0';values[2].textContent='—';values[3].textContent='—';
-        labels[0].textContent='HEALTHRING PARTICIPANTS';labels[1].textContent='PULMONARY LABELS';labels[2].textContent='DISEASE MODEL';labels[3].textContent='RING PHYSIOLOGY ONLY';
-        note.textContent='This cohort can support ring-vital estimation and signal-quality work. It has no COPD, asthma, pneumonia, or exacerbation labels, so disease-classification metrics do not apply.';
-        document.querySelector('#study-model-version').textContent='HEALTHRING · 54 PEOPLE · PHYSIOLOGY REFERENCES';
+        const report=healthringReport,counts=report?.counts||{},nested=report?.nested_method_selection_results||{},results=report?.grouped_subject_held_out_results||{};
+        const ring1=nested.ring1_rr||{},ring2=nested.ring2_rr||{},spo2=results.ring2_spo2?.models||{},archive=report?.archive_extraction||{};
+        values[0].textContent=counts.participants?Number(counts.participants).toLocaleString():'—';
+        values[1].textContent=ring1.participant_macro_mae!=null?metricText(ring1.participant_macro_mae):'—';
+        values[2].textContent=ring2.participant_macro_mae!=null?metricText(ring2.participant_macro_mae):'—';
+        values[3].textContent=spo2.extra_trees?.participant_macro_mae!=null?metricText(spo2.extra_trees.participant_macro_mae):'—';
+        labels[0].textContent='RECOVERED PARTICIPANTS · PARTIAL SOURCE';labels[1].textContent='RING 1 · NESTED RR MAE · BREATHS/MIN';labels[2].textContent='RING 2 · NESTED RR MAE · BREATHS/MIN';labels[3].textContent='RING 2 · SpO₂ MAE · NON-NESTED';
+        note.textContent=report?`${Number(counts.windows||0).toLocaleString()} windows from ${Number(counts.participants||0)} recovered participants; participant-held-out, nested RR model selection. ${archive.source_integrity_note||'The archive is incomplete.'} HealthRing has no COPD, asthma, pneumonia or exacerbation labels. These vital-estimation results do not detect disease; SpO₂ was selected and scored in the same comparison and is not clinically validated.`:'HealthRing aggregate evaluation has not loaded. The recovered source is partial; no pulmonary diagnosis labels are available.';
+        document.querySelector('#study-model-version').textContent=report?`HEALTHRING · ${Number(counts.windows||0).toLocaleString()} WINDOWS · ${Number(counts.participants||0)} RECOVERED PARTICIPANTS`:'HEALTHRING · AGGREGATE REPORT NOT LOADED';
+      }else if(activeStudy==='bidmc'){
+        const report=bidmcReport,counts=report?.counts||{},nested=report?.results?.nested_model_selection||{},comparison=report?.results?.participant_held_out_model_comparison||{},transfer=report?.cross_device_healthring_transfer||{};
+        const best=Object.entries(comparison).filter(([key])=>['ridge','extra_trees','random_forest','hist_gradient_boosting'].includes(key)).sort((a,b)=>(a[1]?.participant_macro_mae_bpm??Infinity)-(b[1]?.participant_macro_mae_bpm??Infinity))[0];
+        values[0].textContent=counts.participants?Number(counts.participants).toLocaleString():'—';
+        values[1].textContent=nested.participant_macro_mae_bpm!=null?metricText(nested.participant_macro_mae_bpm):'—';
+        values[2].textContent=best?.[1]?.participant_macro_mae_bpm!=null?metricText(best[1].participant_macro_mae_bpm):'—';
+        values[3].textContent=transfer.performance?.participant_macro_mae_bpm!=null?metricText(transfer.performance.participant_macro_mae_bpm):'—';
+        labels[0].textContent='ICU RECORDINGS · PARTICIPANT GROUPS';labels[1].textContent='NESTED PPG RR MAE · BREATHS/MIN';labels[2].textContent=`BEST FIXED ${best?.[0]?.replaceAll('_',' ').toUpperCase()||'PPG MODEL'} · MAE`;labels[3].textContent='HEALTHRING TRANSFER · MAE';
+        const baseline=transfer.performance?.participant_mean_baseline?.participant_macro_mae_bpm;
+        const transferred=transfer.performance?.participant_macro_mae_bpm;
+        note.textContent=report?`${Number(counts.windows||0).toLocaleString()} 30-second windows from ${Number(counts.participants||0)} ICU recordings; RR targets use both manual breath readers. PPG-only nested participant-held-out evaluation. The source-domain-selected model ${transfer.status==='evaluated'?(transferred<=baseline?'did':'did not')+' improve on the HealthRing participant-mean baseline in the untouched cross-device check.':'could not be checked on HealthRing.'} PPG vital estimation only; no pulmonary disease diagnosis.`:'BIDMC aggregate evaluation has not loaded. This separate respiratory-rate experiment does not detect pulmonary disease.';
+        document.querySelector('#study-model-version').textContent=report?`BIDMC · ${Number(counts.participants||0)} ICU RECORDINGS · ${Number(counts.windows||0).toLocaleString()} WINDOWS`:'BIDMC · AGGREGATE REPORT NOT LOADED';
       }
     }
     async function loadPulmonaryMetrics(){
-      const [primary,ppg,aamos,osasud,trend]=await Promise.allSettled([fetchPulmonaryReport(),fetchCopdPpgReport(),fetchAamosReport(),fetchOsasudReport(),fetchTolifeTrendReport()]);
+      const [primary,ppg,aamos,osasud,trend,healthring,bidmc,tolifeAssoc]=await Promise.allSettled([fetchPulmonaryReport(),fetchCopdPpgReport(),fetchAamosReport(),fetchOsasudReport(),fetchTolifeTrendReport(),fetchHealthRingReport(),fetchBidmcReport(),fetchTolifeAssociationReport()]);
       if(primary.status==='fulfilled'){
         const report=pulmonaryReport=primary.value,counts=report.counts||{},models=report.models||{};
         const order=['logistic_regression','hist_gradient_boosting','random_forest'];
@@ -1078,6 +1104,22 @@
       if(aamos.status==='fulfilled')aamosReport=aamos.value;
       if(osasud.status==='fulfilled')osasudReport=osasud.value;
       if(trend.status==='fulfilled')tolifeTrendReport=trend.value;
+      if(healthring.status==='fulfilled'){
+        healthringReport=healthring.value;
+        const counts=healthringReport.counts||{};
+        document.querySelector('#healthring-study-count').textContent=`${Number(counts.participants||0)} recovered people · no disease labels`;
+        if(activeStudy==='ring'){
+          const track=trackDetails.ring;
+          track.kicker=`HEALTHRING · ${Number(counts.participants||0)} RECOVERED · PARTIAL ARCHIVE`;
+          document.querySelector('#study-detail-kicker').textContent=track.kicker;
+        }
+      }
+      if(bidmc.status==='fulfilled'){
+        bidmcReport=bidmc.value;
+        const counts=bidmcReport.counts||{};
+        document.querySelector('#bidmc-study-count').textContent=`${Number(counts.participants||0)} ICU records · PPG + manual breaths`;
+      }
+      if(tolifeAssoc.status==='fulfilled')tolifeAssociationReport=tolifeAssoc.value;
       renderStudyMetrics();
     }
     function setHeartRate(value){

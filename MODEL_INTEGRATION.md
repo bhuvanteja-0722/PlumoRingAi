@@ -10,12 +10,13 @@ There is no deployed pulmonary disease model, patient-facing score, or live ring
 4. **Apnea/hypopnea event windows:** OSASUD finger PPG and PPG-derived measures paired with physician-reviewed overnight PSG annotations. Its best strict-PPG exploratory baseline reached equal-participant ROC-AUC 0.780 and average precision 0.633 versus 0.313 prevalence on participant-held-out folds. The best of three models was selected on that same grouped comparison, so the result is optimistic and needs nested/external validation. It does not diagnose sleep apnea syndrome or validate PlumoRing hardware. Any expanded track with hospital ECG-derived heart rate or thoracic-impedance respiratory rate is explicitly not ring-only.
 5. **Ring physiology estimation:** HealthRing has real finger-ring PPG and motion with reference vitals, but no pulmonary disease labels. It can support sensor estimation, not disease classification.
 6. **Personalized COPD trend baseline:** a training-free 14-day per-person HR/RR/SpO₂ change score was separately evaluated on the sparse TOLIFE daily records. It had equal-participant ROC-AUC 0.444 and average precision 0.0064 versus a 0.0075 no-skill reference on only 1,015 days from 36 people, with just 3 people contributing positive days. It also failed and has no alert threshold.
+7. **BIDMC PPG respiratory rate:** 53 ICU recordings and 832 thirty-second PPG-only windows with two manual breath readers. Nested participant-held-out model selection achieved participant-macro MAE 1.77 breaths/min. This is a vital-estimation task, not a disease label or ring evaluation.
 
 The strongest external continuous-monitoring evidence located is a 2026 eMEUSE-SANTÉ study of 220 COPD patients monitored for six months, with 42 physician-validated exacerbations. The paper reports an AUC of 0.88 for its personalized HR/RR/SpO₂ score, but its underlying participant data are restricted due to re-identification risk and are available only through an approved research request. These published results are not PlumoRing results.
 
 No datasets are concatenated to manufacture a larger disease cohort. Lung-audio, radiology, hospital-code, and symptom-only datasets are not treated as ring PPG labels. The original 14-person COPD PPG study's Figshare matrix is excluded because it lacks participant IDs and its healthy-row count conflicts with the paper's participant table.
 
-The app exposes aggregate study evidence only. No model weights are saved or loaded, and no disease probability, alert, or disease-driven anatomy color is returned.
+The app exposes aggregate study evidence only. No model weights are saved or loaded, and no disease probability, alert, or disease-driven anatomy color is returned. The scripts compare research candidates and write aggregate metrics; they do not package fitted weights for patient-facing inference.
 
 ## Local app
 
@@ -32,6 +33,9 @@ Open http://127.0.0.1:5000. Flask binds to loopback.
 - `GET /api/pulmonary/aamos-metrics` serves aggregate AAMOS-00 asthma-worsening results.
 - `GET /api/pulmonary/osasud-metrics` serves aggregate OSASUD apnea/hypopnea event results.
 - `GET /api/pulmonary/tolife-trend-metrics` serves aggregate personalized-trend baseline results.
+- `GET /api/pulmonary/healthring-vitals-metrics` serves HealthRing RR/SpO₂ physiology estimates and partial-archive coverage.
+- `GET /api/pulmonary/bidmc-rr-metrics` serves PPG-only BIDMC respiratory-rate results and the separate cross-device HealthRing evaluation.
+- `GET /api/pulmonary/tolife-associations` serves aggregate pre-visit clinical-index association coverage.
 - Equivalent aggregate reports are served under `/models/` when available.
 - Legacy hospital replay and scoring endpoints return HTTP 410.
 
@@ -48,6 +52,9 @@ Download the public datasets into the ignored `data/` directory, install `requir
 | AAMOS-00 asthma worsening | `python scripts/evaluate_aamos_asthma_worsening.py` | `models/aamos_asthma_worsening_metrics.json` |
 | OSASUD PPG event windows | `python scripts/evaluate_osasud_ppg_events.py` | `models/osasud_ppg_event_metrics.json` |
 | TOLIFE personalized trend score | `python scripts/evaluate_tolife_personalized_trend.py` | `models/tolife_personalized_trend_metrics.json` |
+| HealthRing ring-vital estimation | `python scripts/evaluate_healthring_ring_vitals.py` | `models/healthring_ring_vitals_metrics.json` |
+| BIDMC PPG respiratory-rate and ring transfer | `python scripts/evaluate_bidmc_ppg_respiratory_rate.py` | `models/bidmc_ppg_respiratory_rate_metrics.json` |
+| TOLIFE clinical-index associations | `python scripts/analyze_tolife_clinical_associations.py` | `models/tolife_clinical_associations.json` |
 
 The AAMOS-00 archive is available from [Edinburgh DataShare](https://datashare.ed.ac.uk/items/8478e384-fd1b-4a37-9555-0c6e1218e90b), under CC BY 4.0. Its primary paper reports 22 adults and 2,054 patient-days. The evaluator uses only smartwatch HR/activity over the reported week, and holds out whole participants. Its target is retrospective self-reported steroid use above usual.
 

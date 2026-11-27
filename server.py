@@ -15,12 +15,18 @@ COPD_PPG_METRICS_PATH = ROOT / "models" / "copd_ppg_screening_metrics.json"
 AAMOS_METRICS_PATH = ROOT / "models" / "aamos_asthma_worsening_metrics.json"
 OSASUD_METRICS_PATH = ROOT / "models" / "osasud_ppg_event_metrics.json"
 TOLIFE_TREND_METRICS_PATH = ROOT / "models" / "tolife_personalized_trend_metrics.json"
+HEALTHRING_METRICS_PATH = ROOT / "models" / "healthring_ring_vitals_metrics.json"
+BIDMC_RR_METRICS_PATH = ROOT / "models" / "bidmc_ppg_respiratory_rate_metrics.json"
+TOLIFE_ASSOCIATION_PATH = ROOT / "models" / "tolife_clinical_associations.json"
 MODEL_REPORTS = {
     METRICS_PATH.name: METRICS_PATH,
     COPD_PPG_METRICS_PATH.name: COPD_PPG_METRICS_PATH,
     AAMOS_METRICS_PATH.name: AAMOS_METRICS_PATH,
     OSASUD_METRICS_PATH.name: OSASUD_METRICS_PATH,
     TOLIFE_TREND_METRICS_PATH.name: TOLIFE_TREND_METRICS_PATH,
+    HEALTHRING_METRICS_PATH.name: HEALTHRING_METRICS_PATH,
+    BIDMC_RR_METRICS_PATH.name: BIDMC_RR_METRICS_PATH,
+    TOLIFE_ASSOCIATION_PATH.name: TOLIFE_ASSOCIATION_PATH,
 }
 WEB_PAGES = {"favicon.svg", "responsive.css", "pages.css", "privacy.html", "settings.html", "404.html"}
 ASSET_ALLOWLIST = {"anatomical-heart.glb", "visible-human-lungs.glb"}
@@ -73,7 +79,7 @@ def health():
     return jsonify({
         "ready": False,
         "model_version": report.get("model_version", "pulmonary-evidence-pending"),
-        "task": "separate research-only COPD flare, asthma worsening, and overnight apnea/hypopnea event feasibility studies",
+        "task": "separate research-only pulmonary-event feasibility studies and PPG/ring vital-estimation benchmarks",
         "disease_diagnosis_supported": [],
         "candidate_meets_exploratory_gate": report.get("candidate_meets_exploratory_gate", False),
         "candidate_gate_scope": "TOLIFE COPD exacerbation forecasting only; this is not a diagnosis or an overall project readiness check.",
@@ -82,6 +88,8 @@ def health():
         "continuous_ring_stream": False,
         "notices": [
             "No pulmonary disease diagnosis or patient-facing risk score is available.",
+            "HealthRing provides partial-subset ring-vital estimation only; it has no pulmonary disease labels.",
+            "The BIDMC respiratory-rate model did not transfer to HealthRing better than a mean baseline.",
             "The public COPD cohort uses smartwatch, mattress, mobility and spirometer-related sensors, not this proposed ring.",
             "The current grouped evaluation did not beat the no-skill reference; do not use for medical decisions.",
             "The separate PPG experiment has six independent people and is not a validated COPD detector.",
@@ -143,6 +151,31 @@ def tolife_trend_metrics():
     except (OSError, ValueError):
         return jsonify({"error": "The TOLIFE personalized trend report is unavailable."}), 503
     return jsonify(report)
+
+
+def _serve_aggregate_report(path: Path, label: str):
+    if not path.is_file():
+        return jsonify({"error": f"The {label} aggregate report has not been generated yet."}), 503
+    try:
+        report = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return jsonify({"error": f"The {label} aggregate report is unavailable."}), 503
+    return jsonify(report)
+
+
+@app.get("/api/pulmonary/healthring-vitals-metrics")
+def healthring_vitals_metrics():
+    return _serve_aggregate_report(HEALTHRING_METRICS_PATH, "HealthRing vitals")
+
+
+@app.get("/api/pulmonary/bidmc-rr-metrics")
+def bidmc_rr_metrics():
+    return _serve_aggregate_report(BIDMC_RR_METRICS_PATH, "BIDMC respiratory-rate")
+
+
+@app.get("/api/pulmonary/tolife-associations")
+def tolife_associations():
+    return _serve_aggregate_report(TOLIFE_ASSOCIATION_PATH, "TOLIFE clinical-association")
 
 
 @app.get("/api/replay")

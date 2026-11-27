@@ -10,13 +10,16 @@ The app therefore reports evidence and model readiness, not a patient's diagnosi
 
 - **COPD flare forecasting:** TOLIFE provides clinical exacerbation records and daily indices from several devices. It is the largest relevant longitudinal cohort found, but it does not use the proposed ring and it covers flare forecasting among people already diagnosed with COPD, not COPD diagnosis.
 - **COPD classification from PPG:** a public PPG release contains six identified people (four with COPD and two controls). Three classical models are compared with every person held out in turn across six window-duration variants. The variants reuse the same six people, so this is a feasibility audit, not a dependable disease detector.
-- **Ring signal estimation:** HealthRing contains real ring PPG and motion with reference vital signs, but no pulmonary diagnosis labels. It can support future testing of vital-sign estimation, not disease classification.
+- **Ring signal estimation:** HealthRing contains real ring PPG and motion with reference vital signs, but no pulmonary diagnosis labels. A partial participant-held-out analysis yielded nested RR MAE of 2.99 breaths/min on Ring 1 and 3.48 on Ring 2. The downloaded archive is structurally incomplete despite matching the published checksum; only 29 participants and 3,497 windows were recovered.
+- **Respiratory-rate estimation:** a separate PPG-only model was evaluated on 53 BIDMC ICU recordings and 832 thirty-second windows using two manual breath readers. Nested participant-held-out participant-macro MAE was 1.77 breaths/min. A model trained on BIDMC did not transfer to HealthRing better than a mean baseline (3.79 vs 3.55 breaths/min), so no ring inference is enabled.
 - **Asthma worsening:** AAMOS-00 links weekly reports of increased systemic corticosteroid use with MiBand3 heart-rate/activity summaries. A nested participant-held-out evaluation was added; it is retrospective week-level classification and failed the sensitivity gate.
 - **Apnea/hypopnea events:** OSASUD contains finger PPG plus physician-reviewed overnight PSG event annotations. A strict PPG-only Extra Trees baseline reached equal-participant ROC-AUC 0.780 and average precision 0.633 versus 0.313 prevalence across participant-held-out folds. This is exploratory event-window screening in hospital monitoring data, not sleep-apnea diagnosis or PlumoRing validation; model selection on the same grouped comparison makes the result optimistic.
 - **Personalized COPD trend baseline:** a training-free 14-day per-person HR/RR/SpO₂ change score was compared on TOLIFE. It also fell below the no-skill reference on a sparse, reduced subset; no alert is enabled.
 - **Best external evidence located:** a 2026 study reports six-month wearable monitoring in 220 people with COPD and 42 physician-validated exacerbations, but its patient data are restricted. The published score is the study authors' result and has not been tested on PlumoRing or our data.
 
 These datasets are not merged. They differ in sensors, sampling, labels, and tasks. In particular, lung-sound recordings cannot stand in for ring PPG because the proposed ring has no microphone. The original 14-person study's Figshare feature matrix is excluded from grouped validation because it omits participant IDs and its healthy-row total conflicts with its participant table. Its random epoch split does not establish generalization to new people.
+
+TOLIFE's separate clinical-index association audit used 374 visits from 86 people but found too few repeated measurements for every sensor/outcome pair to report a stable within-person association. See [Dataset plan](DATASET_PLAN.md) for measured results, target requirements, and reproduction commands.
 
 The COPD PPG grouped experiment failed: each of the three candidates scored participant-level ROC-AUC 0.000, and the logistic average precision was 0.525 against a 0.667 prevalence baseline. This is a negative feasibility result; the app exposes no COPD prediction.
 
@@ -63,6 +66,16 @@ Obtain the TOLIFE v2.0 index archive from the [official Zenodo record](https://z
     python scripts/evaluate_pulmonary_study.py
 
 The script compares three classical baselines with participant-level folds and writes aggregate metrics only to models/pulmonary_feasibility_metrics.json. It does not train or save a deployment model. See [Dataset plan](DATASET_PLAN.md) and [Model integration](MODEL_INTEGRATION.md) for details.
+
+Separate physiology and association tracks use their own public files:
+
+| Track | Required local archive | Command | Aggregate report |
+| --- | --- | --- | --- |
+| HealthRing ring RR/SpO₂ estimation | `data/healthring/RingDatasetV2.1_submission.zip` (repaired local copy may be required) | `python scripts/evaluate_healthring_ring_vitals.py` | `models/healthring_ring_vitals_metrics.json` |
+| BIDMC PPG-only RR and HealthRing transfer | `data/bidmc/bidmc.zip` | `python scripts/evaluate_bidmc_ppg_respiratory_rate.py` | `models/bidmc_ppg_respiratory_rate_metrics.json` |
+| TOLIFE pre-visit clinical associations | `data/tolife/index.zip` | `python scripts/analyze_tolife_clinical_associations.py` | `models/tolife_clinical_associations.json` |
+
+These are research comparisons; the physiology models are not exposed as live inference and do not identify disease.
 
 For the separate COPD-vs-control PPG feasibility track, download the six duration archives from the [official Zenodo record](https://zenodo.org/records/18109876) into `data/copd_ppg_zenodo/`, then run:
 

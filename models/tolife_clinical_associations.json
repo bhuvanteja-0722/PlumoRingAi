@@ -1,0 +1,383 @@
+{
+  "model_version": "tolife-nonring-clinical-association-0.1",
+  "dataset": "TOLIFE Clinical Study A v2.0",
+  "dataset_doi": "10.5281/zenodo.23263785",
+  "license": "CC BY 4.0",
+  "role": "Non-ring clinical association audit only; never used to train or infer a PlumoRing result.",
+  "input_device_families": {
+    "BRI": "bed/mattress breathing-rate index",
+    "SHRI": "sleep heart-rate index",
+    "PRVI": "smartwatch PPG-derived pulse-rate variability",
+    "MI": "mobility index from the study's heterogeneous devices"
+  },
+  "excluded_sensor_families": [
+    "PEI spirometry measurements, to avoid using lung-function measurements as predictors of lung-function outcomes",
+    "Daily model-estimated CAT, CCQ, and mMRC scores",
+    "Same-day and future sensor readings",
+    "Questionnaire-derived daily estimates and exacerbation labels"
+  ],
+  "method": "For each clinical visit, average valid sensor indices over the seven complete UTC days before the visit (visit date excluded), requiring at least three valid days. For each sensor-outcome pair, compute a Spearman association within each participant with at least three informative clinical visits; summarize participant correlations by their median and a participant bootstrap interval.",
+  "coverage": {
+    "clinic_visits_with_sensor_directory": 374,
+    "participants": 86,
+    "lookback_days": 7,
+    "minimum_valid_sensor_days": 3,
+    "same_day_readings_used": false,
+    "future_readings_used": false,
+    "model_estimated_CAT_CCQ_mMRC_used_as_target_or_input": false,
+    "clinical_targets": {
+      "FEV1_pred (%)": {
+        "description": "lung function, percent predicted",
+        "visits_with_clinical_measure": 203,
+        "participants_with_clinical_measure": 85
+      },
+      "Lung Ratio": {
+        "description": "spirometric FEV1/FVC ratio",
+        "visits_with_clinical_measure": 203,
+        "participants_with_clinical_measure": 85
+      },
+      "Six-Minute Walk Distance (m)": {
+        "description": "functional exercise capacity",
+        "visits_with_clinical_measure": 189,
+        "participants_with_clinical_measure": 85
+      },
+      "CAT Score": {
+        "description": "clinician-visit COPD symptom score",
+        "visits_with_clinical_measure": 331,
+        "participants_with_clinical_measure": 86
+      },
+      "mMRC Score": {
+        "description": "clinician-visit dyspnea grade",
+        "visits_with_clinical_measure": 333,
+        "participants_with_clinical_measure": 86
+      },
+      "CCQ Total Score": {
+        "description": "clinician-visit COPD health-status score",
+        "visits_with_clinical_measure": 330,
+        "participants_with_clinical_measure": 86
+      }
+    }
+  },
+  "within_participant_associations": {
+    "FEV1_pred (%)": {
+      "BRI.rf_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 1,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "BRI.rf_std": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 1,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "SHRI.hr_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 1,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "PRVI.mean_HR": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 5,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "PRVI.std_RR": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 5,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "PRVI.RMSSD": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 5,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "MI.gs_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 9,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "MI.smwd_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 9,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "MI.walked_time": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 9,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "MI.walked_dist": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 9,
+        "participants_with_three_or_more_informative_visits": 0
+      }
+    },
+    "Lung Ratio": {
+      "BRI.rf_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 1,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "BRI.rf_std": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 1,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "SHRI.hr_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 1,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "PRVI.mean_HR": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 5,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "PRVI.std_RR": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 5,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "PRVI.RMSSD": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 5,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "MI.gs_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 9,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "MI.smwd_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 9,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "MI.walked_time": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 9,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "MI.walked_dist": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 9,
+        "participants_with_three_or_more_informative_visits": 0
+      }
+    },
+    "Six-Minute Walk Distance (m)": {
+      "BRI.rf_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 1,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "BRI.rf_std": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 1,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "SHRI.hr_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 1,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "PRVI.mean_HR": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 5,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "PRVI.std_RR": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 5,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "PRVI.RMSSD": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 5,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "MI.gs_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 9,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "MI.smwd_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 9,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "MI.walked_time": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 9,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "MI.walked_dist": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 9,
+        "participants_with_three_or_more_informative_visits": 0
+      }
+    },
+    "CAT Score": {
+      "BRI.rf_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 6,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "BRI.rf_std": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 6,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "SHRI.hr_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 8,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "PRVI.mean_HR": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 13,
+        "participants_with_three_or_more_informative_visits": 1
+      },
+      "PRVI.std_RR": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 13,
+        "participants_with_three_or_more_informative_visits": 1
+      },
+      "PRVI.RMSSD": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 13,
+        "participants_with_three_or_more_informative_visits": 1
+      },
+      "MI.gs_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 27,
+        "participants_with_three_or_more_informative_visits": 3
+      },
+      "MI.smwd_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 27,
+        "participants_with_three_or_more_informative_visits": 3
+      },
+      "MI.walked_time": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 27,
+        "participants_with_three_or_more_informative_visits": 3
+      },
+      "MI.walked_dist": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 27,
+        "participants_with_three_or_more_informative_visits": 3
+      }
+    },
+    "mMRC Score": {
+      "BRI.rf_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 6,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "BRI.rf_std": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 6,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "SHRI.hr_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 8,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "PRVI.mean_HR": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 13,
+        "participants_with_three_or_more_informative_visits": 1
+      },
+      "PRVI.std_RR": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 13,
+        "participants_with_three_or_more_informative_visits": 1
+      },
+      "PRVI.RMSSD": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 13,
+        "participants_with_three_or_more_informative_visits": 1
+      },
+      "MI.gs_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 27,
+        "participants_with_three_or_more_informative_visits": 2
+      },
+      "MI.smwd_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 27,
+        "participants_with_three_or_more_informative_visits": 2
+      },
+      "MI.walked_time": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 27,
+        "participants_with_three_or_more_informative_visits": 2
+      },
+      "MI.walked_dist": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 27,
+        "participants_with_three_or_more_informative_visits": 2
+      }
+    },
+    "CCQ Total Score": {
+      "BRI.rf_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 6,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "BRI.rf_std": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 6,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "SHRI.hr_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 8,
+        "participants_with_three_or_more_informative_visits": 0
+      },
+      "PRVI.mean_HR": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 13,
+        "participants_with_three_or_more_informative_visits": 1
+      },
+      "PRVI.std_RR": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 13,
+        "participants_with_three_or_more_informative_visits": 1
+      },
+      "PRVI.RMSSD": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 13,
+        "participants_with_three_or_more_informative_visits": 1
+      },
+      "MI.gs_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 27,
+        "participants_with_three_or_more_informative_visits": 3
+      },
+      "MI.smwd_mean": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 27,
+        "participants_with_three_or_more_informative_visits": 3
+      },
+      "MI.walked_time": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 27,
+        "participants_with_three_or_more_informative_visits": 3
+      },
+      "MI.walked_dist": {
+        "status": "too_few_repeated_participants",
+        "matched_visits": 27,
+        "participants_with_three_or_more_informative_visits": 3
+      }
+    }
+  },
+  "limitations": [
+    "The cohort has established COPD; these associations do not diagnose COPD or predict exacerbations.",
+    "All sensor families are non-ring and heterogeneous; results cannot validate or be transferred directly to PlumoRing.",
+    "Participants with fewer than three informative visits do not contribute to within-person correlations.",
+    "Bootstrap intervals are descriptive and do not adjust for multiple comparisons.",
+    "This does not establish causality or clinical utility."
+  ],
+  "reproduction": "python scripts/analyze_tolife_clinical_associations.py"
+}

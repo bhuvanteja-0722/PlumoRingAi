@@ -1,0 +1,369 @@
+{
+  "model_version": "plumoring-bidmc-ppg-rr-0.1",
+  "dataset": "BIDMC PPG and Respiration Dataset 1.0.0",
+  "dataset_doi": "10.13026/C2208R",
+  "source": "https://physionet.org/content/bidmc/1.0.0/",
+  "license": "Open Data Commons Attribution License v1.0",
+  "task": "Estimate local respiratory rate in 30-second PPG windows from manual breath annotations.",
+  "predictor_policy": "Only the 125 Hz PLETH pulse-oximeter waveform and transforms of that waveform are model inputs. No RESP waveform, ECG, monitor numerics, SpO2, participant metadata, or labels are predictors.",
+  "target_policy": "Mean of two independent manual breath annotation rates per 30-second window; annotation times are in signal-sample coordinates at 125 Hz.",
+  "counts": {
+    "recordings_loaded": 53,
+    "recordings_skipped": 0,
+    "participants": 53,
+    "windows": 832,
+    "window_seconds": 30,
+    "window_step_seconds": 30,
+    "manual_annotation_windows_with_both_readers": 832,
+    "annotator_mean_absolute_difference_bpm": 0.3251512230365104,
+    "annotator_pearson_r": 0.9454051406757137,
+    "target_rr_range_bpm": [
+      6.241953949174317,
+      27.027027027027028
+    ],
+    "target_rr_median_bpm": 17.78398825408992
+  },
+  "results": {
+    "validation": "Nested five-fold GroupKFold by participant; all windows from a patient stay together. Inner three-fold grouped evaluation selects model family, and outer participants are scored once.",
+    "input_features": [
+      "ppg_std",
+      "ppg_range",
+      "ppg_mad",
+      "ppg_line_length",
+      "ppg_baseline_peak_rate",
+      "ppg_baseline_peak_fraction",
+      "ppg_baseline_band_power",
+      "ppg_baseline_entropy",
+      "ppg_baseline_low_fraction",
+      "ppg_baseline_mid_fraction",
+      "ppg_baseline_high_fraction",
+      "ppg_pulse_ac_rms",
+      "ppg_envelope_peak_rate",
+      "ppg_envelope_peak_fraction",
+      "ppg_envelope_band_power",
+      "ppg_envelope_entropy",
+      "ppg_envelope_low_fraction",
+      "ppg_envelope_mid_fraction",
+      "ppg_envelope_high_fraction",
+      "ppg_amplitude_mod_peak_rate",
+      "ppg_amplitude_mod_peak_fraction",
+      "ppg_amplitude_mod_band_power",
+      "ppg_amplitude_mod_entropy",
+      "ppg_amplitude_mod_low_fraction",
+      "ppg_amplitude_mod_mid_fraction",
+      "ppg_amplitude_mod_high_fraction",
+      "ppg_interval_mod_peak_rate",
+      "ppg_interval_mod_peak_fraction",
+      "ppg_interval_mod_band_power",
+      "ppg_interval_mod_entropy",
+      "ppg_interval_mod_low_fraction",
+      "ppg_interval_mod_mid_fraction",
+      "ppg_interval_mod_high_fraction",
+      "pulse_rate_mean",
+      "pulse_rate_std",
+      "pulse_amp_cv",
+      "pulse_count"
+    ],
+    "participant_held_out_model_comparison": {
+      "participant_mean": {
+        "windows": 832,
+        "participants": 53,
+        "mae_bpm": 2.172173079329343,
+        "participant_macro_mae_bpm": 2.3138142409249287,
+        "participant_macro_mae_95_ci_bpm": [
+          1.8438182146592843,
+          2.8550407425529714
+        ],
+        "rmse_bpm": 2.816606647021673,
+        "bias_bpm": 0.00020609027333968915,
+        "r2": -0.00918834047005257,
+        "pearson_r": -0.12442392305440342,
+        "spearman_r": -0.14907703193407193
+      },
+      "ridge": {
+        "windows": 832,
+        "participants": 53,
+        "mae_bpm": 2.1662217926887504,
+        "participant_macro_mae_bpm": 2.299435828209969,
+        "participant_macro_mae_95_ci_bpm": [
+          1.857850866342238,
+          2.8205665600307865
+        ],
+        "rmse_bpm": 2.8987924789168007,
+        "bias_bpm": 0.21654214619162618,
+        "r2": -0.06894183984133995,
+        "pearson_r": 0.21122450735466608,
+        "spearman_r": 0.21340063087617872
+      },
+      "extra_trees": {
+        "windows": 832,
+        "participants": 53,
+        "mae_bpm": 1.7323472803547593,
+        "participant_macro_mae_bpm": 1.8778727144245275,
+        "participant_macro_mae_95_ci_bpm": [
+          1.4266454058755298,
+          2.4346205911865066
+        ],
+        "rmse_bpm": 2.55459238191009,
+        "bias_bpm": 0.019975354840537543,
+        "r2": 0.16983761764889738,
+        "pearson_r": 0.41383927874141624,
+        "spearman_r": 0.4924022184611264
+      },
+      "random_forest": {
+        "windows": 832,
+        "participants": 53,
+        "mae_bpm": 1.6232534735629909,
+        "participant_macro_mae_bpm": 1.7722492854381944,
+        "participant_macro_mae_95_ci_bpm": [
+          1.3226636945803423,
+          2.323527366827329
+        ],
+        "rmse_bpm": 2.4921304978588887,
+        "bias_bpm": 0.02063666850919999,
+        "r2": 0.2099376166937139,
+        "pearson_r": 0.46780508023072287,
+        "spearman_r": 0.5338712734833247
+      },
+      "hist_gradient_boosting": {
+        "windows": 832,
+        "participants": 53,
+        "mae_bpm": 1.752230128582707,
+        "participant_macro_mae_bpm": 1.891401269127834,
+        "participant_macro_mae_95_ci_bpm": [
+          1.4489402020781057,
+          2.433788661546849
+        ],
+        "rmse_bpm": 2.6078955997849036,
+        "bias_bpm": 0.029057227727663008,
+        "r2": 0.13483243838366932,
+        "pearson_r": 0.41028580108435886,
+        "spearman_r": 0.4624540319385666
+      },
+      "raw_baseline_spectral_peak": {
+        "windows": 832,
+        "participants": 53,
+        "mae_bpm": 3.6006278456192105,
+        "participant_macro_mae_bpm": 3.5562838009370594,
+        "participant_macro_mae_95_ci_bpm": [
+          2.6982768657545693,
+          4.437982531427953
+        ],
+        "rmse_bpm": 6.424422807944559,
+        "bias_bpm": -0.7238876666180782,
+        "r2": -4.250347578509206,
+        "pearson_r": 0.283940865246211,
+        "spearman_r": 0.45306671170906615
+      },
+      "pulse_envelope_modulation_peak": {
+        "windows": 832,
+        "participants": 53,
+        "mae_bpm": 8.175788774985316,
+        "participant_macro_mae_bpm": 8.057372595035694,
+        "participant_macro_mae_95_ci_bpm": [
+          7.308568653988127,
+          8.854144381807945
+        ],
+        "rmse_bpm": 9.602413250301465,
+        "bias_bpm": -5.845118745719641,
+        "r2": -10.729529972008569,
+        "pearson_r": -0.009982759848141488,
+        "spearman_r": -0.08873896911608509
+      },
+      "pulse_amplitude_modulation_peak": {
+        "windows": 832,
+        "participants": 53,
+        "mae_bpm": 7.3634230941993195,
+        "participant_macro_mae_bpm": 7.259560259145134,
+        "participant_macro_mae_95_ci_bpm": [
+          6.450999525969764,
+          8.108041868117642
+        ],
+        "rmse_bpm": 8.965175658026038,
+        "bias_bpm": -5.856386774565795,
+        "r2": -9.224390570775727,
+        "pearson_r": -0.020332721908449876,
+        "spearman_r": -0.07423290391140336
+      },
+      "pulse_interval_modulation_peak": {
+        "windows": 832,
+        "participants": 53,
+        "mae_bpm": 5.764939934168031,
+        "participant_macro_mae_bpm": 5.704639226909595,
+        "participant_macro_mae_95_ci_bpm": [
+          4.961210619398602,
+          6.438432715132152
+        ],
+        "rmse_bpm": 7.60153420566156,
+        "bias_bpm": -2.59823623370041,
+        "r2": -6.350592257280853,
+        "pearson_r": 0.1161218857185896,
+        "spearman_r": 0.09860324922130413
+      },
+      "best_individual_spectral_peak": {
+        "windows": 832,
+        "participants": 53,
+        "mae_bpm": 5.387875981925121,
+        "participant_macro_mae_bpm": 5.309872094963379,
+        "participant_macro_mae_95_ci_bpm": [
+          4.625797856842379,
+          6.014056121792301
+        ],
+        "rmse_bpm": 6.821558708865536,
+        "bias_bpm": -4.178515657340735,
+        "r2": -4.919527833658968,
+        "pearson_r": 0.08770581511509216,
+        "spearman_r": 0.03761727323177066
+      }
+    },
+    "nested_model_selection": {
+      "windows": 832,
+      "participants": 53,
+      "mae_bpm": 1.623253473562991,
+      "participant_macro_mae_bpm": 1.7722492854381948,
+      "participant_macro_mae_95_ci_bpm": [
+        1.3226636945803427,
+        2.323527366827329
+      ],
+      "rmse_bpm": 2.492130497858888,
+      "bias_bpm": 0.02063666850920006,
+      "r2": 0.20993761669371425,
+      "pearson_r": 0.467805080230723,
+      "spearman_r": 0.5338712734833247,
+      "selected_models_by_outer_fold": [
+        {
+          "outer_fold": 1,
+          "selected_model_inside_training_participants": "random_forest",
+          "inner_grouped_macro_mae": {
+            "ridge": 1.9737343929136015,
+            "extra_trees": 1.7776158377262359,
+            "random_forest": 1.6209862449678938,
+            "hist_gradient_boosting": 1.7777324239537797
+          },
+          "held_out_participants": 11,
+          "held_out_windows": 175
+        },
+        {
+          "outer_fold": 2,
+          "selected_model_inside_training_participants": "random_forest",
+          "inner_grouped_macro_mae": {
+            "ridge": 2.412395365876706,
+            "extra_trees": 2.0685788602820856,
+            "random_forest": 1.939298920660046,
+            "hist_gradient_boosting": 2.1679055042070265
+          },
+          "held_out_participants": 11,
+          "held_out_windows": 174
+        },
+        {
+          "outer_fold": 3,
+          "selected_model_inside_training_participants": "random_forest",
+          "inner_grouped_macro_mae": {
+            "ridge": 2.201668391182165,
+            "extra_trees": 1.852601275099999,
+            "random_forest": 1.6323653783252603,
+            "hist_gradient_boosting": 1.8619798761413986
+          },
+          "held_out_participants": 11,
+          "held_out_windows": 163
+        },
+        {
+          "outer_fold": 4,
+          "selected_model_inside_training_participants": "random_forest",
+          "inner_grouped_macro_mae": {
+            "ridge": 2.4545998349512486,
+            "extra_trees": 2.2130192656224903,
+            "random_forest": 2.074342591218321,
+            "hist_gradient_boosting": 2.2525146640418856
+          },
+          "held_out_participants": 10,
+          "held_out_windows": 160
+        },
+        {
+          "outer_fold": 5,
+          "selected_model_inside_training_participants": "random_forest",
+          "inner_grouped_macro_mae": {
+            "ridge": 2.3112607637492912,
+            "extra_trees": 2.0637134620368216,
+            "random_forest": 1.9888508762875168,
+            "hist_gradient_boosting": 2.2001396464773384
+          },
+          "held_out_participants": 10,
+          "held_out_windows": 160
+        }
+      ]
+    },
+    "limitations": [
+      "BIDMC is 53 short recordings from critically ill hospital patients, not a ring cohort and not a pulmonary diagnosis study.",
+      "The target is derived from two manual breath annotations made from impedance respiration; impedance is not a model input.",
+      "Thirty-second local breathing-rate estimates are noisy and annotation agreement limits the achievable precision.",
+      "A PPG pulse-oximeter experiment does not establish performance on the proposed finger ring or on community patients.",
+      "This estimates respiratory rate; it does not classify COPD, asthma, pneumonia, infection, or exacerbation."
+    ]
+  },
+  "cross_device_healthring_transfer": {
+    "status": "evaluated",
+    "train_dataset": "BIDMC PPG / ICU patients",
+    "external_test_dataset": "HealthRing Ring 1 infrared PPG / healthy-volunteer reference RR",
+    "train_participants": 53,
+    "train_windows": 832,
+    "shared_ppg_features": [
+      "ppg_range",
+      "ppg_mad",
+      "ppg_pulse_ac_rms",
+      "ppg_baseline_peak_rate",
+      "ppg_baseline_peak_fraction",
+      "ppg_baseline_entropy",
+      "ppg_baseline_low_fraction",
+      "ppg_baseline_mid_fraction",
+      "ppg_baseline_high_fraction"
+    ],
+    "source_domain_model_selection_macro_mae_bpm": {
+      "ridge": 2.219758802697624,
+      "extra_trees": 1.7883097468523466,
+      "random_forest": 1.676630916864285,
+      "hist_gradient_boosting": 1.8267609316374802
+    },
+    "test_participants": 27,
+    "test_windows": 1752,
+    "input_policy": "Source-domain model trained only on PPG waveform morphology/spectral features; no impedance, ECG, monitor numerics, or ring reference signals used as predictors. The Ring 1 cohort is an untouched external domain test.",
+    "performance": {
+      "windows": 1752,
+      "participants": 27,
+      "mae_bpm": 3.7385522332575025,
+      "participant_macro_mae_bpm": 3.786080430751332,
+      "participant_macro_mae_95_ci_bpm": [
+        3.3106295690782046,
+        4.292566183141604
+      ],
+      "rmse_bpm": 4.846486744920589,
+      "bias_bpm": 0.3204268414291708,
+      "r2": -0.12933366641846433,
+      "pearson_r": -0.0029959332805565564,
+      "spearman_r": -0.00721274019571673,
+      "source_selected_model": "random_forest",
+      "participant_mean_baseline": {
+        "windows": 1752,
+        "participants": 27,
+        "mae_bpm": 3.5606094988255372,
+        "participant_macro_mae_bpm": 3.5499202149170337,
+        "participant_macro_mae_95_ci_bpm": [
+          3.071840209739547,
+          4.043579629097464
+        ],
+        "rmse_bpm": 4.57169043618481,
+        "bias_bpm": 0.31916219383115285,
+        "r2": -0.004897687821127095,
+        "pearson_r": null,
+        "spearman_r": null
+      }
+    },
+    "limitations": [
+      "This is a cross-device and cross-population transfer test, not disease detection or ring hardware validation.",
+      "BIDMC pulse-oximeter PPG and custom HealthRing infrared PPG have different sensors, study protocols, and populations.",
+      "The HealthRing data source is locally recovered and partial; its official archive lacks a usable ZIP directory."
+    ]
+  },
+  "deployment_status": "research_only_no_disease_classifier",
+  "reproduction": "python scripts/evaluate_bidmc_ppg_respiratory_rate.py"
+}
