@@ -135,8 +135,8 @@ def _validated_inputs(payload: dict[str, Any]) -> tuple[np.ndarray, str, np.ndar
     return normalized[np.newaxis, ...], mode, values
 
 
-def _rule_hypothesis(values: np.ndarray, model_index: int) -> dict[str, Any]:
-    """Expose the supplied app's heuristic label as a separate, non-probabilistic demo."""
+def _rule_hypothesis(values: np.ndarray) -> dict[str, Any]:
+    """Map readings to an explicitly unvalidated, non-probabilistic demo pattern."""
     hr, spo2, rr, wheeze, temp, imu, eda, pm25 = (float(value) for value in values)
     observations = []
     if spo2 < 95:
@@ -156,13 +156,11 @@ def _rule_hypothesis(values: np.ndarray, model_index: int) -> dict[str, Any]:
     if pm25 >= 50:
         observations.append(f"context PM2.5 input {pm25:.0f} µg/m³")
 
-    moving = abs(imu) >= 1.0
-    still = abs(imu) < 0.6
     label = "No supplied rule pattern triggered"
     detail = "This does not rule out a pulmonary condition."
 
-    # These branches mirror the rule concepts in the supplied app.py, without
-    # importing its medication, diet, severity, or care-advice content.
+    # These hand-written branches are separate from Model 1's learned state
+    # classes. They are demonstrations only, not validated disease criteria.
     if abs(imu) > 2.2:
         label = "High-motion snapshot · pulmonary pattern withheld"
         detail = (
@@ -170,46 +168,40 @@ def _rule_hypothesis(values: np.ndarray, model_index: int) -> dict[str, Any]:
             "pulmonary pattern because movement can dominate a spot snapshot; this is not a "
             "validated signal-quality assessment."
         )
-    elif (
-        model_index == 4 and abs(imu) > 1.5 and wheeze < 1.5 and temp < 0.3
-    ):
-        label = "Possible sensor-contact artifact pattern"
-        detail = "The supplied rules classify this combination as a possible reading-quality issue."
-    elif temp >= 1.2 or (model_index == 3 and temp >= 0.8):
-        if wheeze >= 3.5 or rr >= 22 or spo2 < 93:
-            label = "Pneumonia / infection pattern · rule output"
-            detail = "Pneumonia is a label in the supplied rules; these inputs cannot establish an infection."
-        else:
-            label = "Bronchitis pattern · rule output"
-            detail = "Bronchitis is a label in the supplied rules; these inputs cannot establish that condition."
-    elif (wheeze >= 4.0 and spo2 < 94) or (
-        model_index == 2 and still and (wheeze >= 3.0 or spo2 < 93)
-    ):
+    elif temp >= 1.2 and (wheeze >= 3.5 or rr >= 22 or spo2 < 93):
+        label = "Possible respiratory-infection pattern · demo rules"
+        detail = (
+            "Several readings cross the supplied demo thresholds. Skin-temperature change and "
+            "these sensor values cannot confirm pneumonia, bronchitis, or another infection."
+        )
+    elif wheeze >= 4.0 and spo2 < 94:
         if pm25 >= 80:
-            label = "Asthma + pollution pattern · rule output"
-            detail = "This is a supplied-rule hypothesis, not an asthma diagnosis."
+            label = "Airway-symptom pattern · high PM2.5 context"
+            detail = "The readings overlap with an airway-irritation pattern; PM2.5 is context, not a ring measurement."
         elif spo2 < 91 and rr >= 22 and wheeze < 5.0:
-            label = "Possible COPD-flare pattern"
-            detail = "The supplied-rule output assumes no known-condition history was provided."
+            label = "Possible COPD-like breathing pattern · demo rules"
+            detail = "These inputs cannot distinguish COPD from asthma or other causes of low oxygen and wheeze."
         else:
-            label = "Asthma / bronchospasm pattern · rule output"
-            detail = "This is a supplied-rule hypothesis, not an asthma diagnosis."
-    elif moving or (model_index == 1 and abs(imu) >= 0.6):
-        if wheeze >= 3.5 or spo2 < 91:
-            label = "Exercise-induced airway pattern · rule output"
-            detail = "Exercise-induced bronchoconstriction is a supplied-rule label, not a confirmed condition."
-        else:
-            label = "Activity / exertion pattern"
-            detail = "An activity label is not a pulmonary disease result."
-    elif spo2 < 95 or wheeze >= 3.5 or rr > 24:
-        label = "Respiratory-signal deviation · cause not identified"
-        detail = "The supplied rules flag a reading pattern but do not identify a specific disease."
+            label = "Possible asthma-like wheeze pattern · demo rules"
+            detail = "This is a hand-written pattern label, not an asthma diagnosis; COPD and other causes can overlap."
+    elif spo2 < 92 and rr >= 22:
+        label = "Low-oxygen + rapid-breathing pattern · cause unclear"
+        detail = "This flags a reading combination only; the readings do not identify a pulmonary disease."
+    elif wheeze >= 3.5:
+        label = "Wheeze pattern · cause unclear"
+        detail = "Wheeze is a companion input, not a ring sensor, and does not identify its cause."
+    elif temp >= 1.2:
+        label = "Elevated skin-temperature pattern · cause unclear"
+        detail = "A skin-temperature delta is not a core-temperature measurement and cannot establish fever or infection."
+    elif rr > 24:
+        label = "Rapid-breathing pattern · cause unclear"
+        detail = "This reading alone does not identify a pulmonary disease."
 
     return {
         "label": label,
         "detail": detail,
         "observations": observations or ["No supplied-rule threshold crossed"],
-        "source": "Unvalidated threshold rules adapted from the supplied app.py",
+        "source": "Unvalidated hand-written demo thresholds, independent of Model 1",
         "probability": None,
         "is_diagnosis": False,
     }
@@ -237,7 +229,7 @@ def predict_state(payload: dict[str, Any]) -> dict[str, Any]:
         "top_class_label": MODEL_LABELS[top_index],
         "top_class_raw_score": round(float(scores[top_index]), 6),
         "scores_are_calibrated_probabilities": False,
-        "rule_hypothesis": _rule_hypothesis(raw_values[-1], top_index),
+        "rule_hypothesis": _rule_hypothesis(raw_values[-1]),
         "class_scores": [
             {"index": index, "label": label, "raw_score": round(float(scores[index]), 6)}
             for index, label in enumerate(MODEL_LABELS)
