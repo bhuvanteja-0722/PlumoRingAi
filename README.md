@@ -6,12 +6,13 @@ PlumoRing AI combines an interactive smart-ring concept with a pulmonary-sensing
 
 The intended research question is whether ring-compatible readings can identify or monitor pulmonary disease. **There is no validated ring-based pulmonary disease model in this repository.** The available public datasets do not provide enough matched ring signals and pulmonary labels to support that claim.
 
-The app therefore reports evidence and model readiness, not a patient's diagnosis or disease score. It keeps three different research questions separate:
+The app keeps our public-dataset research tracks and the supplied neural network side by side. Our track reports evidence and readiness; the supplied network can produce an experimental five-class telemetry-state output. Neither is a validated pulmonary disease diagnosis.
 
 - **COPD flare forecasting:** TOLIFE provides clinical exacerbation records and daily indices from several devices. It is the largest relevant longitudinal cohort found, but it does not use the proposed ring and it covers flare forecasting among people already diagnosed with COPD, not COPD diagnosis.
 - **COPD classification from PPG:** a public PPG release contains six identified people (four with COPD and two controls). Three classical models are compared with every person held out in turn across six window-duration variants. The variants reuse the same six people, so this is a feasibility audit, not a dependable disease detector.
 - **Ring signal estimation:** HealthRing contains real ring PPG and motion with reference vital signs, but no pulmonary diagnosis labels. A partial participant-held-out analysis yielded nested RR MAE of 2.99 breaths/min on Ring 1 and 3.48 on Ring 2. The downloaded archive is structurally incomplete despite matching the published checksum; only 29 participants and 3,497 windows were recovered.
 - **Respiratory-rate estimation:** a separate PPG-only model was evaluated on 53 BIDMC ICU recordings and 832 thirty-second windows using two manual breath readers. Nested participant-held-out participant-macro MAE was 1.77 breaths/min. A model trained on BIDMC did not transfer to HealthRing better than a mean baseline (3.79 vs 3.55 breaths/min), so no ring inference is enabled.
+- **Supplied five-class telemetry network:** the provided 4.7 MB Keras model is included and can be run from the analysis panel. It accepts eight readings over 16 steps and returns the five class scores in the supplied app's label order. The friend bundle did not include its training dataset, split, or validation report. A single-reading demo repeats one snapshot over all 16 steps to match the supplied adapter; this is a shape-compatible preview, not continuous monitoring. Its class scores are uncalibrated and do not mean disease probabilities.
 - **Asthma worsening:** AAMOS-00 links weekly reports of increased systemic corticosteroid use with MiBand3 heart-rate/activity summaries. A nested participant-held-out evaluation was added; it is retrospective week-level classification and failed the sensitivity gate.
 - **Apnea/hypopnea events:** OSASUD contains finger PPG plus physician-reviewed overnight PSG event annotations. A strict PPG-only Extra Trees baseline reached equal-participant ROC-AUC 0.780 and average precision 0.633 versus 0.313 prevalence across participant-held-out folds. This is exploratory event-window screening in hospital monitoring data, not sleep-apnea diagnosis or PlumoRing validation; model selection on the same grouped comparison makes the result optimistic.
 - **Personalized COPD trend baseline:** a training-free 14-day per-person HR/RR/SpO₂ change score was compared on TOLIFE. It also fell below the no-skill reference on a sparse, reduced subset; no alert is enabled.
@@ -75,7 +76,7 @@ Separate physiology and association tracks use their own public files:
 | BIDMC PPG-only RR and HealthRing transfer | `data/bidmc/bidmc.zip` | `python scripts/evaluate_bidmc_ppg_respiratory_rate.py` | `models/bidmc_ppg_respiratory_rate_metrics.json` |
 | TOLIFE pre-visit clinical associations | `data/tolife/index.zip` | `python scripts/analyze_tolife_clinical_associations.py` | `models/tolife_clinical_associations.json` |
 
-These are research comparisons; the physiology models are not exposed as live inference and do not identify disease.
+These are research comparisons; the physiology models are not exposed as live inference and do not identify disease. The separate supplied Keras network is available for an explicitly unvalidated telemetry-state preview only.
 
 For the separate COPD-vs-control PPG feasibility track, download the six duration archives from the [official Zenodo record](https://zenodo.org/records/18109876) into `data/copd_ppg_zenodo/`, then run:
 
@@ -85,4 +86,4 @@ This compares regularized logistic regression, an RBF support-vector machine, an
 
 ## Data handling and safety
 
-This is a software research prototype, not a medical device. It has no live ring connection, no validated disease inference, and no clinical alerts. The anatomy animation uses illustrative default heart and breathing rates; it is not driven by patient data or disease severity. No personal readings are uploaded. See [Privacy](privacy.html).
+This is a software research prototype, not a medical device. It has no live ring connection, no validated disease inference, and no clinical alerts. The supplied model runs locally and returns only its five raw state-class scores; it does not generate a diagnosis, treatment, or alert. The anatomy animation uses illustrative default heart and breathing rates; it is not driven by patient data or disease severity. No personal readings are uploaded. See [Privacy](privacy.html).

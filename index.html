@@ -229,8 +229,21 @@
     .model-class-row b{color:var(--dashboard-text);font-weight:400;font-variant-numeric:tabular-nums}
     .model-class-row i{grid-column:1/-1;height:3px;overflow:hidden;border-radius:4px;background:#ffffff14}
     .model-class-row i span{display:block;height:100%;border-radius:inherit;background:var(--chart)}
+    .friend-model-shell{margin-top:20px;padding:clamp(18px,2.5vw,30px);border:1px solid #ffffff18;border-radius:22px;background:linear-gradient(145deg,#ffffff0a,#ffffff03 62%,color-mix(in srgb,var(--accent) 7%,transparent));box-shadow:0 18px 55px #0002;backdrop-filter:blur(20px)}
+    .friend-model-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:22px;margin-bottom:21px}.friend-model-heading h3{margin:8px 0 6px;color:var(--dashboard-text);font-size:clamp(20px,2.2vw,28px);letter-spacing:-.04em}.friend-model-heading p{max-width:680px;margin:0;color:var(--dashboard-muted);font-size:10px;line-height:1.7}
+    .friend-model-badge{flex:none;padding:8px 10px;border:1px solid #bd9a5d55;border-radius:4px;color:#d7bd88;background:#bd9a5d0c;font:7px var(--mono);letter-spacing:.09em;text-align:center}
+    .friend-model-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:14px;align-items:stretch}
+    .friend-input-panel,.friend-result-panel{min-width:0;padding:17px;border:1px solid var(--dashboard-line);border-radius:8px;background:#101613a8}
+    .friend-panel-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.1em}.friend-panel-heading b{color:var(--dashboard-text);font-weight:500}
+    .friend-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .friend-input{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 10px;align-items:center;min-width:0;padding:10px;border:1px solid var(--dashboard-line);border-radius:5px;background:var(--dashboard-raised)}
+    .friend-input label{min-width:0;color:var(--dashboard-muted);font:7px var(--mono);letter-spacing:.055em}.friend-input output{color:#87dbd2;font:600 12px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}.friend-input output small{color:#a1bcb2;font-size:7px}
+    .friend-input input{grid-column:1/-1;width:100%;height:3px;margin:1px 0 0;appearance:none;background:linear-gradient(90deg,var(--accent) var(--fill,25%),#424a44 var(--fill,25%));border-radius:4px;cursor:pointer}.friend-input input::-webkit-slider-thumb{appearance:none;width:10px;height:10px;border-radius:50%;background:#e5efdb;border:2px solid var(--accent)}.friend-input input::-moz-range-thumb{width:8px;height:8px;border-radius:50%;background:#e5efdb;border:2px solid var(--accent)}
+    .friend-model-run{margin-top:12px}.friend-result-panel{display:flex;flex-direction:column}.friend-output-state{color:#d4b477;font:7px var(--mono);letter-spacing:.1em}.friend-output-title{margin:9px 0 5px;color:var(--dashboard-text);font-size:clamp(17px,2vw,22px);line-height:1.2;letter-spacing:-.035em;overflow-wrap:anywhere}.friend-output-note{margin:0;color:var(--dashboard-muted);font-size:8px;line-height:1.65}.friend-output-score{display:flex;justify-content:space-between;gap:12px;margin-top:13px;padding-top:11px;border-top:1px solid var(--dashboard-line);color:var(--dashboard-muted);font:7px var(--mono)}.friend-output-score b{color:var(--dashboard-text);font-weight:500;text-align:right}
+    .friend-class-scores{display:grid;gap:10px;margin-top:14px}.friend-class-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 9px;color:var(--dashboard-muted);font:6px var(--mono);letter-spacing:.025em}.friend-class-row b{color:var(--dashboard-text);font-weight:400;font-variant-numeric:tabular-nums}.friend-class-row i{grid-column:1/-1;height:3px;overflow:hidden;border-radius:4px;background:#ffffff14}.friend-class-row i span{display:block;height:100%;border-radius:inherit;background:var(--chart)}
+    .friend-model-caveat{margin:13px 0 0;padding:10px 11px;border:1px solid #bd9a5d35;border-radius:5px;background:#bd9a5d0b;color:#c5ba9f;font-size:8px;line-height:1.65}.friend-model-caveat strong{color:#e1c990;font-weight:600}.friend-model-footnote{margin:12px 1px 0;color:#919b93;font:7px/1.65 var(--mono);letter-spacing:.015em}
     @media(max-width:1180px){.dashboard-main{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);grid-template-areas:"telemetry inference" "anatomy anatomy"}.analysis-anatomy{border-inline:0;border-top:1px solid var(--dashboard-line);padding:22px}.organ-viewport{height:clamp(400px,52vw,560px);max-height:560px}.anatomy-console{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.motion-readout,.anatomy-actions,.anatomy-credit{grid-column:1/-1}}
-    @media(max-width:760px){.dashboard-main{grid-template-columns:minmax(0,1fr);grid-template-areas:"telemetry" "anatomy" "inference"}.analysis-anatomy{padding:19px 13px;border-inline:0;border-top:1px solid var(--dashboard-line)}.organ-viewport{height:clamp(370px,112vw,520px);min-height:370px;max-height:520px}.organ-hud-top{top:13px;left:12px}.organ-hud-right{top:13px;right:12px}.organ-callout{font-size:6px}.heart-callout{top:57%;left:3%}.left-lung-callout{top:28%;left:3%}.right-lung-callout{top:28%;right:3%}.heart-callout:after,.left-lung-callout:after,.right-lung-callout:before{width:20px}.organ-response-hud{left:12px;bottom:43px}.anatomy-console{display:block;padding-top:13px}.motion-readout{margin-bottom:15px}.anatomy-actions{align-items:flex-start;flex-direction:column}.organ-buttons{align-self:stretch}.organ-buttons .spatial-button{flex:1}.anatomy-live{max-width:50%;font-size:5px}.anatomy-intro{font-size:8px}}
+    @media(max-width:760px){.dashboard-main{grid-template-columns:minmax(0,1fr);grid-template-areas:"telemetry" "anatomy" "inference"}.analysis-anatomy{padding:19px 13px;border-inline:0;border-top:1px solid var(--dashboard-line)}.organ-viewport{height:clamp(370px,112vw,520px);min-height:370px;max-height:520px}.organ-hud-top{top:13px;left:12px}.organ-hud-right{top:13px;right:12px}.organ-callout{font-size:6px}.heart-callout{top:57%;left:3%}.left-lung-callout{top:28%;left:3%}.right-lung-callout{top:28%;right:3%}.heart-callout:after,.left-lung-callout:after,.right-lung-callout:before{width:20px}.organ-response-hud{left:12px;bottom:43px}.anatomy-console{display:block;padding-top:13px}.motion-readout{margin-bottom:15px}.anatomy-actions{align-items:flex-start;flex-direction:column}.organ-buttons{align-self:stretch}.organ-buttons .spatial-button{flex:1}.anatomy-live{max-width:50%;font-size:5px}.anatomy-intro{font-size:8px}.friend-model-heading{display:block}.friend-model-badge{display:inline-block;margin-top:12px}.friend-model-grid{grid-template-columns:minmax(0,1fr)}.friend-model-shell{padding:16px;border-radius:17px}.friend-input-panel,.friend-result-panel{padding:12px}.friend-input-grid{gap:6px}.friend-input{padding:8px;gap:6px}.friend-input label{font-size:6px}.friend-input output{font-size:11px}.friend-model-heading p{font-size:9px}}
     @media(max-width:390px){.organ-viewport{height:390px;min-height:390px}.organ-callout{font-size:6px}.organ-callout small{font-size:5px}.organ-bottom-hud{font-size:5px}.organ-response-hud{font-size:5px}.anatomy-panel-head h3{font-size:15px}.anatomy-live{font-size:5px}}
     @media(prefers-reduced-motion:reduce){.organ-viewport,.spatial-range{scroll-behavior:auto}}
   </style>
@@ -541,11 +554,42 @@
               <div class="result-pattern"><span>NO-SKILL REFERENCE</span><b id="no-skill-ap">0.018</b></div>
               <p class="result-caveat">This is not a COPD diagnosis, pneumonia/asthma detector, calibrated probability, medical alert, or care advice. No color or texture represents disease severity.</p>
             </div>
-            <div class="model-footnote"><span class="lock-icon">⌁</span><span>No inference endpoint or patient-facing score is enabled.</span></div>
+            <div class="model-footnote"><span class="lock-icon">⌁</span><span>Our disease research model stays evaluation-only. The separate supplied network below returns experimental telemetry-pattern scores.</span></div>
           </aside>
         </div>
         <div class="dashboard-footer"><span>PUBLIC DAILY INDICES&nbsp; / &nbsp;NO LIVE RING STREAM</span><span>PLUMORING AI&nbsp; · &nbsp;RESEARCH PROTOTYPE</span></div>
       </div>
+      <section class="friend-model-shell" aria-labelledby="friend-model-title">
+        <div class="friend-model-heading">
+          <div><span class="dash-overline">MODEL 02&nbsp; / &nbsp;SUPPLIED SE-RESNET · BIGRU · ATTENTION</span><h3 id="friend-model-title">Run the saved telemetry model.</h3><p>This keeps your friend’s neural network alongside our public-dataset research tracks. Enter the eight channels, run the saved weights, and inspect the model’s five class scores.</p></div>
+          <span class="friend-model-badge" id="friend-model-runtime" aria-live="polite">CHECKING MODEL FILE</span>
+        </div>
+        <div class="friend-model-grid">
+          <div class="friend-input-panel">
+            <div class="friend-panel-heading"><b>DEMO TELEMETRY INPUTS</b><span>ONE SNAPSHOT</span></div>
+            <div class="friend-input-grid">
+              <div class="friend-input"><label for="friend-hr">HEART RATE · HR</label><output id="friend-hr-value">72 <small>bpm</small></output><input id="friend-hr" data-friend-sensor="hr" type="range" min="40" max="190" step="1" value="72" aria-label="Heart rate in beats per minute"></div>
+              <div class="friend-input"><label for="friend-spo2">OXYGEN SATURATION · SpO₂</label><output id="friend-spo2-value">98 <small>%</small></output><input id="friend-spo2" data-friend-sensor="spo2" type="range" min="70" max="100" step="0.5" value="98" aria-label="Oxygen saturation percent"></div>
+              <div class="friend-input"><label for="friend-rr">RESPIRATION RATE · RR</label><output id="friend-rr-value">15 <small>br/min</small></output><input id="friend-rr" data-friend-sensor="rr" type="range" min="8" max="40" step="1" value="15" aria-label="Respiration rate per minute"></div>
+              <div class="friend-input"><label for="friend-wheeze">ACOUSTIC WHEEZE · COMPANION</label><output id="friend-wheeze-value">0.3 <small>/ 10</small></output><input id="friend-wheeze" data-friend-sensor="wheeze" type="range" min="0" max="10" step="0.1" value="0.3" aria-label="Acoustic wheeze companion index"></div>
+              <div class="friend-input"><label for="friend-temp">SKIN TEMPERATURE DELTA</label><output id="friend-temp-value">+0.20 <small>°C</small></output><input id="friend-temp" data-friend-sensor="temp" type="range" min="0" max="2.5" step="0.05" value="0.2" aria-label="Skin temperature change in degrees Celsius"></div>
+              <div class="friend-input"><label for="friend-imu">IMU MOTION · ACC</label><output id="friend-imu-value">0.05 <small>g</small></output><input id="friend-imu" data-friend-sensor="imu" type="range" min="-3" max="3" step="0.05" value="0.05" aria-label="Motion acceleration in g"></div>
+              <div class="friend-input"><label for="friend-eda">SKIN CONDUCTANCE · EDA</label><output id="friend-eda-value">0.12 <small>index</small></output><input id="friend-eda" data-friend-sensor="eda" type="range" min="0" max="1" step="0.02" value="0.12" aria-label="Electrodermal activity index"></div>
+              <div class="friend-input"><label for="friend-pm25">AMBIENT PARTICLES · CONTEXT</label><output id="friend-pm25-value">18 <small>µg/m³</small></output><input id="friend-pm25" data-friend-sensor="pm25" type="range" min="0" max="250" step="1" value="18" aria-label="Ambient PM2.5 concentration"></div>
+            </div>
+            <button class="model-run friend-model-run" id="friend-model-run" type="button">RUN SUPPLIED MODEL</button>
+          </div>
+          <aside class="friend-result-panel" aria-labelledby="friend-result-heading">
+            <div class="friend-panel-heading"><b id="friend-result-heading">NETWORK CLASS OUTPUT</b><span id="friend-output-state" aria-live="polite">WAITING FOR INPUT</span></div>
+            <h4 class="friend-output-title" id="friend-top-class">Ready for a model run</h4>
+            <p class="friend-output-note" id="friend-output-note">The model output will appear here as a telemetry-state class, not a diagnosis.</p>
+            <div class="friend-output-score"><span>TOP RAW SOFTMAX SCORE</span><b id="friend-top-score">—</b></div>
+            <div class="friend-class-scores" id="friend-class-scores" aria-label="All five raw model class scores"></div>
+            <p class="friend-model-caveat"><strong>Research preview only.</strong> The model file’s training dataset and held-out validation report were not included. Its raw softmax scores are not calibrated probabilities; its “lung infection” class label is not a disease finding.</p>
+          </aside>
+        </div>
+        <p class="friend-model-footnote">INPUT PREPARATION&nbsp; / &nbsp;The supplied app repeats one reading across its 16 time steps. This panel mirrors that method for a single-snapshot demo. The API also accepts a genuine 16 × 8 history when available; neither mode turns these scores into a diagnosis.</p>
+      </section>
       <div class="intelligence-note"><span>PULMONARY-ONLY SCOPE</span><p>The strongest public wearable-like pulmonary outcome located is COPD exacerbation among people already diagnosed with COPD. Its readings are sparse daily summaries, and the held-out comparison failed; there is no validated ring-based disease detector.</p></div>
     </section>
     <section class="study-section" id="deep-learning" aria-labelledby="study-title">
@@ -1132,6 +1176,81 @@
       breathReadout.innerHTML=breathsPerMinute+' <small>/ MIN</small>';
       organViewport.style.setProperty('--breath-cycle',(60/breathsPerMinute).toFixed(3)+'s');
     }
+
+    const friendSensorIds=['friend-hr','friend-spo2','friend-rr','friend-wheeze','friend-temp','friend-imu','friend-eda','friend-pm25'];
+    const friendUnits=['bpm','%','br/min','/ 10','°C','g','index','µg/m³'];
+    const friendOutputIds=['friend-hr-value','friend-spo2-value','friend-rr-value','friend-wheeze-value','friend-temp-value','friend-imu-value','friend-eda-value','friend-pm25-value'];
+    const friendModelStatus=document.querySelector('#friend-model-runtime');
+    const friendModelButton=document.querySelector('#friend-model-run');
+    function updateFriendInput(index){
+      const input=document.getElementById(friendSensorIds[index]);
+      const output=document.getElementById(friendOutputIds[index]);
+      const value=Number(input.value);
+      const range=Number(input.max)-Number(input.min);
+      input.style.setProperty('--fill',`${range?((value-Number(input.min))/range)*100:0}%`);
+      const shown=index===4?`${value>=0?'+':''}${value.toFixed(2)}`:index===3||index===5||index===6?value.toFixed(2).replace(/0+$/,'').replace(/\.$/,''):String(value);
+      output.textContent='';output.append(document.createTextNode(shown+' '));
+      const unit=document.createElement('small');unit.textContent=friendUnits[index];output.append(unit);
+    }
+    friendSensorIds.forEach((id,index)=>{
+      const input=document.getElementById(id);
+      input.addEventListener('input',()=>updateFriendInput(index));
+      updateFriendInput(index);
+    });
+    async function loadFriendModelStatus(){
+      try{
+        const response=await fetch('/api/models/friend-state/status');
+        const status=await response.json();
+        if(status.ready_for_research_preview){
+          friendModelStatus.textContent='MODEL FILE + TENSORFLOW READY · UNVALIDATED';
+        }else if(!status.model_file_present){
+          friendModelStatus.textContent='SAVED MODEL FILE MISSING';
+        }else{
+          friendModelStatus.textContent='TENSORFLOW REQUIRED · SEE SETUP NOTES';
+        }
+      }catch{
+        friendModelStatus.textContent='MODEL STATUS UNAVAILABLE';
+      }
+    }
+    function renderFriendScores(scores){
+      const host=document.querySelector('#friend-class-scores');
+      host.replaceChildren();
+      scores.forEach(item=>{
+        const row=document.createElement('div');row.className='friend-class-row';
+        const label=document.createElement('span');label.textContent=item.label;
+        const score=document.createElement('b');score.textContent=Number(item.raw_score).toFixed(4);
+        const track=document.createElement('i');const fill=document.createElement('span');
+        fill.style.width=`${Math.max(0,Math.min(100,Number(item.raw_score)*100))}%`;
+        track.append(fill);row.append(label,score,track);host.append(row);
+      });
+    }
+    friendModelButton.addEventListener('click',async()=>{
+      friendModelButton.disabled=true;
+      document.querySelector('#friend-output-state').textContent='RUNNING MODEL';
+      document.querySelector('#friend-top-class').textContent='Loading saved network…';
+      document.querySelector('#friend-output-note').textContent='The saved model is loaded on demand in the local Python environment.';
+      document.querySelector('#friend-top-score').textContent='—';
+      document.querySelector('#friend-class-scores').replaceChildren();
+      try{
+        const sensors=friendSensorIds.map(id=>Number(document.getElementById(id).value));
+        const response=await fetch('/api/models/friend-state/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sensors})});
+        const result=await response.json();
+        if(!response.ok)throw new Error(result.error||'The saved model could not run.');
+        document.querySelector('#friend-output-state').textContent='EXPERIMENTAL NETWORK OUTPUT';
+        document.querySelector('#friend-top-class').textContent=result.top_class_label;
+        document.querySelector('#friend-top-score').textContent=Number(result.top_class_raw_score).toFixed(4);
+        document.querySelector('#friend-output-note').textContent=`${result.input_mode}. This is the network's top-ranked state label; its score is uncalibrated.`;
+        renderFriendScores(result.class_scores||[]);
+        friendModelStatus.textContent='MODEL RAN · OUTPUT NOT CLINICALLY VALIDATED';
+      }catch(error){
+        document.querySelector('#friend-output-state').textContent='MODEL UNAVAILABLE';
+        document.querySelector('#friend-top-class').textContent='Could not run the saved model';
+        document.querySelector('#friend-output-note').textContent=error.message;
+      }finally{
+        friendModelButton.disabled=false;
+      }
+    });
+    loadFriendModelStatus();
 
     motionButton.setAttribute('aria-pressed',String(organMotion));
     organViewport.classList.toggle('motion-paused',!organMotion);

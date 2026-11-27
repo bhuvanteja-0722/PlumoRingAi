@@ -6,7 +6,9 @@ import json
 from pathlib import Path
 from typing import Any
 
-from flask import Flask, abort, jsonify, send_from_directory
+from flask import Flask, abort, jsonify, request, send_from_directory
+
+from friend_model import ModelUnavailable, predict_state, runtime_status
 
 
 ROOT = Path(__file__).resolve().parent
@@ -76,6 +78,7 @@ def _metrics() -> dict[str, Any]:
 @app.get("/api/health")
 def health():
     report = _metrics()
+    friend_status = runtime_status()
     return jsonify({
         "ready": False,
         "model_version": report.get("model_version", "pulmonary-evidence-pending"),
@@ -86,6 +89,7 @@ def health():
         "deployment_status": "not_ready",
         "ring_validated": False,
         "continuous_ring_stream": False,
+        "friend_model_research_preview": friend_status,
         "notices": [
             "No pulmonary disease diagnosis or patient-facing risk score is available.",
             "HealthRing provides partial-subset ring-vital estimation only; it has no pulmonary disease labels.",
@@ -99,6 +103,27 @@ def health():
             "A larger 2026 continuous COPD wearable study has restricted participant data and has not been evaluated by PlumoRing AI.",
         ],
     })
+
+
+@app.get("/api/models/friend-state/status")
+def friend_model_status():
+    status = runtime_status()
+    status["model_id"] = "friend-se-resnet-bidirectional-gru-attention"
+    status["model_output_type"] = "five-class telemetry-state pattern"
+    return jsonify(status)
+
+
+@app.post("/api/models/friend-state/predict")
+def friend_model_predict():
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return jsonify({"error": "Request body must be a JSON object."}), 400
+    try:
+        return jsonify(predict_state(payload))
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except ModelUnavailable as exc:
+        return jsonify({"error": str(exc), "status": runtime_status()}), 503
 
 
 @app.get("/api/pulmonary/metrics")

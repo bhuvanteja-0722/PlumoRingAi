@@ -2,7 +2,7 @@
 
 ## Current status
 
-There is no deployed pulmonary disease model, patient-facing score, or live ring connection. Each dataset is kept in its own research track because the sensors, participants, labels, and tasks differ:
+There is no validated pulmonary disease model, patient-facing disease score, or live ring connection. The analysis area now presents two separate model tracks: our public-dataset evidence work and the supplied experimental telemetry network. Each dataset is kept in its own research track because the sensors, participants, labels, and tasks differ:
 
 1. **COPD exacerbation forecasting:** TOLIFE daily indices and recorded moderate/severe exacerbations among people already diagnosed with COPD. Participant-held-out models failed the no-skill and ROC-AUC gates.
 2. **COPD versus control from PPG:** the public Zenodo archive has six people (four COPD, two controls), repeated across six window-duration variants. All three candidates produced participant-level ROC-AUC 0.000, with logistic average precision 0.525 against a 0.667 prevalence reference. This is a failed feasibility experiment, not a diagnosis model.
@@ -16,7 +16,17 @@ The strongest external continuous-monitoring evidence located is a 2026 eMEUSE-S
 
 No datasets are concatenated to manufacture a larger disease cohort. Lung-audio, radiology, hospital-code, and symptom-only datasets are not treated as ring PPG labels. The original 14-person COPD PPG study's Figshare matrix is excluded because it lacks participant IDs and its healthy-row count conflicts with the paper's participant table.
 
-The app exposes aggregate study evidence only. No model weights are saved or loaded, and no disease probability, alert, or disease-driven anatomy color is returned. The scripts compare research candidates and write aggregate metrics; they do not package fitted weights for patient-facing inference.
+Our public-dataset research tracks expose aggregate study evidence only. They do not return a disease probability, alert, or disease-driven anatomy color. The scripts compare research candidates and write aggregate metrics; they do not package fitted weights for patient-facing inference. The separate supplied telemetry network is described below.
+
+## Supplied telemetry network (kept as a separate model)
+
+The model from `trained_pulmonary_ring_app_updated (1).zip` is preserved at `models/friend_telemetry_state_classifier.keras`. It is a Keras Functional network with input shape `(batch, 16, 8)` and five softmax outputs. The output order is copied from the supplied `app.py`: normal resting baseline, daily activity/exercise impact, sudden breathing trouble/stress, fever/lung-infection alert, and loose-ring/bad-reading. The last two labels are the model author's class names; they are not validated disease labels.
+
+The adapter in `friend_model.py` matches the eight normalization formulas in the supplied `app.py`, checks the model's input/output shapes, and loads the `.keras` file with Keras safe mode enabled and compilation disabled. It does not import the supplied Flask app or its hand-written disease rules, medication/diet/yoga suggestions, or HTML. The original package did not include the training dataset, per-class sample counts, train/test split, or held-out evaluation report, so the network output is labeled experimental and unvalidated. Raw softmax values are shown as raw class scores, not calibrated probabilities.
+
+The analysis panel's slider preview sends one snapshot and repeats it over 16 steps to match the supplied demo adapter. The API also accepts an actual `sequence` with shape `(16, 8)` for a real sampled history. In both cases, this is a telemetry-state output only. It does not return a pulmonary disease, infection, severity, or care recommendation. This model and our dataset-specific evaluation tracks remain separate so their different evidence levels are clear.
+
+Run locally with the Python environment created from `requirements-model.txt`, which installs TensorFlow. The saved weights are loaded only when the user presses **Run supplied model**.
 
 ## Local app
 
@@ -36,6 +46,8 @@ Open http://127.0.0.1:5000. Flask binds to loopback.
 - `GET /api/pulmonary/healthring-vitals-metrics` serves HealthRing RR/SpO₂ physiology estimates and partial-archive coverage.
 - `GET /api/pulmonary/bidmc-rr-metrics` serves PPG-only BIDMC respiratory-rate results and the separate cross-device HealthRing evaluation.
 - `GET /api/pulmonary/tolife-associations` serves aggregate pre-visit clinical-index association coverage.
+- `GET /api/models/friend-state/status` reports whether the supplied model file and TensorFlow runtime are available.
+- `POST /api/models/friend-state/predict` runs the supplied five-class model. Send either `{"sensors": [hr, spo2, rr, wheeze, temp_delta, imu, eda, pm25]}` for its single-snapshot preview or `{"sequence": [[... eight values ...], ...]}` with exactly 16 rows for a real temporal window. The API returns raw class scores and no diagnosis.
 - Equivalent aggregate reports are served under `/models/` when available.
 - Legacy hospital replay and scoring endpoints return HTTP 410.
 
