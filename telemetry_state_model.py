@@ -163,7 +163,14 @@ def _rule_hypothesis(values: np.ndarray, model_index: int) -> dict[str, Any]:
 
     # These branches mirror the rule concepts in the supplied app.py, without
     # importing its medication, diet, severity, or care-advice content.
-    if (abs(imu) > 2.2 and spo2 < 82 and temp < 0.15) or (
+    if abs(imu) > 2.2:
+        label = "High-motion snapshot · pulmonary pattern withheld"
+        detail = (
+            "This single reading has very high motion. The experimental rules withhold a named "
+            "pulmonary pattern because movement can dominate a spot snapshot; this is not a "
+            "validated signal-quality assessment."
+        )
+    elif (
         model_index == 4 and abs(imu) > 1.5 and wheeze < 1.5 and temp < 0.3
     ):
         label = "Possible sensor-contact artifact pattern"
